@@ -25,6 +25,38 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$noBallReBallAtom =
+      Atom(name: '_HomeStore.noBallReBall', context: context);
+
+  @override
+  bool get noBallReBall {
+    _$noBallReBallAtom.reportRead();
+    return super.noBallReBall;
+  }
+
+  @override
+  set noBallReBall(bool value) {
+    _$noBallReBallAtom.reportWrite(value, super.noBallReBall, () {
+      super.noBallReBall = value;
+    });
+  }
+
+  late final _$wideReBallAtom =
+      Atom(name: '_HomeStore.wideReBall', context: context);
+
+  @override
+  bool get wideReBall {
+    _$wideReBallAtom.reportRead();
+    return super.wideReBall;
+  }
+
+  @override
+  set wideReBall(bool value) {
+    _$wideReBallAtom.reportWrite(value, super.wideReBall, () {
+      super.wideReBall = value;
+    });
+  }
+
   late final _$tossWonByAtom =
       Atom(name: '_HomeStore.tossWonBy', context: context);
 
@@ -67,9 +99,33 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void noBallReBallSwitch(bool value) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.noBallReBallSwitch');
+    try {
+      return super.noBallReBallSwitch(value);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void wideBallReBallSwitch(dynamic value) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.wideBallReBallSwitch');
+    try {
+      return super.wideBallReBallSwitch(value);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 selectedIndex: ${selectedIndex},
+noBallReBall: ${noBallReBall},
+wideReBall: ${wideReBall},
 tossWonBy: ${tossWonBy}
     ''';
   }

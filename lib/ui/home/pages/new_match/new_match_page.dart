@@ -1,3 +1,4 @@
+import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/core/enum/team_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
@@ -5,6 +6,7 @@ import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class NewMatchPage extends StatelessWidget {
@@ -18,7 +20,7 @@ class NewMatchPage extends StatelessWidget {
     TextEditingController overController = TextEditingController();
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: [
@@ -128,7 +130,11 @@ class NewMatchPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                      onPressed: () {}, child: const Text("Adwance Setting")),
+                      onPressed: () {
+                        GoRouter.of(context)
+                            .push(RoutesName.adwanceSetting.path);
+                      },
+                      child: const Text("Adwance Setting")),
                 ),
                 const SizedBox(
                   width: 16,

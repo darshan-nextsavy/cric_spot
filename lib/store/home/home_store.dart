@@ -8,6 +8,15 @@ abstract class _HomeStore with Store {
   @observable
   int selectedIndex = 0;
 
+  @observable
+  bool noBallReBall = true;
+
+  @observable
+  bool wideReBall = true;
+
+  @observable
+  TeamType tossWonBy = TeamType.host;
+
   @action
   void currentIndex(int index) {
     if (selectedIndex != index) {
@@ -15,13 +24,24 @@ abstract class _HomeStore with Store {
     }
   }
 
-  @observable
-  TeamType tossWonBy = TeamType.host;
-
   @action
   void tossWon(value) {
     if (value != tossWonBy) {
       tossWonBy = value;
+    }
+  }
+
+  @action
+  void noBallReBallSwitch(bool value) {
+    if (noBallReBall != value) {
+      noBallReBall = value;
+    }
+  }
+
+  @action
+  void wideBallReBallSwitch(value) {
+    if (wideReBall != value) {
+      wideReBall = value;
     }
   }
 }

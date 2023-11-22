@@ -1,3 +1,4 @@
+import 'package:cric_spot/config/routes.dart';
 import 'package:cric_spot/core/theme/app_theme.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:cric_spot/ui/home/pages/home/home_page.dart';
@@ -58,8 +59,9 @@ class MyApp extends StatelessWidget {
               );
             }
 
-            return MaterialApp(
+            return MaterialApp.router(
               title: 'Flutter Demo',
+              routerConfig: goRouter,
               debugShowCheckedModeBanner: false,
               theme: appTheme(
                   context,
@@ -85,7 +87,6 @@ class MyApp extends StatelessWidget {
               //         ColorScheme.fromSeed(
               //             seedColor: Colors.pink, brightness: Brightness.dark),
               //     useMaterial3: true),
-              home: const HomePage(),
             );
           });
         });
