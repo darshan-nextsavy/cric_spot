@@ -9,6 +9,21 @@ part of 'home_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$HomeStore on _HomeStore, Store {
+  Computed<String>? _$batTeamNameComputed;
+
+  @override
+  String get batTeamName =>
+      (_$batTeamNameComputed ??= Computed<String>(() => super.batTeamName,
+              name: '_HomeStore.batTeamName'))
+          .value;
+  Computed<String>? _$bowlTeamNameComputed;
+
+  @override
+  String get bowlTeamName =>
+      (_$bowlTeamNameComputed ??= Computed<String>(() => super.bowlTeamName,
+              name: '_HomeStore.bowlTeamName'))
+          .value;
+
   late final _$selectedIndexAtom =
       Atom(name: '_HomeStore.selectedIndex', context: context);
 
@@ -22,6 +37,38 @@ mixin _$HomeStore on _HomeStore, Store {
   set selectedIndex(int value) {
     _$selectedIndexAtom.reportWrite(value, super.selectedIndex, () {
       super.selectedIndex = value;
+    });
+  }
+
+  late final _$isNoBallAtom =
+      Atom(name: '_HomeStore.isNoBall', context: context);
+
+  @override
+  bool get isNoBall {
+    _$isNoBallAtom.reportRead();
+    return super.isNoBall;
+  }
+
+  @override
+  set isNoBall(bool value) {
+    _$isNoBallAtom.reportWrite(value, super.isNoBall, () {
+      super.isNoBall = value;
+    });
+  }
+
+  late final _$isWideBallAtom =
+      Atom(name: '_HomeStore.isWideBall', context: context);
+
+  @override
+  bool get isWideBall {
+    _$isWideBallAtom.reportRead();
+    return super.isWideBall;
+  }
+
+  @override
+  set isWideBall(bool value) {
+    _$isWideBallAtom.reportWrite(value, super.isWideBall, () {
+      super.isWideBall = value;
     });
   }
 
@@ -57,6 +104,38 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$noBallRunAtom =
+      Atom(name: '_HomeStore.noBallRun', context: context);
+
+  @override
+  String get noBallRun {
+    _$noBallRunAtom.reportRead();
+    return super.noBallRun;
+  }
+
+  @override
+  set noBallRun(String value) {
+    _$noBallRunAtom.reportWrite(value, super.noBallRun, () {
+      super.noBallRun = value;
+    });
+  }
+
+  late final _$wideBallRunAtom =
+      Atom(name: '_HomeStore.wideBallRun', context: context);
+
+  @override
+  String get wideBallRun {
+    _$wideBallRunAtom.reportRead();
+    return super.wideBallRun;
+  }
+
+  @override
+  set wideBallRun(String value) {
+    _$wideBallRunAtom.reportWrite(value, super.wideBallRun, () {
+      super.wideBallRun = value;
+    });
+  }
+
   late final _$tossWonByAtom =
       Atom(name: '_HomeStore.tossWonBy', context: context);
 
@@ -71,6 +150,124 @@ mixin _$HomeStore on _HomeStore, Store {
     _$tossWonByAtom.reportWrite(value, super.tossWonBy, () {
       super.tossWonBy = value;
     });
+  }
+
+  late final _$optedAtom = Atom(name: '_HomeStore.opted', context: context);
+
+  @override
+  OptedType get opted {
+    _$optedAtom.reportRead();
+    return super.opted;
+  }
+
+  @override
+  set opted(OptedType value) {
+    _$optedAtom.reportWrite(value, super.opted, () {
+      super.opted = value;
+    });
+  }
+
+  late final _$hostTeamNameAtom =
+      Atom(name: '_HomeStore.hostTeamName', context: context);
+
+  @override
+  String get hostTeamName {
+    _$hostTeamNameAtom.reportRead();
+    return super.hostTeamName;
+  }
+
+  @override
+  set hostTeamName(String value) {
+    _$hostTeamNameAtom.reportWrite(value, super.hostTeamName, () {
+      super.hostTeamName = value;
+    });
+  }
+
+  late final _$visitorTeamNameAtom =
+      Atom(name: '_HomeStore.visitorTeamName', context: context);
+
+  @override
+  String get visitorTeamName {
+    _$visitorTeamNameAtom.reportRead();
+    return super.visitorTeamName;
+  }
+
+  @override
+  set visitorTeamName(String value) {
+    _$visitorTeamNameAtom.reportWrite(value, super.visitorTeamName, () {
+      super.visitorTeamName = value;
+    });
+  }
+
+  late final _$strikerNameAtom =
+      Atom(name: '_HomeStore.strikerName', context: context);
+
+  @override
+  String get strikerName {
+    _$strikerNameAtom.reportRead();
+    return super.strikerName;
+  }
+
+  @override
+  set strikerName(String value) {
+    _$strikerNameAtom.reportWrite(value, super.strikerName, () {
+      super.strikerName = value;
+    });
+  }
+
+  late final _$nonStrikerNameAtom =
+      Atom(name: '_HomeStore.nonStrikerName', context: context);
+
+  @override
+  String get nonStrikerName {
+    _$nonStrikerNameAtom.reportRead();
+    return super.nonStrikerName;
+  }
+
+  @override
+  set nonStrikerName(String value) {
+    _$nonStrikerNameAtom.reportWrite(value, super.nonStrikerName, () {
+      super.nonStrikerName = value;
+    });
+  }
+
+  late final _$openingBowlerNameAtom =
+      Atom(name: '_HomeStore.openingBowlerName', context: context);
+
+  @override
+  String get openingBowlerName {
+    _$openingBowlerNameAtom.reportRead();
+    return super.openingBowlerName;
+  }
+
+  @override
+  set openingBowlerName(String value) {
+    _$openingBowlerNameAtom.reportWrite(value, super.openingBowlerName, () {
+      super.openingBowlerName = value;
+    });
+  }
+
+  late final _$overAtom = Atom(name: '_HomeStore.over', context: context);
+
+  @override
+  String get over {
+    _$overAtom.reportRead();
+    return super.over;
+  }
+
+  @override
+  set over(String value) {
+    _$overAtom.reportWrite(value, super.over, () {
+      super.over = value;
+    });
+  }
+
+  late final _$createNewMatchAsyncAction =
+      AsyncAction('_HomeStore.createNewMatch', context: context);
+
+  @override
+  Future<String> createNewMatch() {
+    return _$createNewMatchAsyncAction.run(() => super.createNewMatch());
   }
 
   late final _$_HomeStoreActionController =
@@ -99,6 +296,17 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void optedBy(dynamic value) {
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.optedBy');
+    try {
+      return super.optedBy(value);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void noBallReBallSwitch(bool value) {
     final _$actionInfo = _$_HomeStoreActionController.startAction(
         name: '_HomeStore.noBallReBallSwitch');
@@ -121,12 +329,58 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void hostTeamNameChange(String name) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.hostTeamNameChange');
+    try {
+      return super.hostTeamNameChange(name);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void visitorTeamNameChange(String name) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.visitorTeamNameChange');
+    try {
+      return super.visitorTeamNameChange(name);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  List<MatchModel> getMatchHistory() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.getMatchHistory');
+    try {
+      return super.getMatchHistory();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 selectedIndex: ${selectedIndex},
+isNoBall: ${isNoBall},
+isWideBall: ${isWideBall},
 noBallReBall: ${noBallReBall},
 wideReBall: ${wideReBall},
-tossWonBy: ${tossWonBy}
+noBallRun: ${noBallRun},
+wideBallRun: ${wideBallRun},
+tossWonBy: ${tossWonBy},
+opted: ${opted},
+hostTeamName: ${hostTeamName},
+visitorTeamName: ${visitorTeamName},
+strikerName: ${strikerName},
+nonStrikerName: ${nonStrikerName},
+openingBowlerName: ${openingBowlerName},
+over: ${over},
+batTeamName: ${batTeamName},
+bowlTeamName: ${bowlTeamName}
     ''';
   }
 }

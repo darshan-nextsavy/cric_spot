@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CricTextFormField extends StatelessWidget {
-  const CricTextFormField({
-    super.key,
-    required this.controller,
-    required this.hintText,
-    this.keyboardType = TextInputType.none,
-    this.validator,
-    this.onChanged,
-    this.enabled = true,
-    this.maxLength,
-    this.maxLines,
-    this.label,
-    this.inputFormatters,
-    this.counterText,
-    this.textCapitalization = TextCapitalization.sentences,
-  });
+  const CricTextFormField(
+      {super.key,
+      required this.controller,
+      required this.hintText,
+      this.keyboardType = TextInputType.none,
+      this.validator,
+      this.onChanged,
+      this.enabled = true,
+      this.maxLength,
+      this.maxLines,
+      this.label,
+      this.inputFormatters,
+      this.counterText,
+      this.textCapitalization = TextCapitalization.sentences,
+      this.focusNode});
 
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
@@ -30,10 +30,12 @@ class CricTextFormField extends StatelessWidget {
   final int? maxLength;
   final int? maxLines;
   final TextCapitalization textCapitalization;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       maxLength: maxLength,
       maxLines: maxLines,
       enabled: enabled,

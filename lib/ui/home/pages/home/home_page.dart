@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldStateKey,
       appBar: AppBar(
-        title: Text("Crick Spot"),
+        title: const Text("Crick Spot"),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
           const SizedBox(
@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: ContentWidget(),
+      body: const ContentWidget(),
       bottomNavigationBar: Observer(builder: (_) {
         return Theme(
           data: Theme.of(context).copyWith(

@@ -14,7 +14,7 @@ class ContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final Map<int, Widget> pages = {
       0: const NewMatchPage(),
-      1: const TeamsPage(),
+      1: TeamsPage(),
       2: const HistoryPage()
     };
     final homeStore = Provider.of<HomeStore>(context);

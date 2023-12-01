@@ -1,20 +1,21 @@
 import 'package:cric_spot/config/routes_name.dart';
+import 'package:cric_spot/core/enum/opted_type.dart';
 import 'package:cric_spot/core/enum/team_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
+import 'package:cric_spot/main.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class NewMatchPage extends StatelessWidget {
   const NewMatchPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final homeStore = Provider.of<HomeStore>(context);
+    final homeStore = getIt.get<HomeStore>();
     TextEditingController hostTeamController = TextEditingController();
     TextEditingController visitorTeamController = TextEditingController();
     TextEditingController overController = TextEditingController();
@@ -40,6 +41,9 @@ class NewMatchPage extends StatelessWidget {
               hintText: "Host team",
               keyboardType: TextInputType.name,
               textCapitalization: TextCapitalization.words,
+              onChanged: (val) {
+                homeStore.hostTeamNameChange(val);
+              },
             ),
             const SizedBox(
               height: 16,
@@ -49,6 +53,9 @@ class NewMatchPage extends StatelessWidget {
               hintText: "Visitor team",
               keyboardType: TextInputType.name,
               textCapitalization: TextCapitalization.words,
+              onChanged: (val) {
+                homeStore.visitorTeamNameChange(val);
+              },
             ),
             const SizedBox(
               height: 20,
@@ -78,7 +85,9 @@ class NewMatchPage extends StatelessWidget {
                                 onChanged: (value) {
                                   homeStore.tossWon(value);
                                 }),
-                            const Text('Host Team')
+                            Observer(builder: (_) {
+                              return Text(homeStore.hostTeamName);
+                            })
                           ],
                         ),
                       ),
@@ -98,7 +107,66 @@ class NewMatchPage extends StatelessWidget {
                                 onChanged: (value) {
                                   homeStore.tossWon(value);
                                 }),
-                            const Text('Visitor Team')
+                            Observer(builder: (_) {
+                              return Text(homeStore.visitorTeamName);
+                            })
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Opted to?",
+              style: context.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600, color: context.onBackground),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Observer(builder: (_) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        homeStore.optedBy(OptedType.bat);
+                      },
+                      child: Card(
+                        child: Row(
+                          children: [
+                            Radio(
+                                value: OptedType.bat,
+                                groupValue: homeStore.opted,
+                                onChanged: (value) {
+                                  homeStore.optedBy(value);
+                                }),
+                            const Text("Bat")
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        homeStore.optedBy(OptedType.bowl);
+                      },
+                      child: Card(
+                        child: Row(
+                          children: [
+                            Radio(
+                                value: OptedType.bowl,
+                                groupValue: homeStore.opted,
+                                onChanged: (value) {
+                                  homeStore.optedBy(value);
+                                }),
+                            const Text("Bowl")
                           ],
                         ),
                       ),
@@ -122,6 +190,9 @@ class NewMatchPage extends StatelessWidget {
               controller: overController,
               hintText: "Overs",
               keyboardType: TextInputType.number,
+              onChanged: (val) {
+                homeStore.over = val;
+              },
             ),
             const SizedBox(
               height: 20,
@@ -141,7 +212,12 @@ class NewMatchPage extends StatelessWidget {
                 ),
                 Expanded(
                     child: FilledButton(
-                        onPressed: () {}, child: const Text("Start Match")))
+                        onPressed: () {
+                          // GoRouter.of(context).push(RoutesName.scoreCount.path);
+                          GoRouter.of(context)
+                              .push(RoutesName.playerSelect.path);
+                        },
+                        child: const Text("Start Match")))
               ],
             ),
           ],

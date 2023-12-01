@@ -4,8 +4,10 @@ enum RoutesName {
   newMatch,
   teams,
   history,
+  scoreCount,
   adwanceSetting,
-  setting;
+  setting,
+  playerSelect;
 }
 
 extension RoutesNameHelper on RoutesName {
@@ -25,6 +27,10 @@ extension RoutesNameHelper on RoutesName {
         return 'adwance-setting';
       case RoutesName.setting:
         return 'setting';
+      case RoutesName.scoreCount:
+        return 'score-count';
+      case RoutesName.playerSelect:
+        return 'player-select';
     }
   }
 
@@ -44,6 +50,10 @@ extension RoutesNameHelper on RoutesName {
         return '/adwance-setting';
       case RoutesName.setting:
         return '/setting';
+      case RoutesName.scoreCount:
+        return '/score-count/:matchId';
+      case RoutesName.playerSelect:
+        return '/player-select';
     }
   }
 }
