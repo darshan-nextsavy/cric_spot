@@ -24,6 +24,22 @@ mixin _$HomeStore on _HomeStore, Store {
               name: '_HomeStore.bowlTeamName'))
           .value;
 
+  late final _$matchListAtom =
+      Atom(name: '_HomeStore.matchList', context: context);
+
+  @override
+  List<MatchModel> get matchList {
+    _$matchListAtom.reportRead();
+    return super.matchList;
+  }
+
+  @override
+  set matchList(List<MatchModel> value) {
+    _$matchListAtom.reportWrite(value, super.matchList, () {
+      super.matchList = value;
+    });
+  }
+
   late final _$selectedIndexAtom =
       Atom(name: '_HomeStore.selectedIndex', context: context);
 
@@ -362,8 +378,20 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void removeMatch(int key) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.removeMatch');
+    try {
+      return super.removeMatch(key);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+matchList: ${matchList},
 selectedIndex: ${selectedIndex},
 isNoBall: ${isNoBall},
 isWideBall: ${isWideBall},

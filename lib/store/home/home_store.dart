@@ -2,8 +2,12 @@ import 'dart:ffi';
 
 import 'package:cric_spot/core/enum/opted_type.dart';
 import 'package:cric_spot/core/enum/team_type.dart';
+import 'package:cric_spot/model/batting/batting_lineup_model.dart';
+import 'package:cric_spot/model/bowling/bowling_lineup_model.dart';
+import 'package:cric_spot/model/extra/extra_run_model.dart';
 import 'package:cric_spot/model/inning/inning_model.dart';
 import 'package:cric_spot/model/match/match_model.dart';
+import 'package:cric_spot/model/partnership/partnership_model.dart';
 import 'package:cric_spot/model/player/player_model.dart';
 import 'package:cric_spot/model/team/team_model.dart';
 import 'package:hive/hive.dart';
@@ -19,6 +23,9 @@ abstract class _HomeStore with Store {
   Box<InningModel> inningBox;
 
   _HomeStore(this.playerBox, this.teamBox, this.matchBox, this.inningBox);
+
+  @observable
+  List<MatchModel> matchList = [];
 
   @observable
   int selectedIndex = 0;
@@ -185,21 +192,26 @@ abstract class _HomeStore with Store {
 
     // match data
     MatchModel match = MatchModel(
-      over: over,
-      isWideBall: isWideBall,
-      isWideReball: wideReBall,
-      wideRun: int.parse(wideBallRun),
-      isNoball: isNoBall,
-      isNoballReball: noBallReBall,
-      noballRun: int.parse(noBallRun),
-      hostTeamId: hostTeamId.toString(),
-      visitorTeamId: visitorTeamId.toString(),
-      tossId: tossWonBy.name == 'host'
-          ? hostTeamId.toString()
-          : visitorTeamId.toString(),
-      tossName: tossWonBy.name == 'host' ? hostTeamName : visitorTeamName,
-      tossElect: opted.name,
-    );
+        over: over,
+        isWideBall: isWideBall,
+        isWideReball: wideReBall,
+        wideRun: int.parse(wideBallRun),
+        isNoball: isNoBall,
+        isNoballReball: noBallReBall,
+        noballRun: int.parse(noBallRun),
+        hostTeamId: hostTeamId.toString(),
+        visitorTeamId: visitorTeamId.toString(),
+        tossId: tossWonBy.name == 'host'
+            ? hostTeamId.toString()
+            : visitorTeamId.toString(),
+        tossName: tossWonBy.name == 'host' ? hostTeamName : visitorTeamName,
+        tossElect: opted.name,
+        firstBatTeamName: batTeamName,
+        firstBatTeamScore: "0/0",
+        firstBatTeamOver: "0.0",
+        secondBatTeamName: bowlTeamName,
+        secondBatTeamScore: "0/0",
+        secondBatTeamOver: "0.0");
 
     final matchId = await matchBox.add(match);
     match.id = matchId.toString();
@@ -213,7 +225,7 @@ abstract class _HomeStore with Store {
         totalBall: 0,
         totalWicket: 0,
         battingLineup: [
-          BattingLineUp(
+          BattingLineUpModel(
               playerId: strikerId.toString(),
               name: strikerName,
               run: 0,
@@ -221,7 +233,7 @@ abstract class _HomeStore with Store {
               four: 0,
               six: 0,
               isNotOut: true),
-          BattingLineUp(
+          BattingLineUpModel(
               playerId: nonStrikerId.toString(),
               name: nonStrikerName,
               run: 0,
@@ -231,7 +243,7 @@ abstract class _HomeStore with Store {
               isNotOut: true),
         ],
         bowlingLineup: [
-          BowlingLineUp(
+          BowlingLineUpModel(
               playerId: bowlerId.toString(),
               name: openingBowlerName,
               run: 0,
@@ -239,16 +251,16 @@ abstract class _HomeStore with Store {
               maidan: 0,
               wicket: 0)
         ],
-        extraRun:
-            ExtraRun(wide: 0, noBall: 0, legBy: 0, by: 0, penlaty: 0, total: 0),
-        currentBowler: BowlingLineUp(
+        extraRun: ExtraRunModel(
+            wide: 0, noBall: 0, legBy: 0, by: 0, penlaty: 0, total: 0),
+        currentBowler: BowlingLineUpModel(
             playerId: bowlerId.toString(),
             name: openingBowlerName,
             run: 0,
             ball: 0,
             maidan: 0,
             wicket: 0),
-        currentStriker: BattingLineUp(
+        currentStriker: BattingLineUpModel(
             playerId: strikerId.toString(),
             name: strikerName,
             run: 0,
@@ -256,7 +268,7 @@ abstract class _HomeStore with Store {
             four: 0,
             six: 0,
             isNotOut: true),
-        currentNonStriker: BattingLineUp(
+        currentNonStriker: BattingLineUpModel(
             playerId: nonStrikerId.toString(),
             name: nonStrikerName,
             run: 0,
@@ -267,10 +279,10 @@ abstract class _HomeStore with Store {
         overs: [],
         currentOver: [],
         partnerShips: [
-          PartnerShip(
+          PartnerShipModel(
               run: 0,
               ball: 0,
-              currentStiker: BattingLineUp(
+              currentStiker: BattingLineUpModel(
                   playerId: strikerId.toString(),
                   name: strikerName,
                   run: 0,
@@ -278,7 +290,7 @@ abstract class _HomeStore with Store {
                   four: 0,
                   six: 0,
                   isNotOut: true),
-              currentNotStiker: BattingLineUp(
+              currentNotStiker: BattingLineUpModel(
                   playerId: nonStrikerId.toString(),
                   name: nonStrikerName,
                   run: 0,
@@ -287,10 +299,10 @@ abstract class _HomeStore with Store {
                   six: 0,
                   isNotOut: true))
         ],
-        currentPartnerShip: PartnerShip(
+        currentPartnerShip: PartnerShipModel(
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUp(
+            currentStiker: BattingLineUpModel(
                 playerId: strikerId.toString(),
                 name: strikerName,
                 run: 0,
@@ -298,7 +310,7 @@ abstract class _HomeStore with Store {
                 four: 0,
                 six: 0,
                 isNotOut: true),
-            currentNotStiker: BattingLineUp(
+            currentNotStiker: BattingLineUpModel(
                 playerId: nonStrikerId.toString(),
                 name: nonStrikerName,
                 run: 0,
@@ -308,15 +320,50 @@ abstract class _HomeStore with Store {
                 isNotOut: true)),
         isFirstInning: true);
 
+    InningModel inningtwo = InningModel(
+        matchId: matchId.toString(),
+        batTeamName: bowlTeamName,
+        bowlTeamName: batTeamName,
+        totalRun: 0,
+        totalBall: 0,
+        totalWicket: 0,
+        battingLineup: [],
+        bowlingLineup: [],
+        extraRun: ExtraRunModel(
+            wide: 0, noBall: 0, legBy: 0, by: 0, penlaty: 0, total: 0),
+        currentBowler: null,
+        currentStriker: null,
+        currentNonStriker: null,
+        overs: [],
+        currentOver: [],
+        partnerShips: [],
+        currentPartnerShip: null,
+        isFirstInning: false);
+
     final inningOneId = await inningBox.add(inningOne);
     inningOne.id = inningOneId.toString();
     inningOne.save();
+
+    final inningTwoId = await inningBox.add(inningtwo);
+    inningtwo.id = inningTwoId.toString();
+    inningtwo.save();
+
+    match.inningOneId = inningOneId.toString();
+    match.inningTwoId = inningTwoId.toString();
+    match.save();
 
     return matchId.toString();
   }
 
   @action
   List<MatchModel> getMatchHistory() {
+    matchList = matchBox.values.toList();
     return matchBox.values.toList();
+  }
+
+  @action
+  void removeMatch(int key) {
+    matchBox.delete(key);
+    getMatchHistory();
   }
 }

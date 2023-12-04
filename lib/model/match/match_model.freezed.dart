@@ -84,6 +84,38 @@ mixin _$MatchModel {
   String? get wonBy => throw _privateConstructorUsedError;
   @HiveField(15)
   set wonBy(String? value) => throw _privateConstructorUsedError;
+  @HiveField(16)
+  String? get firstBatTeamName => throw _privateConstructorUsedError;
+  @HiveField(16)
+  set firstBatTeamName(String? value) => throw _privateConstructorUsedError;
+  @HiveField(17)
+  String? get firstBatTeamScore => throw _privateConstructorUsedError;
+  @HiveField(17)
+  set firstBatTeamScore(String? value) => throw _privateConstructorUsedError;
+  @HiveField(18)
+  String? get firstBatTeamOver => throw _privateConstructorUsedError;
+  @HiveField(18)
+  set firstBatTeamOver(String? value) => throw _privateConstructorUsedError;
+  @HiveField(19)
+  String? get secondBatTeamName => throw _privateConstructorUsedError;
+  @HiveField(19)
+  set secondBatTeamName(String? value) => throw _privateConstructorUsedError;
+  @HiveField(20)
+  String? get secondBatTeamScore => throw _privateConstructorUsedError;
+  @HiveField(20)
+  set secondBatTeamScore(String? value) => throw _privateConstructorUsedError;
+  @HiveField(21)
+  String? get secondBatTeamOver => throw _privateConstructorUsedError;
+  @HiveField(21)
+  set secondBatTeamOver(String? value) => throw _privateConstructorUsedError;
+  @HiveField(22)
+  String? get inningOneId => throw _privateConstructorUsedError;
+  @HiveField(22)
+  set inningOneId(String? value) => throw _privateConstructorUsedError;
+  @HiveField(23)
+  String? get inningTwoId => throw _privateConstructorUsedError;
+  @HiveField(23)
+  set inningTwoId(String? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -113,7 +145,15 @@ abstract class $MatchModelCopyWith<$Res> {
       @HiveField(12) String? tossElect,
       @HiveField(13) String? wonId,
       @HiveField(14) String? wonName,
-      @HiveField(15) String? wonBy});
+      @HiveField(15) String? wonBy,
+      @HiveField(16) String? firstBatTeamName,
+      @HiveField(17) String? firstBatTeamScore,
+      @HiveField(18) String? firstBatTeamOver,
+      @HiveField(19) String? secondBatTeamName,
+      @HiveField(20) String? secondBatTeamScore,
+      @HiveField(21) String? secondBatTeamOver,
+      @HiveField(22) String? inningOneId,
+      @HiveField(23) String? inningTwoId});
 }
 
 /// @nodoc
@@ -145,6 +185,14 @@ class _$MatchModelCopyWithImpl<$Res, $Val extends MatchModel>
     Object? wonId = freezed,
     Object? wonName = freezed,
     Object? wonBy = freezed,
+    Object? firstBatTeamName = freezed,
+    Object? firstBatTeamScore = freezed,
+    Object? firstBatTeamOver = freezed,
+    Object? secondBatTeamName = freezed,
+    Object? secondBatTeamScore = freezed,
+    Object? secondBatTeamOver = freezed,
+    Object? inningOneId = freezed,
+    Object? inningTwoId = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -211,6 +259,38 @@ class _$MatchModelCopyWithImpl<$Res, $Val extends MatchModel>
           ? _value.wonBy
           : wonBy // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstBatTeamName: freezed == firstBatTeamName
+          ? _value.firstBatTeamName
+          : firstBatTeamName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstBatTeamScore: freezed == firstBatTeamScore
+          ? _value.firstBatTeamScore
+          : firstBatTeamScore // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstBatTeamOver: freezed == firstBatTeamOver
+          ? _value.firstBatTeamOver
+          : firstBatTeamOver // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamName: freezed == secondBatTeamName
+          ? _value.secondBatTeamName
+          : secondBatTeamName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamScore: freezed == secondBatTeamScore
+          ? _value.secondBatTeamScore
+          : secondBatTeamScore // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamOver: freezed == secondBatTeamOver
+          ? _value.secondBatTeamOver
+          : secondBatTeamOver // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inningOneId: freezed == inningOneId
+          ? _value.inningOneId
+          : inningOneId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inningTwoId: freezed == inningTwoId
+          ? _value.inningTwoId
+          : inningTwoId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -239,7 +319,15 @@ abstract class _$$MatchModelImplCopyWith<$Res>
       @HiveField(12) String? tossElect,
       @HiveField(13) String? wonId,
       @HiveField(14) String? wonName,
-      @HiveField(15) String? wonBy});
+      @HiveField(15) String? wonBy,
+      @HiveField(16) String? firstBatTeamName,
+      @HiveField(17) String? firstBatTeamScore,
+      @HiveField(18) String? firstBatTeamOver,
+      @HiveField(19) String? secondBatTeamName,
+      @HiveField(20) String? secondBatTeamScore,
+      @HiveField(21) String? secondBatTeamOver,
+      @HiveField(22) String? inningOneId,
+      @HiveField(23) String? inningTwoId});
 }
 
 /// @nodoc
@@ -269,6 +357,14 @@ class __$$MatchModelImplCopyWithImpl<$Res>
     Object? wonId = freezed,
     Object? wonName = freezed,
     Object? wonBy = freezed,
+    Object? firstBatTeamName = freezed,
+    Object? firstBatTeamScore = freezed,
+    Object? firstBatTeamOver = freezed,
+    Object? secondBatTeamName = freezed,
+    Object? secondBatTeamScore = freezed,
+    Object? secondBatTeamOver = freezed,
+    Object? inningOneId = freezed,
+    Object? inningTwoId = freezed,
   }) {
     return _then(_$MatchModelImpl(
       id: freezed == id
@@ -335,6 +431,38 @@ class __$$MatchModelImplCopyWithImpl<$Res>
           ? _value.wonBy
           : wonBy // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstBatTeamName: freezed == firstBatTeamName
+          ? _value.firstBatTeamName
+          : firstBatTeamName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstBatTeamScore: freezed == firstBatTeamScore
+          ? _value.firstBatTeamScore
+          : firstBatTeamScore // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstBatTeamOver: freezed == firstBatTeamOver
+          ? _value.firstBatTeamOver
+          : firstBatTeamOver // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamName: freezed == secondBatTeamName
+          ? _value.secondBatTeamName
+          : secondBatTeamName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamScore: freezed == secondBatTeamScore
+          ? _value.secondBatTeamScore
+          : secondBatTeamScore // ignore: cast_nullable_to_non_nullable
+              as String?,
+      secondBatTeamOver: freezed == secondBatTeamOver
+          ? _value.secondBatTeamOver
+          : secondBatTeamOver // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inningOneId: freezed == inningOneId
+          ? _value.inningOneId
+          : inningOneId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inningTwoId: freezed == inningTwoId
+          ? _value.inningTwoId
+          : inningTwoId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -359,7 +487,15 @@ class _$MatchModelImpl extends _MatchModel {
       @HiveField(12) this.tossElect,
       @HiveField(13) this.wonId,
       @HiveField(14) this.wonName,
-      @HiveField(15) this.wonBy})
+      @HiveField(15) this.wonBy,
+      @HiveField(16) this.firstBatTeamName,
+      @HiveField(17) this.firstBatTeamScore,
+      @HiveField(18) this.firstBatTeamOver,
+      @HiveField(19) this.secondBatTeamName,
+      @HiveField(20) this.secondBatTeamScore,
+      @HiveField(21) this.secondBatTeamOver,
+      @HiveField(22) this.inningOneId,
+      @HiveField(23) this.inningTwoId})
       : super._();
 
   factory _$MatchModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -413,10 +549,34 @@ class _$MatchModelImpl extends _MatchModel {
   @override
   @HiveField(15)
   String? wonBy;
+  @override
+  @HiveField(16)
+  String? firstBatTeamName;
+  @override
+  @HiveField(17)
+  String? firstBatTeamScore;
+  @override
+  @HiveField(18)
+  String? firstBatTeamOver;
+  @override
+  @HiveField(19)
+  String? secondBatTeamName;
+  @override
+  @HiveField(20)
+  String? secondBatTeamScore;
+  @override
+  @HiveField(21)
+  String? secondBatTeamOver;
+  @override
+  @HiveField(22)
+  String? inningOneId;
+  @override
+  @HiveField(23)
+  String? inningTwoId;
 
   @override
   String toString() {
-    return 'MatchModel(id: $id, over: $over, isWideBall: $isWideBall, isWideReball: $isWideReball, wideRun: $wideRun, isNoball: $isNoball, isNoballReball: $isNoballReball, noballRun: $noballRun, hostTeamId: $hostTeamId, visitorTeamId: $visitorTeamId, tossId: $tossId, tossName: $tossName, tossElect: $tossElect, wonId: $wonId, wonName: $wonName, wonBy: $wonBy)';
+    return 'MatchModel(id: $id, over: $over, isWideBall: $isWideBall, isWideReball: $isWideReball, wideRun: $wideRun, isNoball: $isNoball, isNoballReball: $isNoballReball, noballRun: $noballRun, hostTeamId: $hostTeamId, visitorTeamId: $visitorTeamId, tossId: $tossId, tossName: $tossName, tossElect: $tossElect, wonId: $wonId, wonName: $wonName, wonBy: $wonBy, firstBatTeamName: $firstBatTeamName, firstBatTeamScore: $firstBatTeamScore, firstBatTeamOver: $firstBatTeamOver, secondBatTeamName: $secondBatTeamName, secondBatTeamScore: $secondBatTeamScore, secondBatTeamOver: $secondBatTeamOver, inningOneId: $inningOneId, inningTwoId: $inningTwoId)';
   }
 
   @JsonKey(ignore: true)
@@ -450,7 +610,15 @@ abstract class _MatchModel extends MatchModel {
       @HiveField(12) String? tossElect,
       @HiveField(13) String? wonId,
       @HiveField(14) String? wonName,
-      @HiveField(15) String? wonBy}) = _$MatchModelImpl;
+      @HiveField(15) String? wonBy,
+      @HiveField(16) String? firstBatTeamName,
+      @HiveField(17) String? firstBatTeamScore,
+      @HiveField(18) String? firstBatTeamOver,
+      @HiveField(19) String? secondBatTeamName,
+      @HiveField(20) String? secondBatTeamScore,
+      @HiveField(21) String? secondBatTeamOver,
+      @HiveField(22) String? inningOneId,
+      @HiveField(23) String? inningTwoId}) = _$MatchModelImpl;
   _MatchModel._() : super._();
 
   factory _MatchModel.fromJson(Map<String, dynamic> json) =
@@ -536,6 +704,46 @@ abstract class _MatchModel extends MatchModel {
   String? get wonBy;
   @HiveField(15)
   set wonBy(String? value);
+  @override
+  @HiveField(16)
+  String? get firstBatTeamName;
+  @HiveField(16)
+  set firstBatTeamName(String? value);
+  @override
+  @HiveField(17)
+  String? get firstBatTeamScore;
+  @HiveField(17)
+  set firstBatTeamScore(String? value);
+  @override
+  @HiveField(18)
+  String? get firstBatTeamOver;
+  @HiveField(18)
+  set firstBatTeamOver(String? value);
+  @override
+  @HiveField(19)
+  String? get secondBatTeamName;
+  @HiveField(19)
+  set secondBatTeamName(String? value);
+  @override
+  @HiveField(20)
+  String? get secondBatTeamScore;
+  @HiveField(20)
+  set secondBatTeamScore(String? value);
+  @override
+  @HiveField(21)
+  String? get secondBatTeamOver;
+  @HiveField(21)
+  set secondBatTeamOver(String? value);
+  @override
+  @HiveField(22)
+  String? get inningOneId;
+  @HiveField(22)
+  set inningOneId(String? value);
+  @override
+  @HiveField(23)
+  String? get inningTwoId;
+  @HiveField(23)
+  set inningTwoId(String? value);
   @override
   @JsonKey(ignore: true)
   _$$MatchModelImplCopyWith<_$MatchModelImpl> get copyWith =>

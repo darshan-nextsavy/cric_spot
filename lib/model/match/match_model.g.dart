@@ -33,13 +33,21 @@ class MatchModelAdapter extends TypeAdapter<_$MatchModelImpl> {
       wonId: fields[13] as String?,
       wonName: fields[14] as String?,
       wonBy: fields[15] as String?,
+      firstBatTeamName: fields[16] as String?,
+      firstBatTeamScore: fields[17] as String?,
+      firstBatTeamOver: fields[18] as String?,
+      secondBatTeamName: fields[19] as String?,
+      secondBatTeamScore: fields[20] as String?,
+      secondBatTeamOver: fields[21] as String?,
+      inningOneId: fields[22] as String?,
+      inningTwoId: fields[23] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, _$MatchModelImpl obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -71,7 +79,23 @@ class MatchModelAdapter extends TypeAdapter<_$MatchModelImpl> {
       ..writeByte(14)
       ..write(obj.wonName)
       ..writeByte(15)
-      ..write(obj.wonBy);
+      ..write(obj.wonBy)
+      ..writeByte(16)
+      ..write(obj.firstBatTeamName)
+      ..writeByte(17)
+      ..write(obj.firstBatTeamScore)
+      ..writeByte(18)
+      ..write(obj.firstBatTeamOver)
+      ..writeByte(19)
+      ..write(obj.secondBatTeamName)
+      ..writeByte(20)
+      ..write(obj.secondBatTeamScore)
+      ..writeByte(21)
+      ..write(obj.secondBatTeamOver)
+      ..writeByte(22)
+      ..write(obj.inningOneId)
+      ..writeByte(23)
+      ..write(obj.inningTwoId);
   }
 
   @override
@@ -107,6 +131,14 @@ _$MatchModelImpl _$$MatchModelImplFromJson(Map<String, dynamic> json) =>
       wonId: json['wonId'] as String?,
       wonName: json['wonName'] as String?,
       wonBy: json['wonBy'] as String?,
+      firstBatTeamName: json['firstBatTeamName'] as String?,
+      firstBatTeamScore: json['firstBatTeamScore'] as String?,
+      firstBatTeamOver: json['firstBatTeamOver'] as String?,
+      secondBatTeamName: json['secondBatTeamName'] as String?,
+      secondBatTeamScore: json['secondBatTeamScore'] as String?,
+      secondBatTeamOver: json['secondBatTeamOver'] as String?,
+      inningOneId: json['inningOneId'] as String?,
+      inningTwoId: json['inningTwoId'] as String?,
     );
 
 Map<String, dynamic> _$$MatchModelImplToJson(_$MatchModelImpl instance) =>
@@ -127,4 +159,12 @@ Map<String, dynamic> _$$MatchModelImplToJson(_$MatchModelImpl instance) =>
       'wonId': instance.wonId,
       'wonName': instance.wonName,
       'wonBy': instance.wonBy,
+      'firstBatTeamName': instance.firstBatTeamName,
+      'firstBatTeamScore': instance.firstBatTeamScore,
+      'firstBatTeamOver': instance.firstBatTeamOver,
+      'secondBatTeamName': instance.secondBatTeamName,
+      'secondBatTeamScore': instance.secondBatTeamScore,
+      'secondBatTeamOver': instance.secondBatTeamOver,
+      'inningOneId': instance.inningOneId,
+      'inningTwoId': instance.inningTwoId,
     };

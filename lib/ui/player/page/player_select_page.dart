@@ -101,7 +101,7 @@ class PlayerSelectPage extends StatelessWidget {
                   final matchId = await homeStore.createNewMatch();
                   GoRouter.of(context).pop();
                   GoRouter.of(context).pushNamed(RoutesName.scoreCount.name,
-                      pathParameters: {'matchId': "0"});
+                      pathParameters: {'matchId': matchId.toString()});
                 },
                 child: const Text("Start Match"))
           ],

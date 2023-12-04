@@ -1,9 +1,11 @@
+import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
-import 'package:cric_spot/core/widgtes/cric_widgets/cric_card.dart';
 import 'package:cric_spot/main.dart';
+import 'package:cric_spot/model/match/match_model.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -11,21 +13,24 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeStore = getIt.get<HomeStore>();
+    homeStore.getMatchHistory();
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Observer(builder: (_) {
           return ListView.builder(
-              itemCount: homeStore.getMatchHistory().length,
+              itemCount: homeStore.matchList.length,
               itemBuilder: (context, index) {
-                return matchHistoryCard(context);
+                return matchHistoryCard(
+                    context, homeStore.matchList[index], homeStore);
               });
         }),
       ),
     );
   }
 
-  Widget matchHistoryCard(BuildContext context) {
+  Widget matchHistoryCard(
+      BuildContext context, MatchModel match, HomeStore homeStore) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Container(
@@ -54,7 +59,7 @@ class HistoryPage extends StatelessWidget {
                       width: 4,
                     ),
                     Text(
-                      "team name",
+                      match.firstBatTeamName ?? '',
                       style: context.titleMedium,
                     )
                   ],
@@ -62,13 +67,13 @@ class HistoryPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "14/5",
+                      match.firstBatTeamScore ?? '',
                       style: context.titleLarge,
                     ),
                     const SizedBox(
                       width: 4,
                     ),
-                    const Text("(0.0)"),
+                    Text("(${match.firstBatTeamOver ?? ''})"),
                   ],
                 )
               ],
@@ -90,7 +95,7 @@ class HistoryPage extends StatelessWidget {
                       width: 4,
                     ),
                     Text(
-                      "team name",
+                      match.secondBatTeamName ?? '',
                       style: context.titleMedium,
                     )
                   ],
@@ -98,13 +103,13 @@ class HistoryPage extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      "14/5",
+                      match.secondBatTeamScore ?? '',
                       style: context.titleLarge,
                     ),
                     const SizedBox(
                       width: 4,
                     ),
-                    const Text("(0.0)"),
+                    Text("(${match.secondBatTeamOver ?? ''})"),
                   ],
                 )
               ],
@@ -113,7 +118,7 @@ class HistoryPage extends StatelessWidget {
               height: 6,
             ),
             Text(
-              "Team A obted Bat first",
+              "${match.tossName} obted ${match.tossElect} first",
               style: context.bodyMedium,
             ),
             Row(
@@ -122,13 +127,25 @@ class HistoryPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      TextButton(onPressed: () {}, child: const Text("Resume")),
+                      TextButton(
+                          onPressed: () {
+                            GoRouter.of(context).pushNamed(
+                                RoutesName.scoreCount.name,
+                                pathParameters: {
+                                  'matchId': match.key.toString()
+                                });
+                          },
+                          child: const Text("Resume")),
                       TextButton(
                           onPressed: () {}, child: const Text("Score Card")),
                     ],
                   ),
                 ),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.delete))
+                IconButton(
+                    onPressed: () {
+                      homeStore.removeMatch(int.parse(match.id!));
+                    },
+                    icon: const Icon(Icons.delete))
               ],
             )
           ],
