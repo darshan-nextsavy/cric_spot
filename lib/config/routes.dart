@@ -1,6 +1,7 @@
 import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/ui/home/pages/home/home_page.dart';
 import 'package:cric_spot/ui/player/page/player_select_page.dart';
+import 'package:cric_spot/ui/player/page/select_bowler_page.dart';
 import 'package:cric_spot/ui/score/pages/score_count_page.dart';
 import 'package:cric_spot/ui/settings/pages/adwance-setting/adwance_setting_page.dart';
 import 'package:flutter/material.dart';
@@ -30,4 +31,8 @@ final GoRouter goRouter = GoRouter(
           path: RoutesName.playerSelect.path,
           name: RoutesName.playerSelect.name,
           builder: (context, state) => const PlayerSelectPage()),
+      GoRoute(
+          path: RoutesName.selectBowler.path,
+          name: RoutesName.selectBowler.name,
+          builder: (context, state) => const SelectBowlerPage()),
     ]);

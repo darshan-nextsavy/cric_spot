@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_card.dart';
@@ -7,6 +8,7 @@ import 'package:cric_spot/main.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 
 class ScoreCountPage extends StatefulWidget {
   final String matchId;
@@ -227,11 +229,11 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                               ''),
                                           Text(scoreStore.striker!.ball == 0
                                               ? "0.00"
-                                              : ((scoreStore.striker!.run!) /
+                                              : ((scoreStore.striker!.run! *
+                                                          100) /
                                                       (scoreStore
-                                                              .striker!.ball! *
-                                                          100))
-                                                  .toString()),
+                                                          .striker!.ball!))
+                                                  .toStringAsFixed(1)),
                                         ],
                                       ),
                                     )
@@ -269,11 +271,11 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                               ''),
                                           Text(scoreStore.nonStriker!.ball == 0
                                               ? "0.00"
-                                              : ((scoreStore.nonStriker!.run!) /
-                                                      (scoreStore.nonStriker!
-                                                              .ball! *
-                                                          100))
-                                                  .toString()),
+                                              : ((scoreStore.nonStriker!.run! *
+                                                          100) /
+                                                      (scoreStore
+                                                          .nonStriker!.ball!))
+                                                  .toStringAsFixed(1)),
                                         ],
                                       ),
                                     )
@@ -333,8 +335,10 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                           Text(scoreStore.bowler!.ball == 0
                                               ? '0.0'
                                               : (scoreStore.bowler!.run! /
-                                                      scoreStore.bowler!.ball!)
-                                                  .toString()),
+                                                      (scoreStore
+                                                              .bowler!.ball! /
+                                                          6))
+                                                  .toStringAsFixed(1)),
                                         ],
                                       ),
                                     )
@@ -374,8 +378,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                                 child: SizedBox(
                                                   width: 40,
                                                   height: 40,
-                                                  child:
-                                                      Center(child: Text("2")),
+                                                  child: Center(
+                                                      child:
+                                                          Text(e.toString())),
                                                 ))))
                                             .toList()
                                       ],
@@ -640,127 +645,123 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                               children: [
                                 Row(
                                   children: [
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("0")),
-                                        )),
-                                    InkWell(
-                                      onTap: () {
-                                        scoreStore.countOne();
-                                      },
-                                      child: CricOutlineCard(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            side: BorderSide(
-                                              width: 1,
-                                              color: context.outline,
-                                            ),
-                                          ),
-                                          child: SizedBox(
-                                            width: 50,
-                                            height: 50,
-                                            child: Center(child: Text("1")),
-                                          )),
-                                    ),
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("2")),
-                                        )),
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("3")),
-                                        )),
+                                    countRunCard(
+                                        child: "0",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(0);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(
+                                        child: "1",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(1);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(
+                                        child: "2",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(2);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(
+                                        child: "3",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(3);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
                                   ],
                                 ),
                                 Row(
                                   children: [
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("4")),
-                                        )),
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("5")),
-                                        )),
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("6")),
-                                        )),
-                                    CricOutlineCard(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          side: BorderSide(
-                                            width: 1,
-                                            color: context.outline,
-                                          ),
-                                        ),
-                                        child: SizedBox(
-                                          width: 50,
-                                          height: 50,
-                                          child: Center(child: Text("...")),
-                                        )),
+                                    countRunCard(
+                                        child: "4",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(4);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(
+                                        child: "5",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(5);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(
+                                        child: "6",
+                                        onTap: () {
+                                          if (scoreStore.currentOver.length <
+                                              6) {
+                                            scoreStore.countRun(6);
+                                            if (scoreStore.currentOver.length ==
+                                                6) {
+                                              GoRouter.of(context).push(
+                                                  RoutesName.selectBowler.path);
+                                            }
+                                          } else {
+                                            GoRouter.of(context).push(
+                                                RoutesName.selectBowler.path);
+                                          }
+                                        }),
+                                    countRunCard(child: "...", onTap: () {}),
                                   ],
                                 )
                               ],
@@ -776,26 +777,45 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
     });
   }
 
-  Widget buildTableRow(List<String> rowData, {bool isHeader = false}) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      color:
-          isHeader ? Colors.grey[300] : null, // Change header color if needed
-      child: Row(
-        children: rowData.map((data) {
-          return Expanded(
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                data,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
+  Widget countRunCard({required String child, required Function() onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: CricOutlineCard(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+            side: BorderSide(
+              width: 1,
+              color: context.outline,
             ),
-          );
-        }).toList(),
+          ),
+          child: SizedBox(
+            width: 50,
+            height: 50,
+            child: Center(child: Text(child)),
+          )),
+    );
+  }
+
+  Widget checkBoxWidget() {
+    return InkWell(
+      onTap: () {
+        scoreStore.changeByes();
+      },
+      child: Row(
+        children: [
+          SizedBox(
+            child: Observer(builder: (_) {
+              return Checkbox(
+                value: scoreStore.byes,
+                onChanged: (val) {
+                  scoreStore.changeByes();
+                },
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              );
+            }),
+          ),
+          Text("Byes")
+        ],
       ),
     );
   }

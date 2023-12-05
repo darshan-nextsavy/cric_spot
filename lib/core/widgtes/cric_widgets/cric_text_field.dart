@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class CricTextFormField extends StatelessWidget {
   const CricTextFormField(
       {super.key,
-      required this.controller,
+      this.controller,
       required this.hintText,
       this.keyboardType = TextInputType.none,
       this.validator,
@@ -20,7 +20,7 @@ class CricTextFormField extends StatelessWidget {
 
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? counterText;
   final bool? enabled;
   final String hintText;

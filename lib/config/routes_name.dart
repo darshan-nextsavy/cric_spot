@@ -7,6 +7,7 @@ enum RoutesName {
   scoreCount,
   adwanceSetting,
   setting,
+  selectBowler,
   playerSelect;
 }
 
@@ -31,6 +32,8 @@ extension RoutesNameHelper on RoutesName {
         return 'score-count';
       case RoutesName.playerSelect:
         return 'player-select';
+      case RoutesName.selectBowler:
+        return 'select-bowler';
     }
   }
 
@@ -54,6 +57,8 @@ extension RoutesNameHelper on RoutesName {
         return '/score-count/:matchId';
       case RoutesName.playerSelect:
         return '/player-select';
+      case RoutesName.selectBowler:
+        return '/select-bowler';
     }
   }
 }

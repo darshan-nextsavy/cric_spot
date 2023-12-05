@@ -290,6 +290,30 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$newBowlerAtom =
+      Atom(name: '_ScoreStore.newBowler', context: context);
+
+  @override
+  String get newBowler {
+    _$newBowlerAtom.reportRead();
+    return super.newBowler;
+  }
+
+  @override
+  set newBowler(String value) {
+    _$newBowlerAtom.reportWrite(value, super.newBowler, () {
+      super.newBowler = value;
+    });
+  }
+
+  late final _$selectNewBowlerAsyncAction =
+      AsyncAction('_ScoreStore.selectNewBowler', context: context);
+
+  @override
+  Future<void> selectNewBowler() {
+    return _$selectNewBowlerAsyncAction.run(() => super.selectNewBowler());
+  }
+
   late final _$_ScoreStoreActionController =
       ActionController(name: '_ScoreStore', context: context);
 
@@ -349,11 +373,11 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
-  void countOne() {
+  void countRun(int run) {
     final _$actionInfo =
-        _$_ScoreStoreActionController.startAction(name: '_ScoreStore.countOne');
+        _$_ScoreStoreActionController.startAction(name: '_ScoreStore.countRun');
     try {
-      return super.countOne();
+      return super.countRun(run);
     } finally {
       _$_ScoreStoreActionController.endAction(_$actionInfo);
     }
@@ -379,7 +403,8 @@ currentOver: ${currentOver},
 isLoad: ${isLoad},
 target: ${target},
 totalRun: ${totalRun},
-totalBall: ${totalBall}
+totalBall: ${totalBall},
+newBowler: ${newBowler}
     ''';
   }
 }

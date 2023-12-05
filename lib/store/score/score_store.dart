@@ -74,6 +74,9 @@ abstract class _ScoreStore with Store {
   @observable
   int totalBall = 0;
 
+  @observable
+  String newBowler = '';
+
   @action
   void getAllData(String matchId) {
     isLoad = true;
@@ -94,6 +97,36 @@ abstract class _ScoreStore with Store {
     bowler = currentInning?.currentBowler;
     currentOver = currentInning?.currentOver ?? [];
     isLoad = false;
+  }
+
+  @action
+  Future<void> selectNewBowler() async {
+    // save bowler player
+    PlayerModel newBowlerData = PlayerModel(name: newBowler);
+    final bowlerId = await playerBox.add(newBowlerData);
+    newBowlerData.id = bowlerId.toString();
+    newBowlerData.save();
+
+    currentInning!.bowlingLineup!.add(BowlingLineUpModel(
+        playerId: bowlerId.toString(),
+        name: newBowler,
+        run: 0,
+        ball: 0,
+        wicket: 0,
+        maidan: 0));
+    currentInning!.currentBowler = BowlingLineUpModel(
+        playerId: bowlerId.toString(),
+        name: newBowler,
+        run: 0,
+        ball: 0,
+        wicket: 0,
+        maidan: 0);
+    currentInning!.overs!.add(currentOver);
+    currentInning!.currentOver = [];
+    currentInning = currentInning;
+    bowler = currentInning!.currentBowler;
+    currentOver = [];
+    newBowler = '';
   }
 
   @action
@@ -125,45 +158,161 @@ abstract class _ScoreStore with Store {
   }
 
   @action
-  void countOne() {
-    currentOver.add(1);
+  void countRun(int run) {
+    /// add run to current over
+    currentOver.add(run);
     // currentOver = currentOver;
-    totalRun = totalRun + 1;
-    totalBall = totalBall + 1;
-    // currentInning!.totalRun = totalRun;
-    currentInning!.totalRun = currentInning!.totalRun! + 1;
-    currentInning!.totalBall = currentInning!.totalBall! + 1;
-    currentInning = currentInning;
 
+    /// add total run and ball
+    totalRun = totalRun + run;
+    totalBall = totalBall + 1;
+
+    /// add total run and ball to current inning
+    // currentInning!.totalRun = totalRun;
+    currentInning!.totalRun = currentInning!.totalRun! + run;
+    currentInning!.totalBall = currentInning!.totalBall! + 1;
+
+    /// add run and ball to bowler
     bowler!.ball = bowler!.ball! + 1;
-    bowler!.run = bowler!.run! + 1;
+    bowler!.run = bowler!.run! + run;
     bowler = bowler;
 
+    /// add run and ball to batsman
     striker!.ball = striker!.ball! + 1;
-    striker!.run = striker!.run! + 1;
-    final change = striker;
-    striker = nonStriker;
-    nonStriker = change;
+    striker!.run = striker!.run! + run;
+    if (run == 4) {
+      striker!.four = striker!.four! + 1;
+    }
+    if (run == 6) {
+      striker!.six = striker!.six! + 1;
+    }
 
-    // ss
-    // final List<BattingLineUpModel> updateBattingLineUpList =
-    //     currentInning!.battingLineup!.map((e) {
-    //   if (e.playerId == striker!.playerId) {
-    //     return striker;
-    //   }
-    //   return e;
-    // }).toList();
+    /// add stiker and not stiker data to current inning
+    currentInning!.currentStriker = striker;
+    currentInning!.currentNonStriker = nonStriker;
 
-    // currentInning!.battingLineup!.map((e) {
-    //   if (e.playerId == striker!.playerId) {
-    //     return striker;
-    //   }
-    //   if (e.playerId == nonStriker!.playerId) {
-    //     return nonStriker;
-    //   }
-    //   return e;
-    // }).toList();
+    /// add total run and ball to partnership
+    currentInning!.currentPartnerShip!.run =
+        currentInning!.currentPartnerShip!.run! + run;
+    currentInning!.currentPartnerShip!.ball =
+        currentInning!.currentPartnerShip!.ball! + 1;
 
-    // currentInning!.battingLineup = updateBattingLineUpList;
+    /// add run and ball to partnership player
+    currentInning!.currentPartnerShip!.currentStiker!.run =
+        currentInning!.currentPartnerShip!.currentStiker!.run! + run;
+    currentInning!.currentPartnerShip!.currentStiker!.ball =
+        currentInning!.currentPartnerShip!.currentStiker!.ball! + 1;
+
+    ///0 update current inning
+    currentInning = currentInning;
+
+    /// strike rotation
+    if ((run % 2 != 0 && currentOver.length != 6) ||
+        (currentOver.length == 6 && run % 2 == 0)) {
+      /// change striker and non striker
+      final change = striker;
+      striker = nonStriker;
+      nonStriker = change;
+
+      /// change partner striker and non striker in partner ship
+      final partnershipChange =
+          currentInning!.currentPartnerShip!.currentStiker;
+      currentInning!.currentPartnerShip!.currentStiker =
+          currentInning!.currentPartnerShip!.currentNotStiker;
+      currentInning!.currentPartnerShip!.currentNotStiker = partnershipChange;
+    }
   }
+
+  void lastSave() {
+    final List<BattingLineUpModel> updateBattingLineUpList =
+        currentInning!.battingLineup!.map((e) {
+      if (e.playerId == striker!.playerId!) {
+        return striker!;
+      }
+      if (e.playerId == nonStriker!.playerId) {
+        return nonStriker!;
+      }
+      return e;
+    }).toList();
+
+    final List<BowlingLineUpModel> updateBowlingLineUpList =
+        currentInning!.bowlingLineup!.map((e) {
+      if (e.playerId == bowler!.playerId!) {
+        return bowler!;
+      }
+      return e;
+    }).toList();
+
+    currentInning!.battingLineup = updateBattingLineUpList;
+    currentInning!.bowlingLineup = updateBowlingLineUpList;
+  }
+
+  // @action
+  // void countOne() {
+  //   currentOver.add(1);
+  //   // currentOver = currentOver;
+  //   totalRun = totalRun + 1;
+  //   totalBall = totalBall + 1;
+  //   // currentInning!.totalRun = totalRun;
+  //   currentInning!.totalRun = currentInning!.totalRun! + 1;
+  //   currentInning!.totalBall = currentInning!.totalBall! + 1;
+
+  //   bowler!.ball = bowler!.ball! + 1;
+  //   bowler!.run = bowler!.run! + 1;
+  //   bowler = bowler;
+
+  //   striker!.ball = striker!.ball! + 1;
+  //   striker!.run = striker!.run! + 1;
+
+  //   // ss
+  //   final List<BattingLineUpModel> updateBattingLineUpList =
+  //       currentInning!.battingLineup!.map((e) {
+  //     if (e.playerId == striker!.playerId!) {
+  //       return striker!;
+  //     }
+  //     if (e.playerId == nonStriker!.playerId) {
+  //       return nonStriker!;
+  //     }
+  //     return e;
+  //   }).toList();
+
+  //   final List<BowlingLineUpModel> updateBowlingLineUpList =
+  //       currentInning!.bowlingLineup!.map((e) {
+  //     if (e.playerId == bowler!.playerId!) {
+  //       return bowler!;
+  //     }
+  //     return e;
+  //   }).toList();
+
+  //   currentInning!.battingLineup = updateBattingLineUpList;
+  //   currentInning!.bowlingLineup = updateBowlingLineUpList;
+
+  //   currentInning!.currentPartnerShip!.run =
+  //       currentInning!.currentPartnerShip!.run! + 1;
+
+  //   currentInning!.currentPartnerShip!.ball =
+  //       currentInning!.currentPartnerShip!.ball! + 1;
+
+  //   currentInning!.currentPartnerShip!.currentStiker!.run =
+  //       currentInning!.currentPartnerShip!.currentStiker!.run! + 1;
+  //   currentInning!.currentPartnerShip!.currentStiker!.ball =
+  //       currentInning!.currentPartnerShip!.currentStiker!.ball! + 1;
+  //   currentInning!.currentPartnerShip!.currentNotStiker!.run =
+  //       currentInning!.currentPartnerShip!.currentNotStiker!.run! + 1;
+  //   currentInning!.currentPartnerShip!.currentNotStiker!.ball =
+  //       currentInning!.currentPartnerShip!.currentNotStiker!.ball! + 1;
+
+  //   // update current inning
+  //   currentInning = currentInning;
+
+  //   // change striker
+  //   final change = striker;
+  //   striker = nonStriker;
+  //   nonStriker = change;
+
+  //   final partnershipChange = currentInning!.currentPartnerShip!.currentStiker;
+  //   currentInning!.currentPartnerShip!.currentStiker =
+  //       currentInning!.currentPartnerShip!.currentNotStiker;
+  //   currentInning!.currentPartnerShip!.currentNotStiker = partnershipChange;
+  // }
 }
