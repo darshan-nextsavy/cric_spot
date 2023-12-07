@@ -21,26 +21,30 @@ PartnerShipModel _$PartnerShipModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PartnerShipModel {
   @HiveField(0)
-  int? get run => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
   @HiveField(0)
+  set id(String? value) => throw _privateConstructorUsedError;
+  @HiveField(1)
+  int? get run => throw _privateConstructorUsedError;
+  @HiveField(1)
   set run(int? value) => throw _privateConstructorUsedError;
-  @HiveField(1)
+  @HiveField(2)
   int? get ball => throw _privateConstructorUsedError;
-  @HiveField(1)
+  @HiveField(2)
   set ball(int? value) => throw _privateConstructorUsedError;
-  @HiveField(2)
+  @HiveField(3)
   int? get extra => throw _privateConstructorUsedError;
-  @HiveField(2)
+  @HiveField(3)
   set extra(int? value) => throw _privateConstructorUsedError;
-  @HiveField(3)
+  @HiveField(4)
   BattingLineUpModel? get currentStiker => throw _privateConstructorUsedError;
-  @HiveField(3)
+  @HiveField(4)
   set currentStiker(BattingLineUpModel? value) =>
       throw _privateConstructorUsedError;
-  @HiveField(4)
+  @HiveField(5)
   BattingLineUpModel? get currentNotStiker =>
       throw _privateConstructorUsedError;
-  @HiveField(4)
+  @HiveField(5)
   set currentNotStiker(BattingLineUpModel? value) =>
       throw _privateConstructorUsedError;
 
@@ -57,11 +61,12 @@ abstract class $PartnerShipModelCopyWith<$Res> {
       _$PartnerShipModelCopyWithImpl<$Res, PartnerShipModel>;
   @useResult
   $Res call(
-      {@HiveField(0) int? run,
-      @HiveField(1) int? ball,
-      @HiveField(2) int? extra,
-      @HiveField(3) BattingLineUpModel? currentStiker,
-      @HiveField(4) BattingLineUpModel? currentNotStiker});
+      {@HiveField(0) String? id,
+      @HiveField(1) int? run,
+      @HiveField(2) int? ball,
+      @HiveField(3) int? extra,
+      @HiveField(4) BattingLineUpModel? currentStiker,
+      @HiveField(5) BattingLineUpModel? currentNotStiker});
 
   $BattingLineUpModelCopyWith<$Res>? get currentStiker;
   $BattingLineUpModelCopyWith<$Res>? get currentNotStiker;
@@ -80,6 +85,7 @@ class _$PartnerShipModelCopyWithImpl<$Res, $Val extends PartnerShipModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? run = freezed,
     Object? ball = freezed,
     Object? extra = freezed,
@@ -87,6 +93,10 @@ class _$PartnerShipModelCopyWithImpl<$Res, $Val extends PartnerShipModel>
     Object? currentNotStiker = freezed,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       run: freezed == run
           ? _value.run
           : run // ignore: cast_nullable_to_non_nullable
@@ -144,11 +154,12 @@ abstract class _$$PartnerShipModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@HiveField(0) int? run,
-      @HiveField(1) int? ball,
-      @HiveField(2) int? extra,
-      @HiveField(3) BattingLineUpModel? currentStiker,
-      @HiveField(4) BattingLineUpModel? currentNotStiker});
+      {@HiveField(0) String? id,
+      @HiveField(1) int? run,
+      @HiveField(2) int? ball,
+      @HiveField(3) int? extra,
+      @HiveField(4) BattingLineUpModel? currentStiker,
+      @HiveField(5) BattingLineUpModel? currentNotStiker});
 
   @override
   $BattingLineUpModelCopyWith<$Res>? get currentStiker;
@@ -167,6 +178,7 @@ class __$$PartnerShipModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? run = freezed,
     Object? ball = freezed,
     Object? extra = freezed,
@@ -174,6 +186,10 @@ class __$$PartnerShipModelImplCopyWithImpl<$Res>
     Object? currentNotStiker = freezed,
   }) {
     return _then(_$PartnerShipModelImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       run: freezed == run
           ? _value.run
           : run // ignore: cast_nullable_to_non_nullable
@@ -203,11 +219,12 @@ class __$$PartnerShipModelImplCopyWithImpl<$Res>
 @HiveType(typeId: 7, adapterName: 'PartnerShipModelAdapter')
 class _$PartnerShipModelImpl extends _PartnerShipModel {
   _$PartnerShipModelImpl(
-      {@HiveField(0) this.run,
-      @HiveField(1) this.ball,
-      @HiveField(2) this.extra,
-      @HiveField(3) this.currentStiker,
-      @HiveField(4) this.currentNotStiker})
+      {@HiveField(0) this.id,
+      @HiveField(1) this.run,
+      @HiveField(2) this.ball,
+      @HiveField(3) this.extra,
+      @HiveField(4) this.currentStiker,
+      @HiveField(5) this.currentNotStiker})
       : super._();
 
   factory _$PartnerShipModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -215,23 +232,26 @@ class _$PartnerShipModelImpl extends _PartnerShipModel {
 
   @override
   @HiveField(0)
-  int? run;
+  String? id;
   @override
   @HiveField(1)
-  int? ball;
+  int? run;
   @override
   @HiveField(2)
-  int? extra;
+  int? ball;
   @override
   @HiveField(3)
-  BattingLineUpModel? currentStiker;
+  int? extra;
   @override
   @HiveField(4)
+  BattingLineUpModel? currentStiker;
+  @override
+  @HiveField(5)
   BattingLineUpModel? currentNotStiker;
 
   @override
   String toString() {
-    return 'PartnerShipModel(run: $run, ball: $ball, extra: $extra, currentStiker: $currentStiker, currentNotStiker: $currentNotStiker)';
+    return 'PartnerShipModel(id: $id, run: $run, ball: $ball, extra: $extra, currentStiker: $currentStiker, currentNotStiker: $currentNotStiker)';
   }
 
   @JsonKey(ignore: true)
@@ -251,11 +271,12 @@ class _$PartnerShipModelImpl extends _PartnerShipModel {
 
 abstract class _PartnerShipModel extends PartnerShipModel {
   factory _PartnerShipModel(
-          {@HiveField(0) int? run,
-          @HiveField(1) int? ball,
-          @HiveField(2) int? extra,
-          @HiveField(3) BattingLineUpModel? currentStiker,
-          @HiveField(4) BattingLineUpModel? currentNotStiker}) =
+          {@HiveField(0) String? id,
+          @HiveField(1) int? run,
+          @HiveField(2) int? ball,
+          @HiveField(3) int? extra,
+          @HiveField(4) BattingLineUpModel? currentStiker,
+          @HiveField(5) BattingLineUpModel? currentNotStiker}) =
       _$PartnerShipModelImpl;
   _PartnerShipModel._() : super._();
 
@@ -264,28 +285,33 @@ abstract class _PartnerShipModel extends PartnerShipModel {
 
   @override
   @HiveField(0)
-  int? get run;
+  String? get id;
   @HiveField(0)
+  set id(String? value);
+  @override
+  @HiveField(1)
+  int? get run;
+  @HiveField(1)
   set run(int? value);
   @override
-  @HiveField(1)
+  @HiveField(2)
   int? get ball;
-  @HiveField(1)
+  @HiveField(2)
   set ball(int? value);
   @override
-  @HiveField(2)
+  @HiveField(3)
   int? get extra;
-  @HiveField(2)
+  @HiveField(3)
   set extra(int? value);
   @override
-  @HiveField(3)
+  @HiveField(4)
   BattingLineUpModel? get currentStiker;
-  @HiveField(3)
+  @HiveField(4)
   set currentStiker(BattingLineUpModel? value);
   @override
-  @HiveField(4)
+  @HiveField(5)
   BattingLineUpModel? get currentNotStiker;
-  @HiveField(4)
+  @HiveField(5)
   set currentNotStiker(BattingLineUpModel? value);
   @override
   @JsonKey(ignore: true)

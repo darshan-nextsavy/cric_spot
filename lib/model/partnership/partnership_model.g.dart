@@ -17,27 +17,30 @@ class PartnerShipModelAdapter extends TypeAdapter<_$PartnerShipModelImpl> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return _$PartnerShipModelImpl(
-      run: fields[0] as int?,
-      ball: fields[1] as int?,
-      extra: fields[2] as int?,
-      currentStiker: fields[3] as BattingLineUpModel?,
-      currentNotStiker: fields[4] as BattingLineUpModel?,
+      id: fields[0] as String?,
+      run: fields[1] as int?,
+      ball: fields[2] as int?,
+      extra: fields[3] as int?,
+      currentStiker: fields[4] as BattingLineUpModel?,
+      currentNotStiker: fields[5] as BattingLineUpModel?,
     );
   }
 
   @override
   void write(BinaryWriter writer, _$PartnerShipModelImpl obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.run)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.ball)
+      ..write(obj.run)
       ..writeByte(2)
-      ..write(obj.extra)
+      ..write(obj.ball)
       ..writeByte(3)
-      ..write(obj.currentStiker)
+      ..write(obj.extra)
       ..writeByte(4)
+      ..write(obj.currentStiker)
+      ..writeByte(5)
       ..write(obj.currentNotStiker);
   }
 
@@ -59,6 +62,7 @@ class PartnerShipModelAdapter extends TypeAdapter<_$PartnerShipModelImpl> {
 _$PartnerShipModelImpl _$$PartnerShipModelImplFromJson(
         Map<String, dynamic> json) =>
     _$PartnerShipModelImpl(
+      id: json['id'] as String?,
       run: json['run'] as int?,
       ball: json['ball'] as int?,
       extra: json['extra'] as int?,
@@ -75,6 +79,7 @@ _$PartnerShipModelImpl _$$PartnerShipModelImplFromJson(
 Map<String, dynamic> _$$PartnerShipModelImplToJson(
         _$PartnerShipModelImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'run': instance.run,
       'ball': instance.ball,
       'extra': instance.extra,

@@ -5,10 +5,12 @@ enum RoutesName {
   teams,
   history,
   scoreCount,
+  scoreBoard,
   adwanceSetting,
   setting,
   selectBowler,
-  playerSelect;
+  playerSelect,
+  fallOfWicket;
 }
 
 extension RoutesNameHelper on RoutesName {
@@ -30,10 +32,14 @@ extension RoutesNameHelper on RoutesName {
         return 'setting';
       case RoutesName.scoreCount:
         return 'score-count';
+      case RoutesName.scoreBoard:
+        return 'score-board';
       case RoutesName.playerSelect:
         return 'player-select';
       case RoutesName.selectBowler:
         return 'select-bowler';
+      case RoutesName.fallOfWicket:
+        return 'fall-of-wicket';
     }
   }
 
@@ -55,10 +61,14 @@ extension RoutesNameHelper on RoutesName {
         return '/setting';
       case RoutesName.scoreCount:
         return '/score-count/:matchId';
+      case RoutesName.scoreBoard:
+        return '/score-board/:matchId';
       case RoutesName.playerSelect:
         return '/player-select';
       case RoutesName.selectBowler:
         return '/select-bowler';
+      case RoutesName.fallOfWicket:
+        return '/fall-of-wicket/:run';
     }
   }
 }

@@ -280,6 +280,7 @@ abstract class _HomeStore with Store {
         currentOver: [],
         partnerShips: [
           PartnerShipModel(
+              id: strikerId.toString(),
               run: 0,
               ball: 0,
               currentStiker: BattingLineUpModel(
@@ -300,6 +301,7 @@ abstract class _HomeStore with Store {
                   isNotOut: true))
         ],
         currentPartnerShip: PartnerShipModel(
+            id: strikerId.toString(),
             run: 0,
             ball: 0,
             currentStiker: BattingLineUpModel(

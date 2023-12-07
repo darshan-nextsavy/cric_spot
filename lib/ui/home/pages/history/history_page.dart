@@ -137,7 +137,14 @@ class HistoryPage extends StatelessWidget {
                           },
                           child: const Text("Resume")),
                       TextButton(
-                          onPressed: () {}, child: const Text("Score Card")),
+                          onPressed: () {
+                            GoRouter.of(context).pushNamed(
+                                RoutesName.scoreBoard.name,
+                                pathParameters: {
+                                  "matchId": match.key.toString()
+                                });
+                          },
+                          child: const Text("Score Card")),
                     ],
                   ),
                 ),

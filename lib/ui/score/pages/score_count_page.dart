@@ -23,21 +23,13 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     scoreStore.getAllData(widget.matchId);
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(widget.matchId);
-    // print(scoreStore.currentOver);
-    // print(scoreStore.striker);
-    // print(scoreStore.nonStriker);
-    // print(scoreStore.bowler);
-
     return Observer(builder: (_) {
-      print(scoreStore.currentInning?.totalRun);
       return scoreStore.isLoad
           ? const Center(
               child: CircularProgressIndicator(),
@@ -46,6 +38,18 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
               appBar: AppBar(
                 title: Text(
                     '${scoreStore.matchData?.firstBatTeamName} vs ${scoreStore.matchData?.secondBatTeamName}'),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        GoRouter.of(context).pushNamed(
+                            RoutesName.scoreBoard.name,
+                            pathParameters: {"matchId": widget.matchId});
+                      },
+                      icon: Icon(Icons.scoreboard)),
+                  SizedBox(
+                    width: 8,
+                  )
+                ],
               ),
               body: Container(
                 padding:
@@ -366,22 +370,8 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                       scrollDirection: Axis.horizontal,
                                       children: [
                                         ...scoreStore.currentOver
-                                            .map(((e) => CricOutlineCard(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  side: BorderSide(
-                                                    width: 1,
-                                                    color: context.outline,
-                                                  ),
-                                                ),
-                                                child: SizedBox(
-                                                  width: 40,
-                                                  height: 40,
-                                                  child: Center(
-                                                      child:
-                                                          Text(e.toString())),
-                                                ))))
+                                            .map(
+                                                ((e) => overCircleCard(run: e)))
                                             .toList()
                                       ],
                                     );
@@ -400,162 +390,33 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              InkWell(
-                                onTap: () {
-                                  scoreStore.changeWide();
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Observer(builder: (_) {
-                                        return Checkbox(
-                                          value: scoreStore.wide,
-                                          onChanged: (val) {
-                                            scoreStore.changeWide();
-                                          },
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                        );
-                                      }),
-                                    ),
-                                    Text("Wide")
-                                  ],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  scoreStore.changeNoball();
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Observer(builder: (context) {
-                                        return Checkbox(
-                                          value: scoreStore.noBall,
-                                          onChanged: (val) {
-                                            scoreStore.changeNoball();
-                                          },
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                        );
-                                      }),
-                                    ),
-                                    Text("No Ball")
-                                  ],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  scoreStore.changeByes();
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Observer(builder: (_) {
-                                        return Checkbox(
-                                          value: scoreStore.byes,
-                                          onChanged: (val) {
-                                            scoreStore.changeByes();
-                                          },
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                        );
-                                      }),
-                                    ),
-                                    Text("Byes")
-                                  ],
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  scoreStore.changeLegbyes();
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Observer(builder: (_) {
-                                        return Checkbox(
-                                          value: scoreStore.legByes,
-                                          onChanged: (val) {
-                                            scoreStore.changeLegbyes();
-                                          },
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                        );
-                                      }),
-                                    ),
-                                    Text("Leg Byes")
-                                  ],
-                                ),
-                              )
+                              checkBoxWidget(
+                                  childText: "Wide", value: scoreStore.wide),
+                              checkBoxWidget(
+                                  childText: "No Ball",
+                                  value: scoreStore.noBall),
+                              checkBoxWidget(
+                                  childText: "Byes", value: scoreStore.byes),
+                              checkBoxWidget(
+                                  childText: "Leg Byes",
+                                  value: scoreStore.legByes),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              InkWell(
-                                onTap: () {
-                                  scoreStore.wicket = !scoreStore.wicket;
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      child: Observer(builder: (_) {
-                                        return Checkbox(
-                                          value: scoreStore.wicket,
-                                          onChanged: (val) {
-                                            scoreStore.wicket = val!;
-                                          },
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                        );
-                                      }),
-                                    ),
-                                    Text("Wicket")
-                                  ],
-                                ),
-                              ),
+                              checkBoxWidget(
+                                  childText: "Wicket",
+                                  value: scoreStore.wicket),
                               Row(
                                 children: [
-                                  InkWell(
-                                    child: Container(
-                                      width: 100,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 4, vertical: 8),
-                                      decoration: BoxDecoration(
-                                          color: context.primary,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Center(
-                                        child: Text(
-                                          "Retire",
-                                          style: TextStyle(
-                                              color: context.onPrimary),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  cricFilledButton(
+                                      childText: "Retire", width: 120),
                                   const SizedBox(
                                     width: 4,
                                   ),
-                                  InkWell(
-                                    child: Container(
-                                      width: 120,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 4, vertical: 8),
-                                      decoration: BoxDecoration(
-                                          color: context.primary,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Center(
-                                        child: Text(
-                                          "Swap Batsman",
-                                          style: TextStyle(
-                                              color: context.onPrimary),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  cricFilledButton(
+                                      childText: "Swap Batsman", width: 120),
                                 ],
                               )
                             ],
@@ -573,66 +434,15 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                             padding: EdgeInsets.all(8),
                             child: Column(
                               children: [
-                                InkWell(
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        color: context.primary,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Center(
-                                      child: Text(
-                                        "Undo",
-                                        style:
-                                            TextStyle(color: context.onPrimary),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                cricFilledButton(childText: "Undo"),
                                 const SizedBox(
                                   height: 4,
                                 ),
-                                InkWell(
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        color: context.primary,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Center(
-                                      child: Text(
-                                        "Partnerships",
-                                        style:
-                                            TextStyle(color: context.onPrimary),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                cricFilledButton(childText: "Partnerships"),
                                 const SizedBox(
                                   height: 4,
                                 ),
-                                InkWell(
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        color: context.primary,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Center(
-                                      child: Text(
-                                        "Extra",
-                                        style:
-                                            TextStyle(color: context.onPrimary),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                cricFilledButton(childText: "Extra")
                               ],
                             ),
                           )),
@@ -648,11 +458,17 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "0",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(0);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.wicket
+                                                ? GoRouter.of(context)
+                                                    .pushNamed(
+                                                        RoutesName
+                                                            .fallOfWicket.name,
+                                                        pathParameters: {
+                                                        "run": "0"
+                                                      })
+                                                : scoreStore.countRun(run: 0);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -664,11 +480,17 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "1",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(1);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.wicket
+                                                ? GoRouter.of(context)
+                                                    .pushNamed(
+                                                        RoutesName
+                                                            .fallOfWicket.name,
+                                                        pathParameters: {
+                                                        "run": "1"
+                                                      })
+                                                : scoreStore.countRun(run: 1);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -680,11 +502,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "2",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(2);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.countRun(run: 2);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -696,11 +516,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "3",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(3);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.countRun(run: 3);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -716,11 +534,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "4",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(4);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.countRun(run: 4);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -732,11 +548,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "5",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(5);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.countRun(run: 5);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -748,11 +562,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "6",
                                         onTap: () {
-                                          if (scoreStore.currentOver.length <
-                                              6) {
-                                            scoreStore.countRun(6);
-                                            if (scoreStore.currentOver.length ==
-                                                6) {
+                                          if (scoreStore.overLength < 6) {
+                                            scoreStore.countRun(run: 6);
+                                            if (scoreStore.overLength == 6) {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
@@ -796,27 +608,95 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
     );
   }
 
-  Widget checkBoxWidget() {
+  Widget checkBoxWidget({
+    required String childText,
+    required bool value,
+  }) {
     return InkWell(
       onTap: () {
-        scoreStore.changeByes();
+        switch (childText) {
+          case "Wicket":
+            scoreStore.changeWicket();
+            break;
+          case "Wide":
+            scoreStore.changeWide();
+            break;
+          case "No Ball":
+            scoreStore.changeNoball();
+            break;
+          case "Byes":
+            scoreStore.changeByes();
+            break;
+          case "Leg Byes":
+            scoreStore.changeLegbyes();
+            break;
+        }
       },
       child: Row(
         children: [
           SizedBox(
-            child: Observer(builder: (_) {
-              return Checkbox(
-                value: scoreStore.byes,
-                onChanged: (val) {
-                  scoreStore.changeByes();
-                },
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              );
-            }),
+            child: Checkbox(
+              value: value,
+              onChanged: (val) {
+                switch (childText) {
+                  case "Wicket":
+                    scoreStore.changeWicket();
+                    break;
+                  case "Wide":
+                    scoreStore.changeWide();
+                    break;
+                  case "No Ball":
+                    scoreStore.changeNoball();
+                    break;
+                  case "Byes":
+                    scoreStore.changeByes();
+                    break;
+                  case "Leg Byes":
+                    scoreStore.changeLegbyes();
+                    break;
+                }
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
-          Text("Byes")
+          Text(childText)
         ],
       ),
     );
+  }
+
+  Widget cricFilledButton(
+      {required String childText, double? width, Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: width ?? double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        decoration: BoxDecoration(
+            color: context.primary, borderRadius: BorderRadius.circular(10)),
+        child: Center(
+          child: Text(
+            childText,
+            style: TextStyle(color: context.onPrimary),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget overCircleCard({required int run}) {
+    return CricOutlineCard(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            width: 1,
+            color: context.outline,
+          ),
+        ),
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Center(child: Text(run.toString())),
+        ));
   }
 }

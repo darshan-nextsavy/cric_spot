@@ -290,6 +290,22 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$overLengthAtom =
+      Atom(name: '_ScoreStore.overLength', context: context);
+
+  @override
+  int get overLength {
+    _$overLengthAtom.reportRead();
+    return super.overLength;
+  }
+
+  @override
+  set overLength(int value) {
+    _$overLengthAtom.reportWrite(value, super.overLength, () {
+      super.overLength = value;
+    });
+  }
+
   late final _$newBowlerAtom =
       Atom(name: '_ScoreStore.newBowler', context: context);
 
@@ -306,12 +322,100 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$newBatsmanAtom =
+      Atom(name: '_ScoreStore.newBatsman', context: context);
+
+  @override
+  String get newBatsman {
+    _$newBatsmanAtom.reportRead();
+    return super.newBatsman;
+  }
+
+  @override
+  set newBatsman(String value) {
+    _$newBatsmanAtom.reportWrite(value, super.newBatsman, () {
+      super.newBatsman = value;
+    });
+  }
+
+  late final _$wicketTypeAtom =
+      Atom(name: '_ScoreStore.wicketType', context: context);
+
+  @override
+  WicketType get wicketType {
+    _$wicketTypeAtom.reportRead();
+    return super.wicketType;
+  }
+
+  @override
+  set wicketType(WicketType value) {
+    _$wicketTypeAtom.reportWrite(value, super.wicketType, () {
+      super.wicketType = value;
+    });
+  }
+
+  late final _$runCountTypeAtom =
+      Atom(name: '_ScoreStore.runCountType', context: context);
+
+  @override
+  RunCountType get runCountType {
+    _$runCountTypeAtom.reportRead();
+    return super.runCountType;
+  }
+
+  @override
+  set runCountType(RunCountType value) {
+    _$runCountTypeAtom.reportWrite(value, super.runCountType, () {
+      super.runCountType = value;
+    });
+  }
+
+  late final _$scoreBoardOneIsOpenAtom =
+      Atom(name: '_ScoreStore.scoreBoardOneIsOpen', context: context);
+
+  @override
+  bool get scoreBoardOneIsOpen {
+    _$scoreBoardOneIsOpenAtom.reportRead();
+    return super.scoreBoardOneIsOpen;
+  }
+
+  @override
+  set scoreBoardOneIsOpen(bool value) {
+    _$scoreBoardOneIsOpenAtom.reportWrite(value, super.scoreBoardOneIsOpen, () {
+      super.scoreBoardOneIsOpen = value;
+    });
+  }
+
+  late final _$scoreBoardTwoIsOpenAtom =
+      Atom(name: '_ScoreStore.scoreBoardTwoIsOpen', context: context);
+
+  @override
+  bool get scoreBoardTwoIsOpen {
+    _$scoreBoardTwoIsOpenAtom.reportRead();
+    return super.scoreBoardTwoIsOpen;
+  }
+
+  @override
+  set scoreBoardTwoIsOpen(bool value) {
+    _$scoreBoardTwoIsOpenAtom.reportWrite(value, super.scoreBoardTwoIsOpen, () {
+      super.scoreBoardTwoIsOpen = value;
+    });
+  }
+
   late final _$selectNewBowlerAsyncAction =
       AsyncAction('_ScoreStore.selectNewBowler', context: context);
 
   @override
   Future<void> selectNewBowler() {
     return _$selectNewBowlerAsyncAction.run(() => super.selectNewBowler());
+  }
+
+  late final _$fallOfWicketAsyncAction =
+      AsyncAction('_ScoreStore.fallOfWicket', context: context);
+
+  @override
+  Future<PlayerModel> fallOfWicket() {
+    return _$fallOfWicketAsyncAction.run(() => super.fallOfWicket());
   }
 
   late final _$_ScoreStoreActionController =
@@ -373,11 +477,33 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
-  void countRun(int run) {
+  void changeWicket() {
+    final _$actionInfo = _$_ScoreStoreActionController.startAction(
+        name: '_ScoreStore.changeWicket');
+    try {
+      return super.changeWicket();
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void selectRunType() {
+    final _$actionInfo = _$_ScoreStoreActionController.startAction(
+        name: '_ScoreStore.selectRunType');
+    try {
+      return super.selectRunType();
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void countRun({required int run, BattingLineUpModel? newPlayer}) {
     final _$actionInfo =
         _$_ScoreStoreActionController.startAction(name: '_ScoreStore.countRun');
     try {
-      return super.countRun(run);
+      return super.countRun(run: run, newPlayer: newPlayer);
     } finally {
       _$_ScoreStoreActionController.endAction(_$actionInfo);
     }
@@ -404,7 +530,13 @@ isLoad: ${isLoad},
 target: ${target},
 totalRun: ${totalRun},
 totalBall: ${totalBall},
-newBowler: ${newBowler}
+overLength: ${overLength},
+newBowler: ${newBowler},
+newBatsman: ${newBatsman},
+wicketType: ${wicketType},
+runCountType: ${runCountType},
+scoreBoardOneIsOpen: ${scoreBoardOneIsOpen},
+scoreBoardTwoIsOpen: ${scoreBoardTwoIsOpen}
     ''';
   }
 }

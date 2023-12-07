@@ -1,7 +1,9 @@
 import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/ui/home/pages/home/home_page.dart';
+import 'package:cric_spot/ui/player/page/fall_of_wicket_page.dart';
 import 'package:cric_spot/ui/player/page/player_select_page.dart';
 import 'package:cric_spot/ui/player/page/select_bowler_page.dart';
+import 'package:cric_spot/ui/score/pages/score_board_page.dart';
 import 'package:cric_spot/ui/score/pages/score_count_page.dart';
 import 'package:cric_spot/ui/settings/pages/adwance-setting/adwance_setting_page.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,11 @@ final GoRouter goRouter = GoRouter(
                 matchId: state.pathParameters['matchId']!,
               )),
       GoRoute(
+          path: RoutesName.scoreBoard.path,
+          name: RoutesName.scoreBoard.name,
+          builder: (context, state) =>
+              ScoreBoardPage(matchId: state.pathParameters['matchId']!)),
+      GoRoute(
           path: RoutesName.playerSelect.path,
           name: RoutesName.playerSelect.name,
           builder: (context, state) => const PlayerSelectPage()),
@@ -35,4 +42,10 @@ final GoRouter goRouter = GoRouter(
           path: RoutesName.selectBowler.path,
           name: RoutesName.selectBowler.name,
           builder: (context, state) => const SelectBowlerPage()),
+      GoRoute(
+          path: RoutesName.fallOfWicket.path,
+          name: RoutesName.fallOfWicket.name,
+          builder: (context, state) => FallOfWicketPage(
+                run: state.pathParameters['run']!,
+              )),
     ]);

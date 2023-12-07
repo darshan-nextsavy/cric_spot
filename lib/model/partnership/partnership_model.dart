@@ -9,11 +9,12 @@ part 'partnership_model.g.dart';
 class PartnerShipModel extends HiveObject with _$PartnerShipModel {
   @HiveType(typeId: 7, adapterName: 'PartnerShipModelAdapter')
   factory PartnerShipModel({
-    @HiveField(0) int? run,
-    @HiveField(1) int? ball,
-    @HiveField(2) int? extra,
-    @HiveField(3) BattingLineUpModel? currentStiker,
-    @HiveField(4) BattingLineUpModel? currentNotStiker,
+    @HiveField(0) String? id,
+    @HiveField(1) int? run,
+    @HiveField(2) int? ball,
+    @HiveField(3) int? extra,
+    @HiveField(4) BattingLineUpModel? currentStiker,
+    @HiveField(5) BattingLineUpModel? currentNotStiker,
   }) = _PartnerShipModel;
   PartnerShipModel._();
 
