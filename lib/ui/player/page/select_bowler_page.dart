@@ -2,8 +2,11 @@ import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
 import 'package:cric_spot/main.dart';
+import 'package:cric_spot/model/bowling/bowling_lineup_model.dart';
+import 'package:cric_spot/model/team/team_model.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectBowlerPage extends StatelessWidget {
@@ -32,16 +35,46 @@ class SelectBowlerPage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            CricTextFormField(
-              // controller: strikerController,
-              hintText: "Player name",
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              onChanged: (val) {
-                scoreStore.newBowler = val;
-                // homeStore.strikerName = val;
-              },
-            ),
+            TypeAheadField<BowlingLineUpModel>(
+                hideOnEmpty: true,
+                suggestionsCallback: (search) {
+                  return scoreStore.currentInning!.bowlingLineup!
+                      .where((element) => element.name!.contains(search))
+                      .toList();
+                },
+                onSelected: (bowler) {
+                  scoreStore.newBowler = bowler.name!;
+                },
+                itemBuilder: (context, bowler) {
+                  return ListTile(
+                    title: Text(bowler.name!),
+                    subtitle: Text("${bowler.ball! ~/ 6}.${bowler.ball! % 6}"),
+                  );
+                },
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    textCapitalization: TextCapitalization.words,
+                    onChanged: (val) {
+                      scoreStore.newBowler = val;
+                    },
+                    keyboardType: TextInputType.name,
+                    decoration: const InputDecoration(
+                      hintText: "Player name",
+                    ),
+                  );
+                }),
+            // CricTextFormField(
+            //   // controller: strikerController,
+            //   hintText: "Player name",
+            //   keyboardType: TextInputType.name,
+            //   textCapitalization: TextCapitalization.words,
+            //   onChanged: (val) {
+            //     scoreStore.newBowler = val;
+            //     // homeStore.strikerName = val;
+            //   },
+            // ),
             const SizedBox(
               height: 16,
             ),

@@ -51,6 +51,7 @@ class NewMatchPage extends StatelessWidget {
                 },
                 onSelected: (team) {
                   homeStore.hostTeamNameChange(team.name!);
+                  hostTeamController.text = team.name!;
                 },
                 itemBuilder: (context, team) {
                   return ListTile(
@@ -93,6 +94,7 @@ class NewMatchPage extends StatelessWidget {
                 },
                 onSelected: (team) {
                   homeStore.visitorTeamNameChange(team.name!);
+                  visitorTeamController.text = team.name!;
                 },
                 itemBuilder: (context, team) {
                   return ListTile(
@@ -278,6 +280,7 @@ class NewMatchPage extends StatelessWidget {
                 Expanded(
                     child: FilledButton(
                         onPressed: () {
+                          homeStore.isMatchNew = true;
                           // GoRouter.of(context).push(RoutesName.scoreCount.path);
                           GoRouter.of(context)
                               .push(RoutesName.playerSelect.path);

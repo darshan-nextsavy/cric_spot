@@ -520,6 +520,17 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
+  void saveData() {
+    final _$actionInfo =
+        _$_ScoreStoreActionController.startAction(name: '_ScoreStore.saveData');
+    try {
+      return super.saveData();
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void selectRunType() {
     final _$actionInfo = _$_ScoreStoreActionController.startAction(
         name: '_ScoreStore.selectRunType');

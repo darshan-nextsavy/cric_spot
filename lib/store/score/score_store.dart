@@ -108,80 +108,6 @@ abstract class _ScoreStore with Store {
   bool scoreBoardTwoIsOpen = true;
 
   @action
-  void getAllData(String matchId) {
-    isLoad = true;
-    if (matchData == null || matchData!.id != matchId) {
-      print("score_store.dart calling getAllData");
-      matchData = matchBox.get(int.parse(matchId));
-      inningOne = inningBox.get(int.parse(matchData!.inningOneId!));
-      inningTwo = inningBox.get(int.parse(matchData!.inningTwoId!));
-      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6)) {
-        currentInning = inningTwo;
-        target = inningOne!.totalRun! + 1;
-      } else {
-        currentInning = inningOne;
-      }
-      totalRun = currentInning!.totalRun!;
-      totalBall = currentInning!.totalBall!;
-      totalWicket = currentInning!.totalWicket!;
-      extraRun = currentInning?.extraRun;
-      striker = currentInning?.currentStriker;
-      nonStriker = currentInning?.currentNonStriker;
-      bowler = currentInning?.currentBowler;
-      currentOver = currentInning?.currentOver ?? [];
-      overLength = currentInning!.totalBall! % 6;
-      currentPartnerShip = currentInning!.currentPartnerShip;
-    }
-
-    isLoad = false;
-  }
-
-  @action
-  Future<void> selectNewBowler() async {
-    // save bowler player
-    PlayerModel newBowlerData = PlayerModel(name: newBowler);
-    final bowlerId = await playerBox.add(newBowlerData);
-    newBowlerData.id = bowlerId.toString();
-    newBowlerData.save();
-
-    currentInning!.bowlingLineup!.add(BowlingLineUpModel(
-        playerId: bowlerId.toString(),
-        name: newBowler,
-        run: 0,
-        ball: 0,
-        wicket: 0,
-        maidan: 0));
-    currentInning!.currentBowler = BowlingLineUpModel(
-        playerId: bowlerId.toString(),
-        name: newBowler,
-        run: 0,
-        ball: 0,
-        wicket: 0,
-        maidan: 0);
-    currentInning!.overs!.add(currentOver);
-    currentInning!.currentOver = [];
-    currentInning = currentInning;
-    if (currentInning!.isFirstInning!) {
-      inningOne = currentInning;
-    } else {
-      inningTwo = currentInning;
-    }
-    bowler = currentInning!.currentBowler;
-    currentOver = [];
-    overLength = 0;
-    newBowler = '';
-  }
-
-  @action
-  Future<PlayerModel> fallOfWicket() async {
-    PlayerModel newBatsmanData = PlayerModel(name: newBatsman);
-    final batsmanId = await playerBox.add(newBatsmanData);
-    newBatsmanData.id = batsmanId.toString();
-    newBatsmanData.save();
-    return newBatsmanData;
-  }
-
-  @action
   void changeWide() {
     wide = !wide;
     noBall = false;
@@ -217,6 +143,257 @@ abstract class _ScoreStore with Store {
   void changeWicket() {
     wicket = !wicket;
     selectRunType();
+  }
+
+  @action
+  void getAllData(String matchId) {
+    isLoad = true;
+    if (matchData == null || matchData!.id != matchId) {
+      print("score_store.dart calling getAllData");
+      matchData = matchBox.get(int.parse(matchId));
+      inningOne = inningBox.get(int.parse(matchData!.inningOneId!));
+      inningTwo = inningBox.get(int.parse(matchData!.inningTwoId!));
+      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6)) {
+        currentInning = inningTwo;
+        target = inningOne!.totalRun! + 1;
+      } else {
+        currentInning = inningOne;
+      }
+      totalRun = currentInning!.totalRun!;
+      totalBall = currentInning!.totalBall!;
+      totalWicket = currentInning!.totalWicket!;
+      extraRun = currentInning?.extraRun;
+      striker = currentInning?.currentStriker;
+      nonStriker = currentInning?.currentNonStriker;
+      bowler = currentInning?.currentBowler;
+      currentOver = currentInning?.currentOver ?? [];
+      overLength = currentInning!.totalBall! % 6 == 0
+          ? currentInning!.totalBall! == 0
+              ? 0
+              : 6
+          : currentInning!.totalBall! % 6;
+      currentPartnerShip = currentInning!.currentPartnerShip;
+    }
+
+    isLoad = false;
+  }
+
+  @action
+  Future<void> selectNewBowler() async {
+    // save bowler player
+
+    BowlingLineUpModel newBowlerModel =
+        currentInning!.bowlingLineup!.firstWhere(
+      (element) => element.name == newBowler,
+      orElse: () => BowlingLineUpModel(run: 0, ball: 0, wicket: 0, maidan: 0),
+    );
+
+    if (newBowlerModel.playerId == null) {
+      PlayerModel newBowlerData = PlayerModel(name: newBowler);
+      final bowlerId = await playerBox.add(newBowlerData);
+      newBowlerData.id = bowlerId.toString();
+      newBowlerData.save();
+
+      currentInning!.bowlingLineup!.add(BowlingLineUpModel(
+          playerId: bowlerId.toString(),
+          name: newBowler,
+          run: 0,
+          ball: 0,
+          wicket: 0,
+          maidan: 0));
+      currentInning!.currentBowler = BowlingLineUpModel(
+          playerId: bowlerId.toString(),
+          name: newBowler,
+          run: 0,
+          ball: 0,
+          wicket: 0,
+          maidan: 0);
+    } else {
+      currentInning!.currentBowler = newBowlerModel;
+    }
+
+    currentInning!.overs!.add(currentOver);
+    currentInning!.currentOver = [];
+    currentInning = currentInning;
+    if (currentInning!.isFirstInning!) {
+      inningOne = currentInning;
+    } else {
+      inningTwo = currentInning;
+    }
+    bowler = currentInning!.currentBowler;
+    currentOver = [];
+    overLength = 0;
+    newBowler = '';
+  }
+
+  @action
+  Future<PlayerModel> fallOfWicket() async {
+    PlayerModel newBatsmanData = PlayerModel(name: newBatsman);
+    final batsmanId = await playerBox.add(newBatsmanData);
+    newBatsmanData.id = batsmanId.toString();
+    newBatsmanData.save();
+    return newBatsmanData;
+  }
+
+  @action
+  void saveData() {
+    if (currentInning!.isFirstInning!) {
+      matchData!.firstBatTeamScore = "$totalRun/$totalWicket";
+      matchData!.firstBatTeamOver = "${totalBall ~/ 6}.${totalBall % 6}";
+    } else {
+      matchData!.secondBatTeamScore = "$totalRun/$totalWicket";
+      matchData!.secondBatTeamOver = "${totalBall ~/ 6}.${totalBall % 6}";
+    }
+    matchData!.save();
+    currentInning!.save();
+  }
+
+  @action
+  void changeInning(
+      {String? strikerName, String? nonStrikerName, String? bowlerName}) async {
+    saveData();
+    // striker
+    PlayerModel strikerPlayer = PlayerModel(name: strikerName);
+
+    // non stiker
+    PlayerModel nonStrikerPlayer = PlayerModel(name: nonStrikerName);
+
+    //bowler
+    PlayerModel bowlerPlayer = PlayerModel(name: bowlerName);
+
+    // save stiker player
+    final strikerId = await playerBox.add(strikerPlayer);
+    strikerPlayer.id = strikerId.toString();
+    strikerPlayer.save();
+
+    // save non stiker player
+    final nonStrikerId = await playerBox.add(nonStrikerPlayer);
+    nonStrikerPlayer.id = nonStrikerId.toString();
+    nonStrikerPlayer.save();
+
+    // save bowler player
+    final bowlerId = await playerBox.add(bowlerPlayer);
+    bowlerPlayer.id = bowlerId.toString();
+    bowlerPlayer.save();
+
+    // add batting line up to second inning
+    inningTwo!.battingLineup = [
+      BattingLineUpModel(
+          playerId: strikerId.toString(),
+          name: strikerName,
+          run: 0,
+          ball: 0,
+          four: 0,
+          six: 0,
+          isNotOut: true),
+      BattingLineUpModel(
+          playerId: nonStrikerId.toString(),
+          name: nonStrikerName,
+          run: 0,
+          ball: 0,
+          four: 0,
+          six: 0,
+          isNotOut: true),
+    ];
+
+    // add bowling line up to second inning
+    inningTwo!.bowlingLineup = [
+      BowlingLineUpModel(
+          playerId: bowlerId.toString(),
+          name: bowlerName,
+          run: 0,
+          ball: 0,
+          maidan: 0,
+          wicket: 0)
+    ];
+
+    inningTwo!.currentStriker = BattingLineUpModel(
+        playerId: strikerId.toString(),
+        name: strikerName,
+        run: 0,
+        ball: 0,
+        four: 0,
+        six: 0,
+        isNotOut: true);
+
+    inningTwo!.currentNonStriker = BattingLineUpModel(
+        playerId: nonStrikerId.toString(),
+        name: nonStrikerName,
+        run: 0,
+        ball: 0,
+        four: 0,
+        six: 0,
+        isNotOut: true);
+
+    inningTwo!.currentBowler = BowlingLineUpModel(
+        playerId: bowlerId.toString(),
+        name: bowlerName,
+        run: 0,
+        ball: 0,
+        maidan: 0,
+        wicket: 0);
+
+    inningTwo!.partnerShips = [
+      PartnerShipModel(
+          id: strikerId.toString(),
+          run: 0,
+          ball: 0,
+          currentStiker: BattingLineUpModel(
+              playerId: strikerId.toString(),
+              name: strikerName,
+              run: 0,
+              ball: 0,
+              four: 0,
+              six: 0,
+              isNotOut: true),
+          currentNotStiker: BattingLineUpModel(
+              playerId: nonStrikerId.toString(),
+              name: nonStrikerName,
+              run: 0,
+              ball: 0,
+              four: 0,
+              six: 0,
+              isNotOut: true))
+    ];
+
+    inningTwo!.currentPartnerShip = PartnerShipModel(
+        id: strikerId.toString(),
+        run: 0,
+        ball: 0,
+        currentStiker: BattingLineUpModel(
+            playerId: strikerId.toString(),
+            name: strikerName,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true),
+        currentNotStiker: BattingLineUpModel(
+            playerId: nonStrikerId.toString(),
+            name: nonStrikerName,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true));
+
+    currentInning = inningTwo;
+    totalRun = currentInning!.totalRun!;
+    target = totalRun + 1;
+    totalBall = currentInning!.totalBall!;
+    totalWicket = currentInning!.totalWicket!;
+    extraRun = currentInning?.extraRun;
+    striker = currentInning?.currentStriker!;
+    nonStriker = currentInning?.currentNonStriker;
+    bowler = currentInning?.currentBowler;
+    currentOver = currentInning?.currentOver ?? [];
+    overLength = currentInning!.totalBall! % 6 == 0
+        ? currentInning!.totalBall! == 0
+            ? 0
+            : 6
+        : currentInning!.totalBall! % 6;
+
+    currentPartnerShip = currentInning!.currentPartnerShip;
   }
 
   @action
@@ -304,6 +481,13 @@ abstract class _ScoreStore with Store {
         currentInning!.currentOver = currentOver;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
@@ -363,6 +547,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -429,6 +618,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -484,6 +678,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -539,6 +738,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -597,6 +801,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -656,6 +865,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -744,6 +958,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -843,6 +1062,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -929,6 +1153,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1015,6 +1244,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1105,6 +1339,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1196,6 +1435,11 @@ abstract class _ScoreStore with Store {
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
+
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1282,6 +1526,10 @@ abstract class _ScoreStore with Store {
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
+          if (overLength == 6) {
+            lastSave();
+            lastSavePartnership();
+          }
           final change = striker;
           striker = nonStriker;
           nonStriker = change;

@@ -4,6 +4,7 @@ import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
 import 'package:cric_spot/main.dart';
 import 'package:cric_spot/store/home/home_store.dart';
+import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,6 +14,7 @@ class PlayerSelectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeStore = getIt.get<HomeStore>();
+    final scoreStore = getIt.get<ScoreStore>();
 
     TextEditingController strikerController = TextEditingController();
     TextEditingController nonStrikerController = TextEditingController();
@@ -98,10 +100,19 @@ class PlayerSelectPage extends StatelessWidget {
             ),
             FilledButton(
                 onPressed: () async {
-                  final matchId = await homeStore.createNewMatch();
-                  GoRouter.of(context).pop();
-                  GoRouter.of(context).pushNamed(RoutesName.scoreCount.name,
-                      pathParameters: {'matchId': matchId.toString()});
+                  if (homeStore.isMatchNew) {
+                    final matchId = await homeStore.createNewMatch();
+                    if (!context.mounted) return;
+                    GoRouter.of(context).pop();
+                    GoRouter.of(context).pushNamed(RoutesName.scoreCount.name,
+                        pathParameters: {'matchId': matchId.toString()});
+                  } else {
+                    scoreStore.changeInning(
+                        strikerName: homeStore.strikerName,
+                        nonStrikerName: homeStore.nonStrikerName,
+                        bowlerName: homeStore.openingBowlerName);
+                    GoRouter.of(context).pop();
+                  }
                 },
                 child: const Text("Start Match"))
           ],

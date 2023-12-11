@@ -73,6 +73,9 @@ abstract class _HomeStore with Store {
   @observable
   String over = '';
 
+  @observable
+  bool isMatchNew = true;
+
   @computed
   String get batTeamName => tossWonBy.name == 'host' && opted.name == 'bat' ||
           tossWonBy.name == 'visitor' && opted.name == 'bowl'

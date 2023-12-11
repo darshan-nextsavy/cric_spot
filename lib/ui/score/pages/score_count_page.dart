@@ -5,7 +5,9 @@ import 'package:cric_spot/core/enum/run_count_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_card.dart';
+import 'package:cric_spot/core/widgtes/cric_widgets/cric_modal.dart';
 import 'package:cric_spot/main.dart';
+import 'package:cric_spot/store/home/home_store.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -21,6 +23,7 @@ class ScoreCountPage extends StatefulWidget {
 
 class _ScoreCountPageState extends State<ScoreCountPage> {
   final ScoreStore scoreStore = getIt.get<ScoreStore>();
+  final HomeStore homeStore = getIt.get<HomeStore>();
 
   @override
   void initState() {
@@ -459,23 +462,47 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "0",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.wicket
-                                                ? GoRouter.of(context)
-                                                    .pushNamed(
-                                                        RoutesName
-                                                            .fallOfWicket.name,
-                                                        pathParameters: {
-                                                        "run": "0"
-                                                      })
-                                                : scoreStore.countRun(run: 0);
-                                            if (scoreStore.overLength == 6) {
+                                          if (scoreStore.totalBall <
+                                              (int.parse(scoreStore
+                                                      .matchData!.over!) *
+                                                  6)) {
+                                            if (scoreStore.overLength < 6) {
+                                              scoreStore.wicket
+                                                  ? GoRouter.of(context)
+                                                      .pushNamed(
+                                                          RoutesName
+                                                              .fallOfWicket
+                                                              .name,
+                                                          pathParameters: {
+                                                          "run": "0"
+                                                        })
+                                                  : scoreStore.countRun(run: 0);
+
+                                              if (scoreStore.totalBall ==
+                                                  (int.parse(scoreStore
+                                                          .matchData!.over!) *
+                                                      6)) {
+                                                scoreStore.currentInning!
+                                                        .isFirstInning!
+                                                    ? inningDialog(context)
+                                                    : scoreStore.saveData();
+                                              } else {
+                                                if (scoreStore.overLength ==
+                                                    6) {
+                                                  GoRouter.of(context).push(
+                                                      RoutesName
+                                                          .selectBowler.path);
+                                                }
+                                              }
+                                            } else {
                                               GoRouter.of(context).push(
                                                   RoutesName.selectBowler.path);
                                             }
                                           } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
+                                            scoreStore.currentInning!
+                                                    .isFirstInning!
+                                                ? inningDialog(context)
+                                                : scoreStore.saveData();
                                           }
                                         }),
                                     countRunCard(
@@ -563,11 +590,19 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "6",
                                         onTap: () {
+                                          // if((int.parse(scoreStore.matchData!.over!)*6) < scoreStore.totalBall){}
                                           if (scoreStore.overLength < 6) {
                                             scoreStore.countRun(run: 6);
                                             if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
+                                              if ((int.parse(scoreStore
+                                                          .matchData!.over!) *
+                                                      6) ==
+                                                  scoreStore.totalBall) {
+                                              } else {
+                                                GoRouter.of(context).push(
+                                                    RoutesName
+                                                        .selectBowler.path);
+                                              }
                                             }
                                           } else {
                                             GoRouter.of(context).push(
@@ -582,12 +617,40 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                           )),
                         )
                       ],
-                    )
+                    ),
+                    // Observer(builder: (_) {
+                    //   if (scoreStore.overLength == 5) {
+                    //     Future.delayed(Duration.zero, () {
+                    //       deleteDialog(context);
+                    //     });
+                    //   }
+                    //   return SizedBox.shrink();
+                    // })
                   ],
                 ),
               ),
             );
     });
+  }
+
+  void inningDialog(BuildContext context) {
+    cricAlertDialog(context,
+        title: const Text("End of the first inning."),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                "${scoreStore.currentInning!.bowlTeamName} Need ${scoreStore.totalRun + 1} Runs in ${scoreStore.matchData!.over} overs."),
+            Text(
+                "Require runrate: ${((scoreStore.totalRun + 1) / int.parse(scoreStore.matchData!.over!)).toStringAsFixed(2)}")
+          ],
+        ),
+        confirmationButton: TextButton(
+            onPressed: () {
+              homeStore.isMatchNew = false;
+              GoRouter.of(context).push(RoutesName.playerSelect.path);
+            },
+            child: const Text('Okay')));
   }
 
   Widget countRunCard({required String child, required Function() onTap}) {
