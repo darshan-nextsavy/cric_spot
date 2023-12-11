@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cric_spot/core/enum/opted_type.dart';
 import 'package:cric_spot/core/enum/team_type.dart';
 import 'package:cric_spot/model/batting/batting_lineup_model.dart';
@@ -26,6 +24,9 @@ abstract class _HomeStore with Store {
 
   @observable
   List<MatchModel> matchList = [];
+
+  @observable
+  List<TeamModel> teams = [];
 
   @observable
   int selectedIndex = 0;
@@ -84,6 +85,11 @@ abstract class _HomeStore with Store {
   @computed
   String get bowlTeamName =>
       batTeamName == hostTeamName ? visitorTeamName : hostTeamName;
+
+  @action
+  void getAllData() {
+    teams = teamBox.values.toList();
+  }
 
   // index for bottom navigationbar
   @action
@@ -145,16 +151,28 @@ abstract class _HomeStore with Store {
     }
   }
 
+  @action
+  Future<TeamModel> getTeam(String teamName) async {
+    final TeamModel team = teams.firstWhere(
+      (element) => element.name == teamName,
+      orElse: () => TeamModel(name: teamName, match: 0, loss: 0, win: 0),
+    );
+    if (team.id == null) {
+      final teamId = await teamBox.add(team);
+      team.id = teamId.toString();
+      team.save();
+    }
+    return team;
+  }
+
   // create new match
   @action
   Future<String> createNewMatch() async {
     //host team
-    TeamModel hostTeam =
-        TeamModel(name: hostTeamName, match: 0, loss: 0, win: 0);
+    TeamModel hostTeam = await getTeam(hostTeamName);
 
     // visitor team
-    TeamModel visitorTeam =
-        TeamModel(name: visitorTeamName, match: 0, loss: 0, win: 0);
+    TeamModel visitorTeam = await getTeam(visitorTeamName);
 
     // striker
     PlayerModel striker = PlayerModel(name: strikerName);
@@ -164,16 +182,6 @@ abstract class _HomeStore with Store {
 
     //bowler
     PlayerModel bowler = PlayerModel(name: openingBowlerName);
-
-    // save host team
-    final hostTeamId = await teamBox.add(hostTeam);
-    hostTeam.id = hostTeamId.toString();
-    hostTeam.save();
-
-    // save visitor team
-    final visitorTeamId = await teamBox.add(visitorTeam);
-    visitorTeam.id = visitorTeamId.toString();
-    visitorTeam.save();
 
     // save stiker player
     final strikerId = await playerBox.add(striker);
@@ -199,11 +207,9 @@ abstract class _HomeStore with Store {
         isNoball: isNoBall,
         isNoballReball: noBallReBall,
         noballRun: int.parse(noBallRun),
-        hostTeamId: hostTeamId.toString(),
-        visitorTeamId: visitorTeamId.toString(),
-        tossId: tossWonBy.name == 'host'
-            ? hostTeamId.toString()
-            : visitorTeamId.toString(),
+        hostTeamId: hostTeam.id,
+        visitorTeamId: visitorTeam.id,
+        tossId: tossWonBy.name == 'host' ? hostTeam.id : visitorTeam.id,
         tossName: tossWonBy.name == 'host' ? hostTeamName : visitorTeamName,
         tossElect: opted.name,
         firstBatTeamName: batTeamName,

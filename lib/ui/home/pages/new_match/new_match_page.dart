@@ -5,17 +5,22 @@ import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
 import 'package:cric_spot/main.dart';
+import 'package:cric_spot/model/team/team_model.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 
 class NewMatchPage extends StatelessWidget {
   const NewMatchPage({super.key});
 
+  static const List<String> suggestions = ['one', 'two', 'three'];
+
   @override
   Widget build(BuildContext context) {
     final homeStore = getIt.get<HomeStore>();
+    homeStore.getAllData();
     TextEditingController hostTeamController = TextEditingController();
     TextEditingController visitorTeamController = TextEditingController();
     TextEditingController overController = TextEditingController();
@@ -36,27 +41,87 @@ class NewMatchPage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            CricTextFormField(
-              controller: hostTeamController,
-              hintText: "Host team",
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              onChanged: (val) {
-                homeStore.hostTeamNameChange(val);
-              },
-            ),
+            TypeAheadField<TeamModel>(
+                hideOnEmpty: true,
+                controller: hostTeamController,
+                suggestionsCallback: (search) {
+                  return homeStore.teams
+                      .where((element) => element.name!.contains(search))
+                      .toList();
+                },
+                onSelected: (team) {
+                  homeStore.hostTeamNameChange(team.name!);
+                },
+                itemBuilder: (context, team) {
+                  return ListTile(
+                    title: Text(team.name!),
+                  );
+                },
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    textCapitalization: TextCapitalization.words,
+                    onChanged: (val) {
+                      homeStore.hostTeamNameChange(val);
+                    },
+                    keyboardType: TextInputType.name,
+                    decoration: const InputDecoration(
+                      hintText: "Host Team",
+                    ),
+                  );
+                }),
+            // CricTextFormField(
+            //   controller: hostTeamController,
+            //   hintText: "Host team",
+            //   keyboardType: TextInputType.name,
+            //   textCapitalization: TextCapitalization.words,
+            //   onChanged: (val) {
+            //     homeStore.hostTeamNameChange(val);
+            //   },
+            // ),
             const SizedBox(
               height: 16,
             ),
-            CricTextFormField(
-              controller: visitorTeamController,
-              hintText: "Visitor team",
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              onChanged: (val) {
-                homeStore.visitorTeamNameChange(val);
-              },
-            ),
+            TypeAheadField<TeamModel>(
+                hideOnEmpty: true,
+                controller: visitorTeamController,
+                suggestionsCallback: (search) {
+                  return homeStore.teams
+                      .where((element) => element.name!.contains(search))
+                      .toList();
+                },
+                onSelected: (team) {
+                  homeStore.visitorTeamNameChange(team.name!);
+                },
+                itemBuilder: (context, team) {
+                  return ListTile(
+                    title: Text(team.name!),
+                  );
+                },
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    textCapitalization: TextCapitalization.words,
+                    onChanged: (val) {
+                      homeStore.visitorTeamNameChange(val);
+                    },
+                    keyboardType: TextInputType.name,
+                    decoration: const InputDecoration(
+                      hintText: "Visitor Team",
+                    ),
+                  );
+                }),
+            // CricTextFormField(
+            //   controller: visitorTeamController,
+            //   hintText: "Visitor team",
+            //   keyboardType: TextInputType.name,
+            //   textCapitalization: TextCapitalization.words,
+            //   onChanged: (val) {
+            //     homeStore.visitorTeamNameChange(val);
+            //   },
+            // ),
             const SizedBox(
               height: 20,
             ),

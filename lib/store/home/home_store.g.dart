@@ -40,6 +40,21 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$teamsAtom = Atom(name: '_HomeStore.teams', context: context);
+
+  @override
+  List<TeamModel> get teams {
+    _$teamsAtom.reportRead();
+    return super.teams;
+  }
+
+  @override
+  set teams(List<TeamModel> value) {
+    _$teamsAtom.reportWrite(value, super.teams, () {
+      super.teams = value;
+    });
+  }
+
   late final _$selectedIndexAtom =
       Atom(name: '_HomeStore.selectedIndex', context: context);
 
@@ -278,6 +293,14 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$getTeamAsyncAction =
+      AsyncAction('_HomeStore.getTeam', context: context);
+
+  @override
+  Future<TeamModel> getTeam(String teamName) {
+    return _$getTeamAsyncAction.run(() => super.getTeam(teamName));
+  }
+
   late final _$createNewMatchAsyncAction =
       AsyncAction('_HomeStore.createNewMatch', context: context);
 
@@ -288,6 +311,17 @@ mixin _$HomeStore on _HomeStore, Store {
 
   late final _$_HomeStoreActionController =
       ActionController(name: '_HomeStore', context: context);
+
+  @override
+  void getAllData() {
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.getAllData');
+    try {
+      return super.getAllData();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void currentIndex(int index) {
@@ -392,6 +426,7 @@ mixin _$HomeStore on _HomeStore, Store {
   String toString() {
     return '''
 matchList: ${matchList},
+teams: ${teams},
 selectedIndex: ${selectedIndex},
 isNoBall: ${isNoBall},
 isWideBall: ${isWideBall},
