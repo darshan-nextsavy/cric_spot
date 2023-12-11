@@ -31,9 +31,9 @@ class InningModelAdapter extends TypeAdapter<_$InningModelImpl> {
       currentStriker: fields[11] as BattingLineUpModel?,
       currentNonStriker: fields[12] as BattingLineUpModel?,
       overs: (fields[13] as List?)
-          ?.map((dynamic e) => (e as List).cast<int>())
+          ?.map((dynamic e) => (e as List).cast<String>())
           ?.toList(),
-      currentOver: (fields[14] as List?)?.cast<int>(),
+      currentOver: (fields[14] as List?)?.cast<String>(),
       partnerShips: (fields[15] as List?)?.cast<PartnerShipModel>(),
       currentPartnerShip: fields[16] as PartnerShipModel?,
       isFirstInning: fields[17] as bool?,
@@ -128,10 +128,10 @@ _$InningModelImpl _$$InningModelImplFromJson(Map<String, dynamic> json) =>
           : BattingLineUpModel.fromJson(
               json['currentNonStriker'] as Map<String, dynamic>),
       overs: (json['overs'] as List<dynamic>?)
-          ?.map((e) => (e as List<dynamic>).map((e) => e as int).toList())
+          ?.map((e) => (e as List<dynamic>).map((e) => e as String).toList())
           .toList(),
       currentOver: (json['currentOver'] as List<dynamic>?)
-          ?.map((e) => e as int)
+          ?.map((e) => e as String)
           .toList(),
       partnerShips: (json['partnerShips'] as List<dynamic>?)
           ?.map((e) => PartnerShipModel.fromJson(e as Map<String, dynamic>))

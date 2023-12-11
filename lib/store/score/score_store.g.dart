@@ -149,6 +149,54 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$totalRunAtom =
+      Atom(name: '_ScoreStore.totalRun', context: context);
+
+  @override
+  int get totalRun {
+    _$totalRunAtom.reportRead();
+    return super.totalRun;
+  }
+
+  @override
+  set totalRun(int value) {
+    _$totalRunAtom.reportWrite(value, super.totalRun, () {
+      super.totalRun = value;
+    });
+  }
+
+  late final _$totalBallAtom =
+      Atom(name: '_ScoreStore.totalBall', context: context);
+
+  @override
+  int get totalBall {
+    _$totalBallAtom.reportRead();
+    return super.totalBall;
+  }
+
+  @override
+  set totalBall(int value) {
+    _$totalBallAtom.reportWrite(value, super.totalBall, () {
+      super.totalBall = value;
+    });
+  }
+
+  late final _$totalWicketAtom =
+      Atom(name: '_ScoreStore.totalWicket', context: context);
+
+  @override
+  int get totalWicket {
+    _$totalWicketAtom.reportRead();
+    return super.totalWicket;
+  }
+
+  @override
+  set totalWicket(int value) {
+    _$totalWicketAtom.reportWrite(value, super.totalWicket, () {
+      super.totalWicket = value;
+    });
+  }
+
   late final _$extraRunAtom =
       Atom(name: '_ScoreStore.extraRun', context: context);
 
@@ -212,17 +260,33 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$currentPartnerShipAtom =
+      Atom(name: '_ScoreStore.currentPartnerShip', context: context);
+
+  @override
+  PartnerShipModel? get currentPartnerShip {
+    _$currentPartnerShipAtom.reportRead();
+    return super.currentPartnerShip;
+  }
+
+  @override
+  set currentPartnerShip(PartnerShipModel? value) {
+    _$currentPartnerShipAtom.reportWrite(value, super.currentPartnerShip, () {
+      super.currentPartnerShip = value;
+    });
+  }
+
   late final _$currentOverAtom =
       Atom(name: '_ScoreStore.currentOver', context: context);
 
   @override
-  List<int> get currentOver {
+  List<String> get currentOver {
     _$currentOverAtom.reportRead();
     return super.currentOver;
   }
 
   @override
-  set currentOver(List<int> value) {
+  set currentOver(List<String> value) {
     _$currentOverAtom.reportWrite(value, super.currentOver, () {
       super.currentOver = value;
     });
@@ -255,38 +319,6 @@ mixin _$ScoreStore on _ScoreStore, Store {
   set target(int value) {
     _$targetAtom.reportWrite(value, super.target, () {
       super.target = value;
-    });
-  }
-
-  late final _$totalRunAtom =
-      Atom(name: '_ScoreStore.totalRun', context: context);
-
-  @override
-  int get totalRun {
-    _$totalRunAtom.reportRead();
-    return super.totalRun;
-  }
-
-  @override
-  set totalRun(int value) {
-    _$totalRunAtom.reportWrite(value, super.totalRun, () {
-      super.totalRun = value;
-    });
-  }
-
-  late final _$totalBallAtom =
-      Atom(name: '_ScoreStore.totalBall', context: context);
-
-  @override
-  int get totalBall {
-    _$totalBallAtom.reportRead();
-    return super.totalBall;
-  }
-
-  @override
-  set totalBall(int value) {
-    _$totalBallAtom.reportWrite(value, super.totalBall, () {
-      super.totalBall = value;
     });
   }
 
@@ -521,15 +553,17 @@ wicket: ${wicket},
 inningOne: ${inningOne},
 inningTwo: ${inningTwo},
 currentInning: ${currentInning},
+totalRun: ${totalRun},
+totalBall: ${totalBall},
+totalWicket: ${totalWicket},
 extraRun: ${extraRun},
 striker: ${striker},
 nonStriker: ${nonStriker},
 bowler: ${bowler},
+currentPartnerShip: ${currentPartnerShip},
 currentOver: ${currentOver},
 isLoad: ${isLoad},
 target: ${target},
-totalRun: ${totalRun},
-totalBall: ${totalBall},
 overLength: ${overLength},
 newBowler: ${newBowler},
 newBatsman: ${newBatsman},

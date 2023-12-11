@@ -81,13 +81,13 @@ mixin _$InningModel {
   set currentNonStriker(BattingLineUpModel? value) =>
       throw _privateConstructorUsedError;
   @HiveField(13)
-  List<List<int>>? get overs => throw _privateConstructorUsedError;
+  List<List<String>>? get overs => throw _privateConstructorUsedError;
   @HiveField(13)
-  set overs(List<List<int>>? value) => throw _privateConstructorUsedError;
+  set overs(List<List<String>>? value) => throw _privateConstructorUsedError;
   @HiveField(14)
-  List<int>? get currentOver => throw _privateConstructorUsedError;
+  List<String>? get currentOver => throw _privateConstructorUsedError;
   @HiveField(14)
-  set currentOver(List<int>? value) => throw _privateConstructorUsedError;
+  set currentOver(List<String>? value) => throw _privateConstructorUsedError;
   @HiveField(15)
   List<PartnerShipModel>? get partnerShips =>
       throw _privateConstructorUsedError;
@@ -131,8 +131,8 @@ abstract class $InningModelCopyWith<$Res> {
       @HiveField(10) BowlingLineUpModel? currentBowler,
       @HiveField(11) BattingLineUpModel? currentStriker,
       @HiveField(12) BattingLineUpModel? currentNonStriker,
-      @HiveField(13) List<List<int>>? overs,
-      @HiveField(14) List<int>? currentOver,
+      @HiveField(13) List<List<String>>? overs,
+      @HiveField(14) List<String>? currentOver,
       @HiveField(15) List<PartnerShipModel>? partnerShips,
       @HiveField(16) PartnerShipModel? currentPartnerShip,
       @HiveField(17) bool? isFirstInning});
@@ -232,11 +232,11 @@ class _$InningModelCopyWithImpl<$Res, $Val extends InningModel>
       overs: freezed == overs
           ? _value.overs
           : overs // ignore: cast_nullable_to_non_nullable
-              as List<List<int>>?,
+              as List<List<String>>?,
       currentOver: freezed == currentOver
           ? _value.currentOver
           : currentOver // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
+              as List<String>?,
       partnerShips: freezed == partnerShips
           ? _value.partnerShips
           : partnerShips // ignore: cast_nullable_to_non_nullable
@@ -336,8 +336,8 @@ abstract class _$$InningModelImplCopyWith<$Res>
       @HiveField(10) BowlingLineUpModel? currentBowler,
       @HiveField(11) BattingLineUpModel? currentStriker,
       @HiveField(12) BattingLineUpModel? currentNonStriker,
-      @HiveField(13) List<List<int>>? overs,
-      @HiveField(14) List<int>? currentOver,
+      @HiveField(13) List<List<String>>? overs,
+      @HiveField(14) List<String>? currentOver,
       @HiveField(15) List<PartnerShipModel>? partnerShips,
       @HiveField(16) PartnerShipModel? currentPartnerShip,
       @HiveField(17) bool? isFirstInning});
@@ -440,11 +440,11 @@ class __$$InningModelImplCopyWithImpl<$Res>
       overs: freezed == overs
           ? _value.overs
           : overs // ignore: cast_nullable_to_non_nullable
-              as List<List<int>>?,
+              as List<List<String>>?,
       currentOver: freezed == currentOver
           ? _value.currentOver
           : currentOver // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
+              as List<String>?,
       partnerShips: freezed == partnerShips
           ? _value.partnerShips
           : partnerShips // ignore: cast_nullable_to_non_nullable
@@ -530,10 +530,10 @@ class _$InningModelImpl extends _InningModel {
   BattingLineUpModel? currentNonStriker;
   @override
   @HiveField(13)
-  List<List<int>>? overs;
+  List<List<String>>? overs;
   @override
   @HiveField(14)
-  List<int>? currentOver;
+  List<String>? currentOver;
   @override
   @HiveField(15)
   List<PartnerShipModel>? partnerShips;
@@ -578,8 +578,8 @@ abstract class _InningModel extends InningModel {
       @HiveField(10) BowlingLineUpModel? currentBowler,
       @HiveField(11) BattingLineUpModel? currentStriker,
       @HiveField(12) BattingLineUpModel? currentNonStriker,
-      @HiveField(13) List<List<int>>? overs,
-      @HiveField(14) List<int>? currentOver,
+      @HiveField(13) List<List<String>>? overs,
+      @HiveField(14) List<String>? currentOver,
       @HiveField(15) List<PartnerShipModel>? partnerShips,
       @HiveField(16) PartnerShipModel? currentPartnerShip,
       @HiveField(17) bool? isFirstInning}) = _$InningModelImpl;
@@ -655,14 +655,14 @@ abstract class _InningModel extends InningModel {
   set currentNonStriker(BattingLineUpModel? value);
   @override
   @HiveField(13)
-  List<List<int>>? get overs;
+  List<List<String>>? get overs;
   @HiveField(13)
-  set overs(List<List<int>>? value);
+  set overs(List<List<String>>? value);
   @override
   @HiveField(14)
-  List<int>? get currentOver;
+  List<String>? get currentOver;
   @HiveField(14)
-  set currentOver(List<int>? value);
+  set currentOver(List<String>? value);
   @override
   @HiveField(15)
   List<PartnerShipModel>? get partnerShips;

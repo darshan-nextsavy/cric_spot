@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cric_spot/config/routes_name.dart';
+import 'package:cric_spot/core/enum/run_count_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_card.dart';
@@ -104,7 +105,7 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                       Observer(builder: (_) {
                                         return Text(
                                           // "${scoreStore.currentInning?.totalRun} - ${scoreStore.currentInning?.totalWicket}",
-                                          "${scoreStore.totalRun} - ${scoreStore.currentInning?.totalWicket}",
+                                          "${scoreStore.totalRun} - ${scoreStore.totalWicket}",
                                           style: context.headlineLarge
                                               ?.copyWith(
                                                   color: context
@@ -363,15 +364,15 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                               Text("This Over: "),
                               Expanded(
                                 child: SizedBox(
-                                  height: 48,
+                                  height: 62,
                                   child: Observer(builder: (_) {
                                     return ListView(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
                                       children: [
                                         ...scoreStore.currentOver
-                                            .map(
-                                                ((e) => overCircleCard(run: e)))
+                                            .map(((e) =>
+                                                overCircleCard(rundata: e)))
                                             .toList()
                                       ],
                                     );
@@ -684,19 +685,98 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
     );
   }
 
-  Widget overCircleCard({required int run}) {
-    return CricOutlineCard(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            width: 1,
-            color: context.outline,
-          ),
-        ),
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Center(child: Text(run.toString())),
-        ));
+  Widget overCircleCard({required String rundata}) {
+    final run = overText(rundata);
+    return Column(
+      children: [
+        Card(
+            color: run[0] == 'OUT'
+                ? Colors.red[300]
+                : run[0] == '6'
+                    ? context.primary
+                    : run[0] == '4'
+                        ? context.primaryContainer
+                        : null,
+            elevation: 0,
+            margin: EdgeInsets.only(bottom: 0, left: 4, top: 4, right: 4),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                width: 1,
+                color: context.outline,
+              ),
+            ),
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: Center(
+                  child: Text(
+                run[0],
+                style: TextStyle(
+                    color: run[0] == 'OUT'
+                        ? Colors.white
+                        : run[0] == '6'
+                            ? context.primaryContainer
+                            : run[0] == '4'
+                                ? context.primary
+                                : null),
+              )),
+            )),
+        run[1] == ''
+            ? Text('')
+            : Text(
+                run[1],
+                style: context.labelSmall,
+              )
+      ],
+    );
+  }
+
+  List<String> overText(String run) {
+    final runsDetail = run.split('-');
+
+    switch (runsDetail[1]) {
+      case "noramlRun":
+        return [runsDetail[0], ''];
+      case "wideBall":
+        return ['0', "${runsDetail[0]} Wd"];
+
+      case "noBall":
+        return ['0', "${runsDetail[0]} Nb"];
+      case "byes":
+        return ['0', "${runsDetail[0]} B"];
+
+      case "legByes":
+        return ['0', "${runsDetail[0]} Lb"];
+
+      case "noBallWithByes":
+        return ['0', "${runsDetail[0]} Nb&B"];
+
+      case "noBallWithLegByes":
+        return ['0', "${runsDetail[0]} Nb&Lb"];
+
+      case "wideBallWithWicket":
+        return ['OUT', "${runsDetail[0]} Wd"];
+
+      case "noBallWithWicket":
+        return ['OUT', "${runsDetail[0]} Nb"];
+
+      case "byesWithWicket":
+        return ['OUT', "${runsDetail[0]} B"];
+
+      case "legByesWithWicket":
+        return ['OUT', "${runsDetail[0]} Lb"];
+
+      case "noBallWithByesWithWicket":
+        return ['OUT', "${runsDetail[0]} Nb&B"];
+
+      case "noBallWithLegByesWithWicket":
+        return ['OUT', "${runsDetail[0]} Nb&Lb"];
+
+      case "normalWicket":
+        return ['OUT', ""];
+      default:
+        return ['0', ""];
+    }
   }
 }
