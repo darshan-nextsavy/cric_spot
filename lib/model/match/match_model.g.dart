@@ -41,13 +41,14 @@ class MatchModelAdapter extends TypeAdapter<_$MatchModelImpl> {
       secondBatTeamOver: fields[21] as String?,
       inningOneId: fields[22] as String?,
       inningTwoId: fields[23] as String?,
+      playerPerMatch: fields[24] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, _$MatchModelImpl obj) {
     writer
-      ..writeByte(24)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -95,7 +96,9 @@ class MatchModelAdapter extends TypeAdapter<_$MatchModelImpl> {
       ..writeByte(22)
       ..write(obj.inningOneId)
       ..writeByte(23)
-      ..write(obj.inningTwoId);
+      ..write(obj.inningTwoId)
+      ..writeByte(24)
+      ..write(obj.playerPerMatch);
   }
 
   @override
@@ -139,6 +142,7 @@ _$MatchModelImpl _$$MatchModelImplFromJson(Map<String, dynamic> json) =>
       secondBatTeamOver: json['secondBatTeamOver'] as String?,
       inningOneId: json['inningOneId'] as String?,
       inningTwoId: json['inningTwoId'] as String?,
+      playerPerMatch: json['playerPerMatch'] as String?,
     );
 
 Map<String, dynamic> _$$MatchModelImplToJson(_$MatchModelImpl instance) =>
@@ -167,4 +171,5 @@ Map<String, dynamic> _$$MatchModelImplToJson(_$MatchModelImpl instance) =>
       'secondBatTeamOver': instance.secondBatTeamOver,
       'inningOneId': instance.inningOneId,
       'inningTwoId': instance.inningTwoId,
+      'playerPerMatch': instance.playerPerMatch,
     };

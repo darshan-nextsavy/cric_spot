@@ -153,7 +153,9 @@ abstract class _ScoreStore with Store {
       matchData = matchBox.get(int.parse(matchId));
       inningOne = inningBox.get(int.parse(matchData!.inningOneId!));
       inningTwo = inningBox.get(int.parse(matchData!.inningTwoId!));
-      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6)) {
+      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6) ||
+          inningOne!.totalWicket ==
+              (int.parse(matchData!.playerPerMatch!) - 1)) {
         currentInning = inningTwo;
         target = inningOne!.totalRun! + 1;
       } else {
@@ -249,8 +251,9 @@ abstract class _ScoreStore with Store {
   }
 
   @action
-  void changeInning(
+  Future<void> changeInning(
       {String? strikerName, String? nonStrikerName, String? bowlerName}) async {
+    print("change inning");
     saveData();
     // striker
     PlayerModel strikerPlayer = PlayerModel(name: strikerName);
@@ -376,10 +379,10 @@ abstract class _ScoreStore with Store {
             four: 0,
             six: 0,
             isNotOut: true));
-
+    print(totalRun);
+    target = totalRun + 1;
     currentInning = inningTwo;
     totalRun = currentInning!.totalRun!;
-    target = totalRun + 1;
     totalBall = currentInning!.totalBall!;
     totalWicket = currentInning!.totalWicket!;
     extraRun = currentInning?.extraRun;
@@ -394,6 +397,32 @@ abstract class _ScoreStore with Store {
         : currentInning!.totalBall! % 6;
 
     currentPartnerShip = currentInning!.currentPartnerShip;
+    print(currentInning);
+    print(target);
+    print(totalRun);
+  }
+
+  @action
+  void wonMatch() {
+    lastSave();
+    lastSavePartnership();
+    saveData();
+
+    if (currentInning!.totalRun! > inningOne!.totalRun!) {
+      matchData!.wonId = currentInning!.id;
+      matchData!.wonName = currentInning!.batTeamName;
+      matchData!.wonBy =
+          "${int.parse(matchData!.playerPerMatch!) - 1 - totalWicket} Wickets";
+    } else if (currentInning!.totalRun! == inningOne!.totalRun!) {
+      matchData!.wonId = "tie";
+      matchData!.wonName = "tie";
+      matchData!.wonBy = "tie";
+    } else {
+      matchData!.wonId = inningOne!.id;
+      matchData!.wonName = inningOne!.batTeamName;
+      matchData!.wonBy = "${inningOne!.totalRun! - totalRun} Runs";
+    }
+    matchData!.save();
   }
 
   @action

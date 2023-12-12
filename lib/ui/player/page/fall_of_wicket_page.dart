@@ -95,15 +95,18 @@ class FallOfWicketPage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            CricTextFormField(
-              // controller: strikerController,
-              hintText: "Player name",
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              onChanged: (val) {
-                scoreStore.newBatsman = val;
-              },
-            ),
+            scoreStore.totalWicket ==
+                    (int.parse(scoreStore.matchData!.playerPerMatch!) - 2)
+                ? const SizedBox.shrink()
+                : CricTextFormField(
+                    // controller: strikerController,
+                    hintText: "Player name",
+                    keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
+                    onChanged: (val) {
+                      scoreStore.newBatsman = val;
+                    },
+                  ),
             const SizedBox(
               height: 16,
             ),

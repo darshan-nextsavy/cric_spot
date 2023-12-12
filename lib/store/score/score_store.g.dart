@@ -450,19 +450,20 @@ mixin _$ScoreStore on _ScoreStore, Store {
     return _$fallOfWicketAsyncAction.run(() => super.fallOfWicket());
   }
 
-  late final _$_ScoreStoreActionController =
-      ActionController(name: '_ScoreStore', context: context);
+  late final _$changeInningAsyncAction =
+      AsyncAction('_ScoreStore.changeInning', context: context);
 
   @override
-  void getAllData(String matchId) {
-    final _$actionInfo = _$_ScoreStoreActionController.startAction(
-        name: '_ScoreStore.getAllData');
-    try {
-      return super.getAllData(matchId);
-    } finally {
-      _$_ScoreStoreActionController.endAction(_$actionInfo);
-    }
+  Future<void> changeInning(
+      {String? strikerName, String? nonStrikerName, String? bowlerName}) {
+    return _$changeInningAsyncAction.run(() => super.changeInning(
+        strikerName: strikerName,
+        nonStrikerName: nonStrikerName,
+        bowlerName: bowlerName));
   }
+
+  late final _$_ScoreStoreActionController =
+      ActionController(name: '_ScoreStore', context: context);
 
   @override
   void changeWide() {
@@ -520,11 +521,33 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
+  void getAllData(String matchId) {
+    final _$actionInfo = _$_ScoreStoreActionController.startAction(
+        name: '_ScoreStore.getAllData');
+    try {
+      return super.getAllData(matchId);
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void saveData() {
     final _$actionInfo =
         _$_ScoreStoreActionController.startAction(name: '_ScoreStore.saveData');
     try {
       return super.saveData();
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void wonMatch() {
+    final _$actionInfo =
+        _$_ScoreStoreActionController.startAction(name: '_ScoreStore.wonMatch');
+    try {
+      return super.wonMatch();
     } finally {
       _$_ScoreStoreActionController.endAction(_$actionInfo);
     }

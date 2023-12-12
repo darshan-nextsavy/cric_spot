@@ -15,9 +15,9 @@ class AdwanceSettingPage extends StatelessWidget {
     TextEditingController playerPerMatchController = TextEditingController();
     TextEditingController noBallRunController = TextEditingController();
     TextEditingController wideBallRunController = TextEditingController();
-    playerPerMatchController.text = '11';
-    noBallRunController.text = '1';
-    wideBallRunController.text = '1';
+    playerPerMatchController.text = homeStore.playerPerMatch;
+    noBallRunController.text = homeStore.noBallRun;
+    wideBallRunController.text = homeStore.wideBallRun;
 
     return Scaffold(
       appBar: AppBar(
@@ -42,6 +42,9 @@ class AdwanceSettingPage extends StatelessWidget {
               controller: playerPerMatchController,
               hintText: "11",
               keyboardType: TextInputType.number,
+              onChanged: (val) {
+                homeStore.playerPerMatch = val;
+              },
             ),
             const SizedBox(
               height: 20,

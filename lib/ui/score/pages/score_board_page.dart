@@ -649,7 +649,7 @@ class ScoreBoardPage extends StatelessWidget {
                                                       .inningTwo!.totalBall ==
                                                   0
                                               ? "0/0 (0.0)  0.00 "
-                                              : "${scoreStore.inningTwo!.totalRun}  (${scoreStore.matchData!.firstBatTeamOver})  ${scoreStore.inningTwo!.totalRun! / (scoreStore.inningTwo!.totalBall! / 6)}")
+                                              : "${scoreStore.inningTwo!.totalRun}  (${scoreStore.matchData!.firstBatTeamOver})  ${(scoreStore.inningTwo!.totalRun! / (scoreStore.inningTwo!.totalBall! / 6)).toStringAsFixed(2)}")
                                         ],
                                       )
                                     ],

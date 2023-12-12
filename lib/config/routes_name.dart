@@ -10,7 +10,9 @@ enum RoutesName {
   setting,
   selectBowler,
   playerSelect,
-  fallOfWicket;
+  fallOfWicket,
+  winningPage
+  ;
 }
 
 extension RoutesNameHelper on RoutesName {
@@ -40,6 +42,8 @@ extension RoutesNameHelper on RoutesName {
         return 'select-bowler';
       case RoutesName.fallOfWicket:
         return 'fall-of-wicket';
+         case RoutesName.winningPage:
+        return 'winning-page';
     }
   }
 
@@ -69,6 +73,8 @@ extension RoutesNameHelper on RoutesName {
         return '/select-bowler';
       case RoutesName.fallOfWicket:
         return '/fall-of-wicket/:run';
+         case RoutesName.winningPage:
+        return '/winning-page';
     }
   }
 }

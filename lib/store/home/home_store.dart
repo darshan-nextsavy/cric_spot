@@ -50,6 +50,9 @@ abstract class _HomeStore with Store {
   String wideBallRun = '1';
 
   @observable
+  String playerPerMatch = '11';
+
+  @observable
   TeamType tossWonBy = TeamType.host;
 
   @observable
@@ -220,7 +223,8 @@ abstract class _HomeStore with Store {
         firstBatTeamOver: "0.0",
         secondBatTeamName: bowlTeamName,
         secondBatTeamScore: "0/0",
-        secondBatTeamOver: "0.0");
+        secondBatTeamOver: "0.0",
+        playerPerMatch: playerPerMatch);
 
     final matchId = await matchBox.add(match);
     match.id = matchId.toString();

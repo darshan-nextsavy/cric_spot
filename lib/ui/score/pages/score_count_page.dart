@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:cric_spot/config/routes_name.dart';
-import 'package:cric_spot/core/enum/run_count_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
 import 'package:cric_spot/core/widgtes/cric_widgets/cric_card.dart';
@@ -33,6 +32,7 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(scoreStore.matchData);
     return Observer(builder: (_) {
       return scoreStore.isLoad
           ? const Center(
@@ -158,7 +158,16 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                           return scoreStore
                                                   .currentInning!.isFirstInning!
                                               ? SizedBox.shrink()
-                                              : Text("8.36");
+                                              : Text(((scoreStore.target -
+                                                          scoreStore.totalRun) /
+                                                      (((int.parse(scoreStore
+                                                                      .matchData!
+                                                                      .over!) *
+                                                                  6) -
+                                                              scoreStore
+                                                                  .totalBall) /
+                                                          6))
+                                                  .toStringAsFixed(2));
                                         }),
                                       ],
                                     ),
@@ -171,7 +180,7 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                               scoreStore.currentInning!.isFirstInning!
                                   ? SizedBox.shrink()
                                   : Text(
-                                      "${scoreStore.matchData?.secondBatTeamName} need 125 runs in 75 balls",
+                                      "${scoreStore.matchData?.secondBatTeamName} need ${scoreStore.target - scoreStore.totalRun} runs in ${(int.parse(scoreStore.matchData!.over!) * 6) - scoreStore.totalBall} balls",
                                       style: context.bodyLarge?.copyWith(
                                           color: Colors.green,
                                           fontWeight: FontWeight.w500),
@@ -394,11 +403,15 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              checkBoxWidget(
-                                  childText: "Wide", value: scoreStore.wide),
-                              checkBoxWidget(
-                                  childText: "No Ball",
-                                  value: scoreStore.noBall),
+                              scoreStore.matchData!.isWideBall!
+                                  ? checkBoxWidget(
+                                      childText: "Wide", value: scoreStore.wide)
+                                  : SizedBox.shrink(),
+                              scoreStore.matchData!.isNoball!
+                                  ? checkBoxWidget(
+                                      childText: "No Ball",
+                                      value: scoreStore.noBall)
+                                  : SizedBox.shrink(),
                               checkBoxWidget(
                                   childText: "Byes", value: scoreStore.byes),
                               checkBoxWidget(
@@ -462,98 +475,22 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "0",
                                         onTap: () {
-                                          if (scoreStore.totalBall <
-                                              (int.parse(scoreStore
-                                                      .matchData!.over!) *
-                                                  6)) {
-                                            if (scoreStore.overLength < 6) {
-                                              scoreStore.wicket
-                                                  ? GoRouter.of(context)
-                                                      .pushNamed(
-                                                          RoutesName
-                                                              .fallOfWicket
-                                                              .name,
-                                                          pathParameters: {
-                                                          "run": "0"
-                                                        })
-                                                  : scoreStore.countRun(run: 0);
-
-                                              if (scoreStore.totalBall ==
-                                                  (int.parse(scoreStore
-                                                          .matchData!.over!) *
-                                                      6)) {
-                                                scoreStore.currentInning!
-                                                        .isFirstInning!
-                                                    ? inningDialog(context)
-                                                    : scoreStore.saveData();
-                                              } else {
-                                                if (scoreStore.overLength ==
-                                                    6) {
-                                                  GoRouter.of(context).push(
-                                                      RoutesName
-                                                          .selectBowler.path);
-                                                }
-                                              }
-                                            } else {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            scoreStore.currentInning!
-                                                    .isFirstInning!
-                                                ? inningDialog(context)
-                                                : scoreStore.saveData();
-                                          }
+                                          runCount(0);
                                         }),
                                     countRunCard(
                                         child: "1",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.wicket
-                                                ? GoRouter.of(context)
-                                                    .pushNamed(
-                                                        RoutesName
-                                                            .fallOfWicket.name,
-                                                        pathParameters: {
-                                                        "run": "1"
-                                                      })
-                                                : scoreStore.countRun(run: 1);
-                                            if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(1);
                                         }),
                                     countRunCard(
                                         child: "2",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.countRun(run: 2);
-                                            if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(2);
                                         }),
                                     countRunCard(
                                         child: "3",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.countRun(run: 3);
-                                            if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(3);
                                         }),
                                   ],
                                 ),
@@ -562,52 +499,17 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                                     countRunCard(
                                         child: "4",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.countRun(run: 4);
-                                            if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(4);
                                         }),
                                     countRunCard(
                                         child: "5",
                                         onTap: () {
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.countRun(run: 5);
-                                            if (scoreStore.overLength == 6) {
-                                              GoRouter.of(context).push(
-                                                  RoutesName.selectBowler.path);
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(5);
                                         }),
                                     countRunCard(
                                         child: "6",
                                         onTap: () {
-                                          // if((int.parse(scoreStore.matchData!.over!)*6) < scoreStore.totalBall){}
-                                          if (scoreStore.overLength < 6) {
-                                            scoreStore.countRun(run: 6);
-                                            if (scoreStore.overLength == 6) {
-                                              if ((int.parse(scoreStore
-                                                          .matchData!.over!) *
-                                                      6) ==
-                                                  scoreStore.totalBall) {
-                                              } else {
-                                                GoRouter.of(context).push(
-                                                    RoutesName
-                                                        .selectBowler.path);
-                                              }
-                                            }
-                                          } else {
-                                            GoRouter.of(context).push(
-                                                RoutesName.selectBowler.path);
-                                          }
+                                          runCount(6);
                                         }),
                                     countRunCard(child: "...", onTap: () {}),
                                   ],
@@ -618,19 +520,16 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                         )
                       ],
                     ),
-                    // Observer(builder: (_) {
-                    //   if (scoreStore.overLength == 5) {
-                    //     Future.delayed(Duration.zero, () {
-                    //       deleteDialog(context);
-                    //     });
-                    //   }
-                    //   return SizedBox.shrink();
-                    // })
                   ],
                 ),
               ),
             );
     });
+  }
+
+  void wonNavigate() {
+    scoreStore.wonMatch();
+    GoRouter.of(context).go(RoutesName.winningPage.path);
   }
 
   void inningDialog(BuildContext context) {
@@ -649,8 +548,48 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
             onPressed: () {
               homeStore.isMatchNew = false;
               GoRouter.of(context).push(RoutesName.playerSelect.path);
+              GoRouter.of(context).pop();
             },
             child: const Text('Okay')));
+  }
+
+  void runCount(int run) {
+    if (scoreStore.totalBall < (int.parse(scoreStore.matchData!.over!) * 6) &&
+        scoreStore.totalWicket <
+            (int.parse(scoreStore.matchData!.playerPerMatch ?? "11") - 1)) {
+      if (scoreStore.overLength < 6) {
+        scoreStore.wicket
+            ? GoRouter.of(context).pushNamed(RoutesName.fallOfWicket.name,
+                pathParameters: {"run": "$run"})
+            : scoreStore.countRun(run: run);
+
+        if (scoreStore.totalBall ==
+                (int.parse(scoreStore.matchData!.over!) * 6) ||
+            scoreStore.totalWicket ==
+                (int.parse(scoreStore.matchData!.playerPerMatch ?? "11") - 1) ||
+            (scoreStore.totalBall <
+                    (int.parse(scoreStore.matchData!.over!) * 6) &&
+                scoreStore.totalWicket <
+                    (int.parse(scoreStore.matchData!.playerPerMatch ?? "11") -
+                        1) &&
+                !scoreStore.currentInning!.isFirstInning! &&
+                scoreStore.totalRun >= scoreStore.target)) {
+          scoreStore.currentInning!.isFirstInning!
+              ? inningDialog(context)
+              : wonNavigate();
+        } else {
+          if (scoreStore.overLength == 6) {
+            GoRouter.of(context).push(RoutesName.selectBowler.path);
+          }
+        }
+      } else {
+        GoRouter.of(context).push(RoutesName.selectBowler.path);
+      }
+    } else {
+      scoreStore.currentInning!.isFirstInning!
+          ? inningDialog(context)
+          : wonNavigate();
+    }
   }
 
   Widget countRunCard({required String child, required Function() onTap}) {

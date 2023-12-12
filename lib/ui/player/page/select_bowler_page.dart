@@ -1,9 +1,7 @@
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
-import 'package:cric_spot/core/widgtes/cric_widgets/cric_text_field.dart';
 import 'package:cric_spot/main.dart';
 import 'package:cric_spot/model/bowling/bowling_lineup_model.dart';
-import 'package:cric_spot/model/team/team_model.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';

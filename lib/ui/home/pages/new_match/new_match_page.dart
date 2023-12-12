@@ -15,12 +15,11 @@ import 'package:go_router/go_router.dart';
 class NewMatchPage extends StatelessWidget {
   const NewMatchPage({super.key});
 
-  static const List<String> suggestions = ['one', 'two', 'three'];
-
   @override
   Widget build(BuildContext context) {
     final homeStore = getIt.get<HomeStore>();
     homeStore.getAllData();
+    print(homeStore.playerPerMatch);
     TextEditingController hostTeamController = TextEditingController();
     TextEditingController visitorTeamController = TextEditingController();
     TextEditingController overController = TextEditingController();
@@ -43,7 +42,7 @@ class NewMatchPage extends StatelessWidget {
             ),
             TypeAheadField<TeamModel>(
                 hideOnEmpty: true,
-                controller: hostTeamController,
+                // controller: hostTeamController,
                 suggestionsCallback: (search) {
                   return homeStore.teams
                       .where((element) => element.name!.contains(search))
@@ -52,6 +51,7 @@ class NewMatchPage extends StatelessWidget {
                 onSelected: (team) {
                   homeStore.hostTeamNameChange(team.name!);
                   hostTeamController.text = team.name!;
+                  print(visitorTeamController);
                 },
                 itemBuilder: (context, team) {
                   return ListTile(
@@ -59,6 +59,7 @@ class NewMatchPage extends StatelessWidget {
                   );
                 },
                 builder: (context, controller, focusNode) {
+                  print(controller);
                   return TextField(
                     controller: controller,
                     focusNode: focusNode,
@@ -73,6 +74,7 @@ class NewMatchPage extends StatelessWidget {
                   );
                 }),
             // CricTextFormField(
+            //   autofillHints: homeStore.teams.map((e) => e.name!),
             //   controller: hostTeamController,
             //   hintText: "Host team",
             //   keyboardType: TextInputType.name,
@@ -103,7 +105,7 @@ class NewMatchPage extends StatelessWidget {
                 },
                 builder: (context, controller, focusNode) {
                   return TextField(
-                    controller: controller,
+                    controller: visitorTeamController,
                     focusNode: focusNode,
                     textCapitalization: TextCapitalization.words,
                     onChanged: (val) {

@@ -5,6 +5,7 @@ import 'package:cric_spot/ui/player/page/player_select_page.dart';
 import 'package:cric_spot/ui/player/page/select_bowler_page.dart';
 import 'package:cric_spot/ui/score/pages/score_board_page.dart';
 import 'package:cric_spot/ui/score/pages/score_count_page.dart';
+import 'package:cric_spot/ui/score/pages/winning_page.dart';
 import 'package:cric_spot/ui/settings/pages/adwance-setting/adwance_setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -48,4 +49,8 @@ final GoRouter goRouter = GoRouter(
           builder: (context, state) => FallOfWicketPage(
                 run: state.pathParameters['run']!,
               )),
+      GoRoute(
+          path: RoutesName.winningPage.path,
+          name: RoutesName.winningPage.name,
+          builder: (context, state) => const WinningPage()),
     ]);

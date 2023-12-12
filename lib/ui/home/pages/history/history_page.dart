@@ -19,6 +19,8 @@ class HistoryPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Observer(builder: (_) {
           return ListView.builder(
+              reverse: true,
+              shrinkWrap: true,
               itemCount: homeStore.matchList.length,
               itemBuilder: (context, index) {
                 return matchHistoryCard(
@@ -118,24 +120,32 @@ class HistoryPage extends StatelessWidget {
               height: 6,
             ),
             Text(
-              "${match.tossName} obted ${match.tossElect} first",
+              match.wonBy == null
+                  ? "${match.tossName} obted ${match.tossElect} first"
+                  : match.wonBy == 'tie'
+                      ? "Match is tie"
+                      : "${match.wonName} won by ${match.wonBy}",
               style: context.bodyMedium,
             ),
             Row(
               children: [
                 Expanded(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: match.wonId == null
+                        ? MainAxisAlignment.spaceAround
+                        : MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                          onPressed: () {
-                            GoRouter.of(context).pushNamed(
-                                RoutesName.scoreCount.name,
-                                pathParameters: {
-                                  'matchId': match.key.toString()
-                                });
-                          },
-                          child: const Text("Resume")),
+                      match.wonId == null
+                          ? TextButton(
+                              onPressed: () {
+                                GoRouter.of(context).pushNamed(
+                                    RoutesName.scoreCount.name,
+                                    pathParameters: {
+                                      'matchId': match.key.toString()
+                                    });
+                              },
+                              child: const Text("Resume"))
+                          : const SizedBox.shrink(),
                       TextButton(
                           onPressed: () {
                             GoRouter.of(context).pushNamed(

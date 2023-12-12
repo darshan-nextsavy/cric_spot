@@ -167,6 +167,22 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$playerPerMatchAtom =
+      Atom(name: '_HomeStore.playerPerMatch', context: context);
+
+  @override
+  String get playerPerMatch {
+    _$playerPerMatchAtom.reportRead();
+    return super.playerPerMatch;
+  }
+
+  @override
+  set playerPerMatch(String value) {
+    _$playerPerMatchAtom.reportWrite(value, super.playerPerMatch, () {
+      super.playerPerMatch = value;
+    });
+  }
+
   late final _$tossWonByAtom =
       Atom(name: '_HomeStore.tossWonBy', context: context);
 
@@ -290,6 +306,22 @@ mixin _$HomeStore on _HomeStore, Store {
   set over(String value) {
     _$overAtom.reportWrite(value, super.over, () {
       super.over = value;
+    });
+  }
+
+  late final _$isMatchNewAtom =
+      Atom(name: '_HomeStore.isMatchNew', context: context);
+
+  @override
+  bool get isMatchNew {
+    _$isMatchNewAtom.reportRead();
+    return super.isMatchNew;
+  }
+
+  @override
+  set isMatchNew(bool value) {
+    _$isMatchNewAtom.reportWrite(value, super.isMatchNew, () {
+      super.isMatchNew = value;
     });
   }
 
@@ -434,6 +466,7 @@ noBallReBall: ${noBallReBall},
 wideReBall: ${wideReBall},
 noBallRun: ${noBallRun},
 wideBallRun: ${wideBallRun},
+playerPerMatch: ${playerPerMatch},
 tossWonBy: ${tossWonBy},
 opted: ${opted},
 hostTeamName: ${hostTeamName},
@@ -442,6 +475,7 @@ strikerName: ${strikerName},
 nonStrikerName: ${nonStrikerName},
 openingBowlerName: ${openingBowlerName},
 over: ${over},
+isMatchNew: ${isMatchNew},
 batTeamName: ${batTeamName},
 bowlTeamName: ${bowlTeamName}
     ''';
