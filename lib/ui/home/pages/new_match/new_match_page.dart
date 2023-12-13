@@ -1,3 +1,4 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cric_spot/config/routes_name.dart';
 import 'package:cric_spot/core/enum/opted_type.dart';
 import 'package:cric_spot/core/enum/team_type.dart';
@@ -9,12 +10,18 @@ import 'package:cric_spot/model/team/team_model.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 
-class NewMatchPage extends StatelessWidget {
+class NewMatchPage extends StatefulWidget {
   const NewMatchPage({super.key});
 
+  @override
+  State<NewMatchPage> createState() => _NewMatchPageState();
+}
+
+class _NewMatchPageState extends State<NewMatchPage> {
+  GlobalKey<AutoCompleteTextFieldState<TeamModel>> visitorKey = GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<TeamModel>> hostkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final homeStore = getIt.get<HomeStore>();
@@ -40,92 +47,76 @@ class NewMatchPage extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            TypeAheadField<TeamModel>(
-                hideOnEmpty: true,
-                // controller: hostTeamController,
-                suggestionsCallback: (search) {
-                  return homeStore.teams
-                      .where((element) => element.name!.contains(search))
-                      .toList();
-                },
-                onSelected: (team) {
-                  homeStore.hostTeamNameChange(team.name!);
-                  hostTeamController.text = team.name!;
-                  print(visitorTeamController);
-                },
+            AutoCompleteTextField<TeamModel>(
+                key: hostkey,
+                controller: hostTeamController,
+                clearOnSubmit: false,
+                textInputAction: TextInputAction.next,
+                suggestions: homeStore.teams,
+                keyboardType: TextInputType.name,
+                cursorColor: context.primary,
+                cursorWidth: 3,
+                decoration: const InputDecoration(
+                  counterText: "",
+                  hintText: "Host Team",
+                ),
                 itemBuilder: (context, team) {
                   return ListTile(
                     title: Text(team.name!),
                   );
                 },
-                builder: (context, controller, focusNode) {
-                  print(controller);
-                  return TextField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    textCapitalization: TextCapitalization.words,
-                    onChanged: (val) {
-                      homeStore.hostTeamNameChange(val);
-                    },
-                    keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      hintText: "Host Team",
-                    ),
-                  );
+                textChanged: (val) {
+                  homeStore.hostTeamNameChange(val);
+                },
+                itemSubmitted: (team) {
+                  hostTeamController.text = team.name!;
+                  homeStore.hostTeamNameChange(team.name!);
+                  return team.name!;
+                },
+                itemSorter: (a, b) => a.name == b.name
+                    ? 0
+                    : int.parse(a.id!) > int.parse(b.id!)
+                        ? -1
+                        : 1,
+                itemFilter: (team, input) {
+                  return team.name!.contains(input);
                 }),
-            // CricTextFormField(
-            //   autofillHints: homeStore.teams.map((e) => e.name!),
-            //   controller: hostTeamController,
-            //   hintText: "Host team",
-            //   keyboardType: TextInputType.name,
-            //   textCapitalization: TextCapitalization.words,
-            //   onChanged: (val) {
-            //     homeStore.hostTeamNameChange(val);
-            //   },
-            // ),
             const SizedBox(
               height: 16,
             ),
-            TypeAheadField<TeamModel>(
-                hideOnEmpty: true,
+            AutoCompleteTextField<TeamModel>(
+                key: visitorKey,
                 controller: visitorTeamController,
-                suggestionsCallback: (search) {
-                  return homeStore.teams
-                      .where((element) => element.name!.contains(search))
-                      .toList();
-                },
-                onSelected: (team) {
-                  homeStore.visitorTeamNameChange(team.name!);
-                  visitorTeamController.text = team.name!;
-                },
+                clearOnSubmit: false,
+                textInputAction: TextInputAction.next,
+                suggestions: homeStore.teams,
+                keyboardType: TextInputType.name,
+                cursorColor: context.primary,
+                cursorWidth: 3,
+                decoration: const InputDecoration(
+                  hintText: "Visitor Team",
+                ),
                 itemBuilder: (context, team) {
                   return ListTile(
                     title: Text(team.name!),
                   );
                 },
-                builder: (context, controller, focusNode) {
-                  return TextField(
-                    controller: visitorTeamController,
-                    focusNode: focusNode,
-                    textCapitalization: TextCapitalization.words,
-                    onChanged: (val) {
-                      homeStore.visitorTeamNameChange(val);
-                    },
-                    keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      hintText: "Visitor Team",
-                    ),
-                  );
+                textChanged: (val) {
+                  homeStore.visitorTeamNameChange(val);
+                },
+                itemSubmitted: (team) {
+                  visitorTeamController.text = team.name!;
+                  homeStore.visitorTeamNameChange(team.name!);
+                  return team.name!;
+                },
+                itemSorter: (a, b) => a.name == b.name
+                    ? 0
+                    : int.parse(a.id!) > int.parse(b.id!)
+                        ? -1
+                        : 1,
+                itemFilter: (team, input) {
+                  return team.name!.contains(input);
                 }),
-            // CricTextFormField(
-            //   controller: visitorTeamController,
-            //   hintText: "Visitor team",
-            //   keyboardType: TextInputType.name,
-            //   textCapitalization: TextCapitalization.words,
-            //   onChanged: (val) {
-            //     homeStore.visitorTeamNameChange(val);
-            //   },
-            // ),
             const SizedBox(
               height: 20,
             ),
@@ -296,3 +287,70 @@ class NewMatchPage extends StatelessWidget {
     );
   }
 }
+
+
+
+
+/// cric text feild simple
+        // CricTextFormField(
+            //   controller: visitorTeamController,
+            //   hintText: "Visitor team",
+            //   keyboardType: TextInputType.name,
+            //   textCapitalization: TextCapitalization.words,
+            //   onChanged: (val) {
+            //     homeStore.visitorTeamNameChange(val);
+            //   },
+            // ),
+
+
+/// type ahed field
+            // TypeAheadField<TeamModel>(
+            //     hideOnEmpty: true,
+            //     controller: visitorTeamController,
+            //     suggestionsCallback: (search) {
+            //       return homeStore.teams
+            //           .where((element) => element.name!.contains(search))
+            //           .toList();
+            //     },
+            //     onSelected: (team) {
+            //       homeStore.visitorTeamNameChange(team.name!);
+            //       visitorTeamController.text = team.name!;
+            //     },
+            //     itemBuilder: (context, team) {
+            //       return ListTile(
+            //         title: Text(team.name!),
+            //       );
+            //     },
+            //     builder: (context, controller, focusNode) {
+            //       return TextField(
+            //         controller: visitorTeamController,
+            //         focusNode: focusNode,
+            //         textCapitalization: TextCapitalization.words,
+            //         onChanged: (val) {
+            //           homeStore.visitorTeamNameChange(val);
+            //         },
+            //         keyboardType: TextInputType.name,
+            //         decoration: const InputDecoration(
+            //           hintText: "Visitor Team",
+            //         ),
+            //       );
+            //     }),            
+
+
+/// simple auto feild text
+            // SimpleAutoCompleteTextField(
+            //   key: key,
+            //   clearOnSubmit: false,
+            //   textInputAction: TextInputAction.next,
+            //   controller: hostTeamController,
+            //   decoration: const InputDecoration(
+            //     hintText: "Host Team",
+            //   ),
+            //   suggestions: homeStore.teams.map((e) => e.name!).toList(),
+            //   textChanged: (val) {
+            //     homeStore.hostTeamNameChange(val);
+            //   },
+            //   textSubmitted: (val) {
+            //     homeStore.hostTeamNameChange(val);
+            //   },
+            // ),

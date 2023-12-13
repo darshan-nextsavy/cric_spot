@@ -376,7 +376,7 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                               Text("This Over: "),
                               Expanded(
                                 child: SizedBox(
-                                  height: 62,
+                                  height: 63,
                                   child: Observer(builder: (_) {
                                     return ListView(
                                       shrinkWrap: true,
