@@ -5,7 +5,6 @@ import 'package:cric_spot/main.dart';
 import 'package:cric_spot/model/bowling/bowling_lineup_model.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectBowlerPage extends StatelessWidget {
