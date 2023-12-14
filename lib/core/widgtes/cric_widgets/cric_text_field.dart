@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class CricTextFormField extends StatelessWidget {
   const CricTextFormField(
@@ -101,55 +100,55 @@ class CricTextField extends StatelessWidget {
   }
 }
 
-class AutoCompleteCricTextField<T> extends StatelessWidget {
-  const AutoCompleteCricTextField(
-      {super.key,
-      this.controller,
-      required this.hintText,
-      required this.keyboardType,
-      this.onChanged,
-      this.enabled = true,
-      this.maxLength,
-      this.maxLines,
-      this.label,
-      this.inputFormatters,
-      required this.itemBuilder,
-      required this.onSelected,
-      required this.suggestionsCallback});
+// class AutoCompleteCricTextField<T> extends StatelessWidget {
+//   const AutoCompleteCricTextField(
+//       {super.key,
+//       this.controller,
+//       required this.hintText,
+//       required this.keyboardType,
+//       this.onChanged,
+//       this.enabled = true,
+//       this.maxLength,
+//       this.maxLines,
+//       this.label,
+//       this.inputFormatters,
+//       required this.itemBuilder,
+//       required this.onSelected,
+//       required this.suggestionsCallback});
 
-  final Function(String)? onChanged;
-  final TextEditingController? controller;
-  final bool? enabled;
-  final String hintText;
-  final List<TextInputFormatter>? inputFormatters;
-  final TextInputType keyboardType;
-  final String? label;
-  final int? maxLength;
-  final int? maxLines;
-  final Widget Function(BuildContext, T) itemBuilder;
-  final void Function(T)? onSelected;
-  final FutureOr<List<T>> Function(String) suggestionsCallback;
+//   final Function(String)? onChanged;
+//   final TextEditingController? controller;
+//   final bool? enabled;
+//   final String hintText;
+//   final List<TextInputFormatter>? inputFormatters;
+//   final TextInputType keyboardType;
+//   final String? label;
+//   final int? maxLength;
+//   final int? maxLines;
+//   final Widget Function(BuildContext, T) itemBuilder;
+//   final void Function(T)? onSelected;
+//   final FutureOr<List<T>> Function(String) suggestionsCallback;
 
-  @override
-  Widget build(BuildContext context) {
-    return TypeAheadField<T>(
-        suggestionsCallback: suggestionsCallback,
-        onSelected: onSelected,
-        itemBuilder: itemBuilder,
-        builder: (context, controller, focusNode) {
-          return TextField(
-            maxLength: maxLength,
-            maxLines: maxLines,
-            enabled: enabled,
-            controller: controller,
-            keyboardType: keyboardType,
-            decoration: InputDecoration(
-              hintText: hintText,
-              label: label != null ? Text(label!) : null,
-            ),
-            onChanged: onChanged,
-            inputFormatters: inputFormatters,
-          );
-        });
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return TypeAheadField<T>(
+//         suggestionsCallback: suggestionsCallback,
+//         onSelected: onSelected,
+//         itemBuilder: itemBuilder,
+//         builder: (context, controller, focusNode) {
+//           return TextField(
+//             maxLength: maxLength,
+//             maxLines: maxLines,
+//             enabled: enabled,
+//             controller: controller,
+//             keyboardType: keyboardType,
+//             decoration: InputDecoration(
+//               hintText: hintText,
+//               label: label != null ? Text(label!) : null,
+//             ),
+//             onChanged: onChanged,
+//             inputFormatters: inputFormatters,
+//           );
+//         });
+//   }
+// }

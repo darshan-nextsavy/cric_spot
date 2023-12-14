@@ -59,10 +59,16 @@ abstract class _HomeStore with Store {
   OptedType opted = OptedType.bat;
 
   @observable
-  String hostTeamName = 'Host Team';
+  String hostTeamName = '';
 
   @observable
-  String visitorTeamName = 'Visitor Team';
+  String? hostTeamNameError;
+
+  @observable
+  String visitorTeamName = '';
+
+  @observable
+  String? visitorTeamNameError;
 
   @observable
   String strikerName = '';
@@ -91,6 +97,23 @@ abstract class _HomeStore with Store {
   @computed
   String get bowlTeamName =>
       batTeamName == hostTeamName ? visitorTeamName : hostTeamName;
+
+  @computed
+  bool get canStartMatch =>
+      hostTeamName != '' &&
+      visitorTeamName != '' &&
+      over != '' &&
+      hostTeamName != visitorTeamName;
+
+  @action
+  void validate() {
+    if (hostTeamName == '') {
+      hostTeamNameError = "This field is require";
+    }
+    if (visitorTeamName == '') {
+      visitorTeamNameError = "This field is required";
+    }
+  }
 
   @action
   void getAllData() {
@@ -140,21 +163,15 @@ abstract class _HomeStore with Store {
   // host team name change
   @action
   void hostTeamNameChange(String name) {
-    if (name == '') {
-      hostTeamName = "Host Team";
-    } else {
-      hostTeamName = name;
-    }
+    hostTeamName = name;
+    hostTeamNameError = null;
   }
 
   // host team name change
   @action
   void visitorTeamNameChange(String name) {
-    if (name == '') {
-      visitorTeamName = "Visitor Team";
-    } else {
-      visitorTeamName = name;
-    }
+    visitorTeamName = name;
+    hostTeamNameError = null;
   }
 
   @action

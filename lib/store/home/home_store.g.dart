@@ -23,6 +23,13 @@ mixin _$HomeStore on _HomeStore, Store {
       (_$bowlTeamNameComputed ??= Computed<String>(() => super.bowlTeamName,
               name: '_HomeStore.bowlTeamName'))
           .value;
+  Computed<bool>? _$canStartMatchComputed;
+
+  @override
+  bool get canStartMatch =>
+      (_$canStartMatchComputed ??= Computed<bool>(() => super.canStartMatch,
+              name: '_HomeStore.canStartMatch'))
+          .value;
 
   late final _$matchListAtom =
       Atom(name: '_HomeStore.matchList', context: context);
@@ -230,6 +237,22 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$hostTeamNameErrorAtom =
+      Atom(name: '_HomeStore.hostTeamNameError', context: context);
+
+  @override
+  String? get hostTeamNameError {
+    _$hostTeamNameErrorAtom.reportRead();
+    return super.hostTeamNameError;
+  }
+
+  @override
+  set hostTeamNameError(String? value) {
+    _$hostTeamNameErrorAtom.reportWrite(value, super.hostTeamNameError, () {
+      super.hostTeamNameError = value;
+    });
+  }
+
   late final _$visitorTeamNameAtom =
       Atom(name: '_HomeStore.visitorTeamName', context: context);
 
@@ -343,6 +366,17 @@ mixin _$HomeStore on _HomeStore, Store {
 
   late final _$_HomeStoreActionController =
       ActionController(name: '_HomeStore', context: context);
+
+  @override
+  void validate() {
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.validate');
+    try {
+      return super.validate();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void getAllData() {
@@ -470,6 +504,7 @@ playerPerMatch: ${playerPerMatch},
 tossWonBy: ${tossWonBy},
 opted: ${opted},
 hostTeamName: ${hostTeamName},
+hostTeamNameError: ${hostTeamNameError},
 visitorTeamName: ${visitorTeamName},
 strikerName: ${strikerName},
 nonStrikerName: ${nonStrikerName},
@@ -477,7 +512,8 @@ openingBowlerName: ${openingBowlerName},
 over: ${over},
 isMatchNew: ${isMatchNew},
 batTeamName: ${batTeamName},
-bowlTeamName: ${bowlTeamName}
+bowlTeamName: ${bowlTeamName},
+canStartMatch: ${canStartMatch}
     ''';
   }
 }
