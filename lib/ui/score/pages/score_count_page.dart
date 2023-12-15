@@ -8,6 +8,7 @@ import 'package:cric_spot/core/widgtes/cric_widgets/cric_modal.dart';
 import 'package:cric_spot/main.dart';
 import 'package:cric_spot/store/home/home_store.dart';
 import 'package:cric_spot/store/score/score_store.dart';
+import 'package:cric_spot/ui/score/widgets/player_score_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
@@ -38,490 +39,438 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Scaffold(
-              appBar: AppBar(
-                title: Text(
-                    '${scoreStore.matchData?.firstBatTeamName} vs ${scoreStore.matchData?.secondBatTeamName}'),
-                actions: [
-                  IconButton(
+          : WillPopScope(
+              onWillPop: () async {
+                scoreStore.lastSave();
+                scoreStore.lastSavePartnership();
+                scoreStore.saveData();
+                return true;
+              },
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                      '${scoreStore.matchData?.firstBatTeamName} vs ${scoreStore.matchData?.secondBatTeamName}'),
+                  leading: IconButton(
                       onPressed: () {
-                        GoRouter.of(context).pushNamed(
-                            RoutesName.scoreBoard.name,
-                            pathParameters: {"matchId": widget.matchId});
+                        scoreStore.lastSave();
+                        scoreStore.lastSavePartnership();
+                        scoreStore.saveData();
+                        GoRouter.of(context).go(RoutesName.landing.path);
                       },
-                      icon: Icon(Icons.scoreboard)),
-                  SizedBox(
-                    width: 8,
-                  )
-                ],
-              ),
-              body: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                child: ListView(
-                  children: [
-                    // 1 : main score card
-                    CricCard(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                          "${scoreStore.currentInning?.batTeamName}, ${scoreStore.currentInning!.isFirstInning! ? '1st' : '2nd'} Inning")),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: scoreStore
-                                              .currentInning!.isFirstInning!
-                                          ? MainAxisAlignment.center
-                                          : MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text("Crr"),
-                                        Observer(builder: (_) {
-                                          return scoreStore
-                                                  .currentInning!.isFirstInning!
-                                              ? SizedBox.shrink()
-                                              : Text("Target");
-                                        }),
-                                        Observer(builder: (_) {
-                                          return scoreStore
-                                                  .currentInning!.isFirstInning!
-                                              ? SizedBox.shrink()
-                                              : Text("RR");
-                                        }),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Observer(builder: (_) {
-                                        return Text(
-                                          // "${scoreStore.currentInning?.totalRun} - ${scoreStore.currentInning?.totalWicket}",
-                                          "${scoreStore.totalRun} - ${scoreStore.totalWicket}",
-                                          style: context.headlineLarge
-                                              ?.copyWith(
-                                                  color: context
-                                                      .onPrimaryContainer),
-                                        );
-                                      }),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Column(
-                                        children: [
-                                          Observer(builder: (_) {
-                                            return Text(
-                                              // "(${scoreStore.currentInning!.totalBall! ~/ 6}.${scoreStore.currentInning!.totalBall! % 6})",
-                                              "(${scoreStore.totalBall ~/ 6}.${scoreStore.totalBall % 6})",
-                                              style: context.headlineSmall
-                                                  ?.copyWith(
-                                                      color: context
-                                                          .onSurfaceVariant),
-                                            );
-                                          }),
-                                          const SizedBox(
-                                            height: 5,
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  )),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: scoreStore
-                                              .currentInning!.isFirstInning!
-                                          ? MainAxisAlignment.center
-                                          : MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text((scoreStore.totalRun /
-                                                (scoreStore.totalBall / 6))
-                                            .toStringAsFixed(2)),
-                                        Observer(builder: (_) {
-                                          return scoreStore
-                                                  .currentInning!.isFirstInning!
-                                              ? SizedBox.shrink()
-                                              : Text(
-                                                  scoreStore.target.toString());
-                                        }),
-                                        Observer(builder: (_) {
-                                          return scoreStore
-                                                  .currentInning!.isFirstInning!
-                                              ? SizedBox.shrink()
-                                              : Text(((scoreStore.target -
-                                                          scoreStore.totalRun) /
-                                                      (((int.parse(scoreStore
-                                                                      .matchData!
-                                                                      .over!) *
-                                                                  6) -
-                                                              scoreStore
-                                                                  .totalBall) /
-                                                          6))
-                                                  .toStringAsFixed(2));
-                                        }),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              scoreStore.currentInning!.isFirstInning!
-                                  ? SizedBox.shrink()
-                                  : Text(
-                                      "${scoreStore.matchData?.secondBatTeamName} need ${scoreStore.target - scoreStore.totalRun} runs in ${(int.parse(scoreStore.matchData!.over!) * 6) - scoreStore.totalBall} balls",
-                                      style: context.bodyLarge?.copyWith(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                            ],
-                          ),
-                        )),
-                    // 2 : batsman score card
-
-                    CricCard(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
-                                      child: Text("Batsman")),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text("R"),
-                                        Text("B"),
-                                        Text("4s"),
-                                        Text("6s"),
-                                        Text("SR"),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Divider(),
-                              Observer(builder: (_) {
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        child: Text(
-                                            scoreStore.striker?.name ?? '')),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(scoreStore.striker?.run
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.striker?.ball
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.striker?.four
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.striker?.six
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.striker!.ball == 0
-                                              ? "0.00"
-                                              : ((scoreStore.striker!.run! *
-                                                          100) /
-                                                      (scoreStore
-                                                          .striker!.ball!))
-                                                  .toStringAsFixed(1)),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Observer(builder: (_) {
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        child: Text(
-                                            scoreStore.nonStriker?.name ?? '')),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(scoreStore.nonStriker?.run
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.nonStriker?.ball
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.nonStriker?.four
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.nonStriker?.six
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.nonStriker!.ball == 0
-                                              ? "0.00"
-                                              : ((scoreStore.nonStriker!.run! *
-                                                          100) /
-                                                      (scoreStore
-                                                          .nonStriker!.ball!))
-                                                  .toStringAsFixed(1)),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
-                                      child: Text("Bowler")),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text("O"),
-                                        Text("M"),
-                                        Text("R"),
-                                        Text("W"),
-                                        Text("ER"),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Divider(),
-                              Observer(builder: (_) {
-                                return Row(
-                                  children: [
-                                    SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        child: Text(
-                                            scoreStore.bowler?.name ?? '')),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                              "${scoreStore.bowler!.ball! ~/ 6}.${scoreStore.currentInning!.totalBall! % 6}"),
-                                          Text(scoreStore.bowler?.maidan
-                                                  .toString() ??
-                                              '0'),
-                                          Text(scoreStore.bowler?.run
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.bowler?.wicket
-                                                  .toString() ??
-                                              ''),
-                                          Text(scoreStore.bowler!.ball == 0
-                                              ? '0.0'
-                                              : (scoreStore.bowler!.run! /
-                                                      (scoreStore
-                                                              .bowler!.ball! /
-                                                          6))
-                                                  .toStringAsFixed(1)),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }),
-                            ],
-                          ),
-                        )),
-                    // 3 : current over
-                    CricCard(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Container(
-                          padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Text("This Over: "),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 63,
-                                  child: Observer(builder: (_) {
-                                    return ListView(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      children: [
-                                        ...scoreStore.currentOver
-                                            .map(((e) =>
-                                                overCircleCard(rundata: e)))
-                                            .toList()
-                                      ],
-                                    );
-                                  }),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
-                    // 4 : extra
-                    CricCard(
-                        child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              scoreStore.matchData!.isWideBall!
-                                  ? checkBoxWidget(
-                                      childText: "Wide", value: scoreStore.wide)
-                                  : SizedBox.shrink(),
-                              scoreStore.matchData!.isNoball!
-                                  ? checkBoxWidget(
-                                      childText: "No Ball",
-                                      value: scoreStore.noBall)
-                                  : SizedBox.shrink(),
-                              checkBoxWidget(
-                                  childText: "Byes", value: scoreStore.byes),
-                              checkBoxWidget(
-                                  childText: "Leg Byes",
-                                  value: scoreStore.legByes),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              checkBoxWidget(
-                                  childText: "Wicket",
-                                  value: scoreStore.wicket),
-                              Row(
-                                children: [
-                                  cricFilledButton(
-                                      childText: "Retire", width: 120),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                  cricFilledButton(
-                                      childText: "Swap Batsman", width: 120),
-                                ],
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    )),
-                    // 5 : run count
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: CricCard(
-                              child: Container(
-                            padding: EdgeInsets.all(8),
+                      icon: Icon(Icons.arrow_back)),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          GoRouter.of(context).pushNamed(
+                              RoutesName.scoreBoard.name,
+                              pathParameters: {"matchId": widget.matchId});
+                        },
+                        icon: Icon(Icons.scoreboard)),
+                    SizedBox(
+                      width: 8,
+                    )
+                  ],
+                ),
+                body: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: ListView(
+                    children: [
+                      // 1 : main score card
+                      CricCard(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                cricFilledButton(childText: "Undo"),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: Text(
+                                            "${scoreStore.currentInning?.batTeamName}, ${scoreStore.currentInning!.isFirstInning! ? '1st' : '2nd'} Inning")),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: scoreStore
+                                                .currentInning!.isFirstInning!
+                                            ? MainAxisAlignment.center
+                                            : MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text("Crr"),
+                                          Observer(builder: (_) {
+                                            return scoreStore.currentInning!
+                                                    .isFirstInning!
+                                                ? SizedBox.shrink()
+                                                : Text("Target");
+                                          }),
+                                          Observer(builder: (_) {
+                                            return scoreStore.currentInning!
+                                                    .isFirstInning!
+                                                ? SizedBox.shrink()
+                                                : Text("RR");
+                                          }),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Observer(builder: (_) {
+                                          return Text(
+                                            // "${scoreStore.currentInning?.totalRun} - ${scoreStore.currentInning?.totalWicket}",
+                                            "${scoreStore.totalRun} - ${scoreStore.totalWicket}",
+                                            style: context.headlineLarge
+                                                ?.copyWith(
+                                                    color: context
+                                                        .onPrimaryContainer),
+                                          );
+                                        }),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Observer(builder: (_) {
+                                              return Text(
+                                                // "(${scoreStore.currentInning!.totalBall! ~/ 6}.${scoreStore.currentInning!.totalBall! % 6})",
+                                                "(${scoreStore.totalBall ~/ 6}.${scoreStore.totalBall % 6})",
+                                                style: context.headlineSmall
+                                                    ?.copyWith(
+                                                        color: context
+                                                            .onSurfaceVariant),
+                                              );
+                                            }),
+                                            const SizedBox(
+                                              height: 5,
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    )),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: scoreStore
+                                                .currentInning!.isFirstInning!
+                                            ? MainAxisAlignment.center
+                                            : MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text((scoreStore.totalRun /
+                                                  (scoreStore.totalBall / 6))
+                                              .toStringAsFixed(2)),
+                                          Observer(builder: (_) {
+                                            return scoreStore.currentInning!
+                                                    .isFirstInning!
+                                                ? SizedBox.shrink()
+                                                : Text(scoreStore.target
+                                                    .toString());
+                                          }),
+                                          Observer(builder: (_) {
+                                            return scoreStore.currentInning!
+                                                    .isFirstInning!
+                                                ? SizedBox.shrink()
+                                                : Text(((scoreStore.target -
+                                                            scoreStore
+                                                                .totalRun) /
+                                                        (((int.parse(scoreStore
+                                                                        .matchData!
+                                                                        .over!) *
+                                                                    6) -
+                                                                scoreStore
+                                                                    .totalBall) /
+                                                            6))
+                                                    .toStringAsFixed(2));
+                                          }),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 const SizedBox(
                                   height: 4,
                                 ),
-                                cricFilledButton(childText: "Partnerships"),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                cricFilledButton(childText: "Extra")
+                                scoreStore.currentInning!.isFirstInning!
+                                    ? SizedBox.shrink()
+                                    : Text(
+                                        "${scoreStore.matchData?.secondBatTeamName} need ${scoreStore.target - scoreStore.totalRun} runs in ${(int.parse(scoreStore.matchData!.over!) * 6) - scoreStore.totalBall} balls",
+                                        style: context.bodyLarge?.copyWith(
+                                            color: Colors.green,
+                                            fontWeight: FontWeight.w500),
+                                      )
                               ],
                             ),
                           )),
-                        ),
-                        Expanded(
-                          child: CricCard(
-                              child: Container(
-                            padding: EdgeInsets.all(4),
+                      // 2 : batsman score card
+
+                      CricCard(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                Row(
-                                  children: [
-                                    countRunCard(
-                                        child: "0",
-                                        onTap: () {
-                                          runCount(0);
-                                        }),
-                                    countRunCard(
-                                        child: "1",
-                                        onTap: () {
-                                          runCount(1);
-                                        }),
-                                    countRunCard(
-                                        child: "2",
-                                        onTap: () {
-                                          runCount(2);
-                                        }),
-                                    countRunCard(
-                                        child: "3",
-                                        onTap: () {
-                                          runCount(3);
-                                        }),
-                                  ],
+                                batsmanScoreWidget(context: context),
+                                Divider(),
+                                Observer(builder: (_) {
+                                  return batsmanScoreWidget(
+                                      context: context,
+                                      batsmanName: scoreStore.striker?.name,
+                                      run: scoreStore.striker?.run,
+                                      ball: scoreStore.striker?.ball,
+                                      four: scoreStore.striker?.four,
+                                      six: scoreStore.striker?.six);
+                                }),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Observer(builder: (_) {
+                                  return batsmanScoreWidget(
+                                      context: context,
+                                      batsmanName: scoreStore.nonStriker?.name,
+                                      run: scoreStore.nonStriker?.run,
+                                      ball: scoreStore.nonStriker?.ball,
+                                      four: scoreStore.nonStriker?.four,
+                                      six: scoreStore.nonStriker?.six);
+                                }),
+                                SizedBox(
+                                  height: 6,
                                 ),
                                 Row(
                                   children: [
-                                    countRunCard(
-                                        child: "4",
-                                        onTap: () {
-                                          runCount(4);
-                                        }),
-                                    countRunCard(
-                                        child: "5",
-                                        onTap: () {
-                                          runCount(5);
-                                        }),
-                                    countRunCard(
-                                        child: "6",
-                                        onTap: () {
-                                          runCount(6);
-                                        }),
-                                    countRunCard(child: "...", onTap: () {}),
+                                    const Expanded(child: Text("Bowlers")),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.11,
+                                          child: const Text(
+                                            "O",
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.11,
+                                          child: const Text(
+                                            "M",
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.11,
+                                          child: const Text(
+                                            "R",
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.11,
+                                          child: const Text(
+                                            "W",
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.13,
+                                          child: const Text(
+                                            "ER",
+                                            textAlign: TextAlign.end,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Divider(),
+                                Observer(builder: (_) {
+                                  return bowlerScoreWidget(
+                                      context: context,
+                                      ball: scoreStore.bowler?.ball,
+                                      maidan: scoreStore.bowler?.maidan,
+                                      run: scoreStore.bowler?.run,
+                                      wicket: scoreStore.bowler?.wicket,
+                                      bowlerName: scoreStore.bowler?.name);
+                                }),
+                              ],
+                            ),
+                          )),
+                      // 3 : current over
+                      CricCard(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Container(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text("This Over: "),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 63,
+                                    child: Observer(builder: (_) {
+                                      return ListView(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        children: [
+                                          ...scoreStore.currentOver
+                                              .map(((e) =>
+                                                  overCircleCard(rundata: e)))
+                                              .toList()
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                      // 4 : extra
+                      CricCard(
+                          child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                scoreStore.matchData!.isWideBall!
+                                    ? checkBoxWidget(
+                                        childText: "Wide",
+                                        value: scoreStore.wide)
+                                    : SizedBox.shrink(),
+                                scoreStore.matchData!.isNoball!
+                                    ? checkBoxWidget(
+                                        childText: "No Ball",
+                                        value: scoreStore.noBall)
+                                    : SizedBox.shrink(),
+                                checkBoxWidget(
+                                    childText: "Byes", value: scoreStore.byes),
+                                checkBoxWidget(
+                                    childText: "Leg Byes",
+                                    value: scoreStore.legByes),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                checkBoxWidget(
+                                    childText: "Wicket",
+                                    value: scoreStore.wicket),
+                                Row(
+                                  children: [
+                                    cricFilledButton(
+                                        childText: "Retire", width: 120),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    cricFilledButton(
+                                        childText: "Swap Batsman", width: 120),
                                   ],
                                 )
                               ],
-                            ),
-                          )),
-                        )
-                      ],
-                    ),
-                  ],
+                            )
+                          ],
+                        ),
+                      )),
+                      // 5 : run count
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: CricCard(
+                                child: Container(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  cricFilledButton(childText: "Undo"),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  cricFilledButton(childText: "Partnerships"),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  cricFilledButton(childText: "Extra")
+                                ],
+                              ),
+                            )),
+                          ),
+                          Expanded(
+                            child: CricCard(
+                                child: Container(
+                              padding: EdgeInsets.all(4),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      countRunCard(
+                                          child: "0",
+                                          onTap: () {
+                                            runCount(0);
+                                          }),
+                                      countRunCard(
+                                          child: "1",
+                                          onTap: () {
+                                            runCount(1);
+                                          }),
+                                      countRunCard(
+                                          child: "2",
+                                          onTap: () {
+                                            runCount(2);
+                                          }),
+                                      countRunCard(
+                                          child: "3",
+                                          onTap: () {
+                                            runCount(3);
+                                          }),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      countRunCard(
+                                          child: "4",
+                                          onTap: () {
+                                            runCount(4);
+                                          }),
+                                      countRunCard(
+                                          child: "5",
+                                          onTap: () {
+                                            runCount(5);
+                                          }),
+                                      countRunCard(
+                                          child: "6",
+                                          onTap: () {
+                                            runCount(6);
+                                          }),
+                                      countRunCard(child: "...", onTap: () {}),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
