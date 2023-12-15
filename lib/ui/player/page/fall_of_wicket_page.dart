@@ -112,22 +112,27 @@ class FallOfWicketPage extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
-                  onPressed: () async {
-                    final newPlayer = await scoreStore.fallOfWicket();
-                    final newPlayerBat = BattingLineUpModel(
-                        playerId: newPlayer.id,
-                        name: newPlayer.name,
-                        run: 0,
-                        ball: 0,
-                        four: 0,
-                        six: 0,
-                        isNotOut: true);
-                    scoreStore.countRun(
-                        run: int.parse(run), newPlayer: newPlayerBat);
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text("Done")),
+              child: Observer(builder: (_) {
+                return FilledButton(
+                    onPressed: scoreStore.newBatsman == ''
+                        ? null
+                        : () async {
+                            final newPlayer = await scoreStore.fallOfWicket();
+                            final newPlayerBat = BattingLineUpModel(
+                                playerId: newPlayer.id,
+                                name: newPlayer.name,
+                                run: 0,
+                                ball: 0,
+                                four: 0,
+                                six: 0,
+                                isNotOut: true);
+                            scoreStore.countRun(
+                                run: int.parse(run), newPlayer: newPlayerBat);
+                            if (!context.mounted) return;
+                            GoRouter.of(context).pop();
+                          },
+                    child: const Text("Done"));
+              }),
             )
           ],
         ),

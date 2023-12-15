@@ -5,6 +5,7 @@ import 'package:cric_spot/main.dart';
 import 'package:cric_spot/model/bowling/bowling_lineup_model.dart';
 import 'package:cric_spot/store/score/score_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 
 class SelectBowlerPage extends StatelessWidget {
@@ -107,12 +108,17 @@ class SelectBowlerPage extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
-                  onPressed: () async {
-                    await scoreStore.selectNewBowler();
-                    GoRouter.of(context).pop();
-                  },
-                  child: const Text("Done")),
+              child: Observer(builder: (_) {
+                return FilledButton(
+                    onPressed: scoreStore.newBowler == ''
+                        ? null
+                        : () async {
+                            await scoreStore.selectNewBowler();
+                            if (!context.mounted) return;
+                            GoRouter.of(context).pop();
+                          },
+                    child: const Text("Done"));
+              }),
             )
           ],
         ),

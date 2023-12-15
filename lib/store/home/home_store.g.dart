@@ -30,6 +30,13 @@ mixin _$HomeStore on _HomeStore, Store {
       (_$canStartMatchComputed ??= Computed<bool>(() => super.canStartMatch,
               name: '_HomeStore.canStartMatch'))
           .value;
+  Computed<bool>? _$canSelectOpeningPlayerComputed;
+
+  @override
+  bool get canSelectOpeningPlayer => (_$canSelectOpeningPlayerComputed ??=
+          Computed<bool>(() => super.canSelectOpeningPlayer,
+              name: '_HomeStore.canSelectOpeningPlayer'))
+      .value;
 
   late final _$matchListAtom =
       Atom(name: '_HomeStore.matchList', context: context);
@@ -269,6 +276,23 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$visitorTeamNameErrorAtom =
+      Atom(name: '_HomeStore.visitorTeamNameError', context: context);
+
+  @override
+  String? get visitorTeamNameError {
+    _$visitorTeamNameErrorAtom.reportRead();
+    return super.visitorTeamNameError;
+  }
+
+  @override
+  set visitorTeamNameError(String? value) {
+    _$visitorTeamNameErrorAtom.reportWrite(value, super.visitorTeamNameError,
+        () {
+      super.visitorTeamNameError = value;
+    });
+  }
+
   late final _$strikerNameAtom =
       Atom(name: '_HomeStore.strikerName', context: context);
 
@@ -282,6 +306,22 @@ mixin _$HomeStore on _HomeStore, Store {
   set strikerName(String value) {
     _$strikerNameAtom.reportWrite(value, super.strikerName, () {
       super.strikerName = value;
+    });
+  }
+
+  late final _$strikerNameErrorAtom =
+      Atom(name: '_HomeStore.strikerNameError', context: context);
+
+  @override
+  String? get strikerNameError {
+    _$strikerNameErrorAtom.reportRead();
+    return super.strikerNameError;
+  }
+
+  @override
+  set strikerNameError(String? value) {
+    _$strikerNameErrorAtom.reportWrite(value, super.strikerNameError, () {
+      super.strikerNameError = value;
     });
   }
 
@@ -301,6 +341,22 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$nonStrikerNameErrorAtom =
+      Atom(name: '_HomeStore.nonStrikerNameError', context: context);
+
+  @override
+  String? get nonStrikerNameError {
+    _$nonStrikerNameErrorAtom.reportRead();
+    return super.nonStrikerNameError;
+  }
+
+  @override
+  set nonStrikerNameError(String? value) {
+    _$nonStrikerNameErrorAtom.reportWrite(value, super.nonStrikerNameError, () {
+      super.nonStrikerNameError = value;
+    });
+  }
+
   late final _$openingBowlerNameAtom =
       Atom(name: '_HomeStore.openingBowlerName', context: context);
 
@@ -317,6 +373,23 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$openingBowlerNameErrorAtom =
+      Atom(name: '_HomeStore.openingBowlerNameError', context: context);
+
+  @override
+  String? get openingBowlerNameError {
+    _$openingBowlerNameErrorAtom.reportRead();
+    return super.openingBowlerNameError;
+  }
+
+  @override
+  set openingBowlerNameError(String? value) {
+    _$openingBowlerNameErrorAtom
+        .reportWrite(value, super.openingBowlerNameError, () {
+      super.openingBowlerNameError = value;
+    });
+  }
+
   late final _$overAtom = Atom(name: '_HomeStore.over', context: context);
 
   @override
@@ -329,6 +402,22 @@ mixin _$HomeStore on _HomeStore, Store {
   set over(String value) {
     _$overAtom.reportWrite(value, super.over, () {
       super.over = value;
+    });
+  }
+
+  late final _$overErrorAtom =
+      Atom(name: '_HomeStore.overError', context: context);
+
+  @override
+  String? get overError {
+    _$overErrorAtom.reportRead();
+    return super.overError;
+  }
+
+  @override
+  set overError(String? value) {
+    _$overErrorAtom.reportWrite(value, super.overError, () {
+      super.overError = value;
     });
   }
 
@@ -373,6 +462,17 @@ mixin _$HomeStore on _HomeStore, Store {
         _$_HomeStoreActionController.startAction(name: '_HomeStore.validate');
     try {
       return super.validate();
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void validateSelectOpener() {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.validateSelectOpener');
+    try {
+      return super.validateSelectOpener();
     } finally {
       _$_HomeStoreActionController.endAction(_$actionInfo);
     }
@@ -506,14 +606,20 @@ opted: ${opted},
 hostTeamName: ${hostTeamName},
 hostTeamNameError: ${hostTeamNameError},
 visitorTeamName: ${visitorTeamName},
+visitorTeamNameError: ${visitorTeamNameError},
 strikerName: ${strikerName},
+strikerNameError: ${strikerNameError},
 nonStrikerName: ${nonStrikerName},
+nonStrikerNameError: ${nonStrikerNameError},
 openingBowlerName: ${openingBowlerName},
+openingBowlerNameError: ${openingBowlerNameError},
 over: ${over},
+overError: ${overError},
 isMatchNew: ${isMatchNew},
 batTeamName: ${batTeamName},
 bowlTeamName: ${bowlTeamName},
-canStartMatch: ${canStartMatch}
+canStartMatch: ${canStartMatch},
+canSelectOpeningPlayer: ${canSelectOpeningPlayer}
     ''';
   }
 }

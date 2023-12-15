@@ -133,7 +133,7 @@ class _NewMatchPageState extends State<NewMatchPage> {
                   return team.name!.contains(input);
                 }),
             Observer(builder: (_) {
-              return homeStore.hostTeamNameError == null
+              return homeStore.visitorTeamNameError == null
                   ? const SizedBox.shrink()
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +142,7 @@ class _NewMatchPageState extends State<NewMatchPage> {
                           height: 4,
                         ),
                         Text(
-                          homeStore.hostTeamNameError!,
+                          homeStore.visitorTeamNameError!,
                           style: TextStyle(color: context.primary),
                         ),
                       ],
@@ -287,8 +287,25 @@ class _NewMatchPageState extends State<NewMatchPage> {
               keyboardType: TextInputType.number,
               onChanged: (val) {
                 homeStore.over = val;
+                homeStore.overError = null;
               },
             ),
+            Observer(builder: (_) {
+              return homeStore.overError == null
+                  ? const SizedBox.shrink()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          homeStore.overError!,
+                          style: TextStyle(color: context.primary),
+                        ),
+                      ],
+                    );
+            }),
             const SizedBox(
               height: 20,
             ),
@@ -305,19 +322,18 @@ class _NewMatchPageState extends State<NewMatchPage> {
                 const SizedBox(
                   width: 16,
                 ),
-                Expanded(child: Observer(builder: (context) {
-                  return FilledButton(
-                      onPressed: () {
-                        homeStore.isMatchNew = true;
-                        // GoRouter.of(context).push(RoutesName.scoreCount.path);
-                        homeStore.validate();
-                        if (homeStore.canStartMatch) {
-                          GoRouter.of(context)
-                              .push(RoutesName.playerSelect.path);
-                        }
-                      },
-                      child: const Text("Start Match"));
-                }))
+                Expanded(
+                    child: FilledButton(
+                        onPressed: () {
+                          homeStore.isMatchNew = true;
+                          // GoRouter.of(context).push(RoutesName.scoreCount.path);
+                          homeStore.validate();
+                          if (homeStore.canStartMatch) {
+                            GoRouter.of(context)
+                                .push(RoutesName.playerSelect.path);
+                          }
+                        },
+                        child: const Text("Start Match")))
               ],
             ),
           ],

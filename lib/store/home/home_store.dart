@@ -74,13 +74,25 @@ abstract class _HomeStore with Store {
   String strikerName = '';
 
   @observable
+  String? strikerNameError;
+
+  @observable
   String nonStrikerName = '';
+
+  @observable
+  String? nonStrikerNameError;
 
   @observable
   String openingBowlerName = '';
 
   @observable
+  String? openingBowlerNameError;
+
+  @observable
   String over = '';
+
+  @observable
+  String? overError;
 
   @observable
   bool isMatchNew = true;
@@ -105,6 +117,10 @@ abstract class _HomeStore with Store {
       over != '' &&
       hostTeamName != visitorTeamName;
 
+  @computed
+  bool get canSelectOpeningPlayer =>
+      strikerName != '' && nonStrikerName != '' && openingBowlerName != '';
+
   @action
   void validate() {
     if (hostTeamName == '') {
@@ -112,6 +128,26 @@ abstract class _HomeStore with Store {
     }
     if (visitorTeamName == '') {
       visitorTeamNameError = "This field is required";
+    }
+    if (over == '') {
+      print(over);
+      overError = "This field is required";
+    }
+    if (hostTeamName == visitorTeamName) {
+      visitorTeamNameError = "Both team should be diffrent";
+    }
+  }
+
+  @action
+  void validateSelectOpener() {
+    if (strikerName == '') {
+      strikerNameError = "This field is require";
+    }
+    if (nonStrikerName == '') {
+      nonStrikerNameError = "This field is required";
+    }
+    if (openingBowlerName == '') {
+      openingBowlerNameError = "This field is required";
     }
   }
 
@@ -171,7 +207,7 @@ abstract class _HomeStore with Store {
   @action
   void visitorTeamNameChange(String name) {
     visitorTeamName = name;
-    hostTeamNameError = null;
+    visitorTeamNameError = null;
   }
 
   @action

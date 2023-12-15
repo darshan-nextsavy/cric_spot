@@ -189,6 +189,7 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                           ),
                         )),
                     // 2 : batsman score card
+
                     CricCard(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
