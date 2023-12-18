@@ -22,12 +22,12 @@ class CricSpotApp extends StatelessWidget {
         builder: (context, child) {
           return DynamicColorBuilder(
               builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-            final bool isDynamic = false;
-            final ThemeMode themeMode = ThemeMode.values[0];
-            final int color = 0xFF795548;
-            final Color primaryColor = Color(color);
+            // const bool isDynamic = false;
+            // final ThemeMode themeMode = ThemeMode.values[0];
+            const int color = 0xFF795548;
+            const Color primaryColor = Color(color);
 
-            final String fontPreference = 'Outfit';
+            const String fontPreference = 'Outfit';
             final TextTheme darkTextTheme = GoogleFonts.getTextTheme(
               fontPreference,
               ThemeData.dark().textTheme,
@@ -70,16 +70,6 @@ class CricSpotApp extends StatelessWidget {
                   darkTextTheme,
                   ThemeData.dark().dividerColor,
                   SystemUiOverlayStyle.light),
-              // theme: ThemeData(
-              //   colorScheme:
-              //       lightDynamic ?? ColorScheme.fromSeed(seedColor: Colors.pink),
-              //   useMaterial3: true,
-              // ),
-              // darkTheme: ThemeData(
-              //     colorScheme: darkDynamic ??
-              //         ColorScheme.fromSeed(
-              //             seedColor: Colors.pink, brightness: Brightness.dark),
-              //     useMaterial3: true),
             );
           });
         });

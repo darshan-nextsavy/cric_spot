@@ -143,6 +143,5 @@ class TeamsPage extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
