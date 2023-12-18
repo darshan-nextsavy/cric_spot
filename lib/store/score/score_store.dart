@@ -514,6 +514,15 @@ abstract class _ScoreStore with Store {
 
         // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
+
           lastSave();
           lastSavePartnership();
           saveData();
@@ -575,7 +584,17 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -647,7 +666,18 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
+
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -708,7 +738,17 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -769,7 +809,17 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -833,7 +883,17 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -898,7 +958,17 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1006,7 +1076,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1125,7 +1205,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1231,7 +1321,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1337,7 +1437,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1447,7 +1557,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1558,7 +1678,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1663,7 +1793,17 @@ abstract class _ScoreStore with Store {
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        // save data
         if (overLength == 6) {
+          int runOfOver = 0;
+
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
           lastSave();
           lastSavePartnership();
           saveData();

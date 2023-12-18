@@ -425,8 +425,8 @@ abstract class _HomeStore with Store {
 
   @action
   List<MatchModel> getMatchHistory() {
-    matchList = matchBox.values.toList();
-    return matchBox.values.toList();
+    matchList = matchBox.values.toList().reversed.toList();
+    return matchList;
   }
 
   @action

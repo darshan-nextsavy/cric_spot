@@ -19,8 +19,6 @@ class HistoryPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Observer(builder: (_) {
           return ListView.builder(
-              reverse: true,
-              shrinkWrap: true,
               itemCount: homeStore.matchList.length,
               itemBuilder: (context, index) {
                 return matchHistoryCard(
