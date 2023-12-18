@@ -459,7 +459,7 @@ abstract class _ScoreStore with Store {
   }
 
   @action
-  void countRun({required int run, BattingLineUpModel? newPlayer}) {
+  void countRun({required int run, PlayerModel? newPlayer}) {
     /// switch case for extra run
     print(runCountType);
     print(run);
@@ -496,6 +496,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
+
         currentPartnerShip!.currentStiker!.run =
             currentPartnerShip!.currentStiker!.run! + run;
         currentPartnerShip!.currentStiker!.ball =
@@ -509,6 +510,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
         currentInning!.currentPartnerShip = currentPartnerShip;
+        print(currentPartnerShip);
 
         // save data
         if (overLength == 6) {
@@ -585,6 +587,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -592,7 +595,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -665,8 +667,10 @@ abstract class _ScoreStore with Store {
         currentInning!.currentPartnerShip = currentPartnerShip;
 
         // save data
+
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -674,7 +678,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -738,6 +741,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -745,7 +749,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -809,6 +812,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -816,7 +820,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -883,6 +886,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -890,7 +894,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -958,6 +961,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -965,7 +969,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1029,14 +1032,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1054,7 +1071,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1062,6 +1079,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1069,7 +1087,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1143,14 +1160,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1169,7 +1200,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1177,6 +1208,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1184,7 +1216,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1245,14 +1276,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1271,7 +1316,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1279,6 +1324,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1286,7 +1332,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1347,14 +1392,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1373,7 +1432,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1381,6 +1440,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1388,7 +1448,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1453,14 +1512,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1479,7 +1552,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1487,6 +1560,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1494,7 +1568,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1560,14 +1633,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1586,7 +1673,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1594,6 +1681,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1601,7 +1689,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
@@ -1663,14 +1750,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id!.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1687,7 +1788,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1695,6 +1796,7 @@ abstract class _ScoreStore with Store {
         // save data
         if (overLength == 6) {
           int runOfOver = 0;
+
           for (var element in currentOver) {
             final runOfBall = element.split("-")[0];
             runOfOver += int.parse(runOfBall);
@@ -1702,7 +1804,6 @@ abstract class _ScoreStore with Store {
           if (runOfOver == 0) {
             bowler!.maidan = bowler!.maidan! + 1;
           }
-
           lastSave();
           lastSavePartnership();
           saveData();
