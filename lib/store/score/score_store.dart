@@ -459,7 +459,7 @@ abstract class _ScoreStore with Store {
   }
 
   @action
-  void countRun({required int run, BattingLineUpModel? newPlayer}) {
+  void countRun({required int run, PlayerModel? newPlayer}) {
     /// switch case for extra run
     print(runCountType);
     print(run);
@@ -496,6 +496,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
+
         currentPartnerShip!.currentStiker!.run =
             currentPartnerShip!.currentStiker!.run! + run;
         currentPartnerShip!.currentStiker!.ball =
@@ -509,6 +510,7 @@ abstract class _ScoreStore with Store {
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
         currentInning!.currentPartnerShip = currentPartnerShip;
+        print(currentPartnerShip);
 
         // save data
         if (overLength == 6) {
@@ -573,14 +575,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -644,14 +647,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -704,14 +708,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -764,14 +769,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -827,14 +833,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -891,14 +898,15 @@ abstract class _ScoreStore with Store {
         currentInning!.currentStriker = striker;
         currentInning!.currentPartnerShip = currentPartnerShip;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -954,14 +962,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -979,19 +1001,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1057,14 +1080,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1083,19 +1120,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1148,14 +1186,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1174,19 +1226,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1239,14 +1292,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1265,19 +1332,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1334,14 +1402,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1360,19 +1442,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1430,14 +1513,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1456,19 +1553,20 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
 
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
-
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1522,14 +1620,28 @@ abstract class _ScoreStore with Store {
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = newPlayer;
+        striker = BattingLineUpModel(
+            playerId: newPlayer!.id,
+            name: newPlayer.name,
+            run: 0,
+            ball: 0,
+            four: 0,
+            six: 0,
+            isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
-            id: newPlayer!.playerId.toString(),
+            id: newPlayer.id!.toString(),
             run: 0,
             ball: 0,
-            currentStiker: newPlayer,
+            currentStiker: BattingLineUpModel(
+                playerId: newPlayer.id,
+                name: newPlayer.name,
+                run: 0,
+                ball: 0,
+                four: 0,
+                six: 0,
+                isNotOut: true),
             currentNotStiker: BattingLineUpModel(
                 playerId: nonStriker!.playerId.toString(),
                 name: nonStriker!.name,
@@ -1546,19 +1658,22 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(newPlayer);
+        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
+
+        if (overLength == 6) {
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
 
         /// strike rotation
         if ((run % 2 != 0 && overLength != 6) ||
             (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
-          if (overLength == 6) {
-            lastSave();
-            lastSavePartnership();
-          }
+
           final change = striker;
           striker = nonStriker;
           nonStriker = change;

@@ -565,7 +565,7 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
-  void countRun({required int run, BattingLineUpModel? newPlayer}) {
+  void countRun({required int run, PlayerModel? newPlayer}) {
     final _$actionInfo =
         _$_ScoreStoreActionController.startAction(name: '_ScoreStore.countRun');
     try {

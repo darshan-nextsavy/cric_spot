@@ -118,16 +118,9 @@ class FallOfWicketPage extends StatelessWidget {
                         ? null
                         : () async {
                             final newPlayer = await scoreStore.fallOfWicket();
-                            final newPlayerBat = BattingLineUpModel(
-                                playerId: newPlayer.id,
-                                name: newPlayer.name,
-                                run: 0,
-                                ball: 0,
-                                four: 0,
-                                six: 0,
-                                isNotOut: true);
+
                             scoreStore.countRun(
-                                run: int.parse(run), newPlayer: newPlayerBat);
+                                run: int.parse(run), newPlayer: newPlayer);
                             if (!context.mounted) return;
                             GoRouter.of(context).pop();
                           },
