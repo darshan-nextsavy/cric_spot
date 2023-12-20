@@ -1,3 +1,6 @@
+import 'package:cric_spot/core/extensions/color_extension.dart';
+import 'package:cric_spot/core/extensions/text_style_extensions.dart';
+import 'package:cric_spot/model/partnership/partnership_model.dart';
 import 'package:flutter/material.dart';
 
 Widget batsmanScoreWidget({
@@ -112,6 +115,53 @@ Widget bowlerScoreWidget({
           )
         ],
       )
+    ],
+  );
+}
+
+Widget playerPartnershipWidget(BuildContext context, PartnerShipModel part) {
+  return Column(
+    children: [
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            children: [
+              Text(
+                part.currentStiker!.name!,
+                style: context.titleLarge,
+              ),
+              Text("${part.currentStiker!.run} (${part.currentStiker!.ball})",
+                  style: context.titleLarge)
+            ],
+          ),
+          Column(
+            children: [
+              Text(part.run.toString(),
+                  style: context.headlineLarge
+                      ?.copyWith(color: context.onPrimaryContainer)),
+              Text(
+                "(${part.ball})",
+                style: context.headlineSmall
+                    ?.copyWith(color: context.onSurfaceVariant),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              Text(
+                part.currentNotStiker!.name!,
+                style: context.titleLarge,
+              ),
+              Text(
+                  "${part.currentNotStiker!.run} (${part.currentNotStiker!.ball})",
+                  style: context.titleLarge)
+            ],
+          )
+        ],
+      ),
+      const Divider(),
     ],
   );
 }

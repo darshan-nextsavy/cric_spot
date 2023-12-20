@@ -576,6 +576,17 @@ mixin _$ScoreStore on _ScoreStore, Store {
   }
 
   @override
+  void undoRun(String runType, int run) {
+    final _$actionInfo =
+        _$_ScoreStoreActionController.startAction(name: '_ScoreStore.undoRun');
+    try {
+      return super.undoRun(runType, run);
+    } finally {
+      _$_ScoreStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 matchData: ${matchData},

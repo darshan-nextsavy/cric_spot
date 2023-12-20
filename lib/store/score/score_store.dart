@@ -253,7 +253,6 @@ abstract class _ScoreStore with Store {
   @action
   Future<void> changeInning(
       {String? strikerName, String? nonStrikerName, String? bowlerName}) async {
-    print("change inning");
     saveData();
     // striker
     PlayerModel strikerPlayer = PlayerModel(name: strikerName);
@@ -379,7 +378,6 @@ abstract class _ScoreStore with Store {
             four: 0,
             six: 0,
             isNotOut: true));
-    print(totalRun);
     target = totalRun + 1;
     currentInning = inningTwo;
     totalRun = currentInning!.totalRun!;
@@ -408,11 +406,24 @@ abstract class _ScoreStore with Store {
     lastSavePartnership();
     saveData();
 
+    final TeamModel hostTeam = teamBox.get(int.parse(matchData!.hostTeamId!))!;
+    final TeamModel visitorTeam =
+        teamBox.get(int.parse(matchData!.visitorTeamId!))!;
+    hostTeam.match = hostTeam.match! + 1;
+    visitorTeam.match = visitorTeam.match! + 1;
+
     if (currentInning!.totalRun! > inningOne!.totalRun!) {
       matchData!.wonId = currentInning!.id;
       matchData!.wonName = currentInning!.batTeamName;
       matchData!.wonBy =
           "${int.parse(matchData!.playerPerMatch!) - 1 - totalWicket} Wickets";
+      if (currentInning!.batTeamName == hostTeam.name) {
+        hostTeam.win = hostTeam.win! + 1;
+        visitorTeam.loss = visitorTeam.loss! + 1;
+      } else {
+        hostTeam.loss = hostTeam.loss! + 1;
+        visitorTeam.win = visitorTeam.win! + 1;
+      }
     } else if (currentInning!.totalRun! == inningOne!.totalRun!) {
       matchData!.wonId = "tie";
       matchData!.wonName = "tie";
@@ -421,6 +432,14 @@ abstract class _ScoreStore with Store {
       matchData!.wonId = inningOne!.id;
       matchData!.wonName = inningOne!.batTeamName;
       matchData!.wonBy = "${inningOne!.totalRun! - totalRun} Runs";
+
+      if (inningOne!.batTeamName == hostTeam.name) {
+        hostTeam.win = hostTeam.win! + 1;
+        visitorTeam.loss = visitorTeam.loss! + 1;
+      } else {
+        hostTeam.loss = hostTeam.loss! + 1;
+        visitorTeam.win = visitorTeam.win! + 1;
+      }
     }
     matchData!.save();
   }
@@ -1825,6 +1844,146 @@ abstract class _ScoreStore with Store {
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeWicket();
+        break;
+    }
+  }
+
+  @action
+  void undoRun(String runType, int run) {
+    print(runType);
+    print(run);
+    switch (runType) {
+      case "noramlRun":
+
+        /// increse over length
+        overLength = overLength - 1;
+
+        /// add run to current over
+        // currentOver.add("${run.toString()}-${RunCountType.noramlRun.name}");
+        currentOver.removeAt(currentOver.length - 1);
+
+        /// add total run and ball
+        totalRun = totalRun - run;
+        totalBall = totalBall - 1;
+
+        /// add run and ball to bowler
+        bowler!.ball = bowler!.ball! - 1;
+        bowler!.run = bowler!.run! - run;
+        bowler = bowler;
+
+        /// add run and ball to batsman
+        if ((run % 2 != 0 && overLength != 6) ||
+            (overLength == 6 && run % 2 == 0)) {
+          nonStriker!.ball = nonStriker!.ball! - 1;
+          nonStriker!.run = nonStriker!.run! - run;
+
+          if (run == 4) {
+            nonStriker!.four = nonStriker!.four! - 1;
+          }
+          if (run == 6) {
+            nonStriker!.six = nonStriker!.six! - 1;
+          }
+        } else {
+          striker!.ball = striker!.ball! - 1;
+          striker!.run = striker!.run! - run;
+
+          if (run == 4) {
+            striker!.four = striker!.four! - 1;
+          }
+          if (run == 6) {
+            striker!.six = striker!.six! - 1;
+          }
+        }
+
+        /// add total run and ball to partnership
+        currentPartnerShip!.run = currentPartnerShip!.run! - run;
+        currentPartnerShip!.ball = currentPartnerShip!.ball! - 1;
+
+        /// add run and ball to partnership player
+
+        currentPartnerShip!.currentNotStiker!.run =
+            currentPartnerShip!.currentNotStiker!.run! - run;
+        currentPartnerShip!.currentNotStiker!.ball =
+            currentPartnerShip!.currentNotStiker!.ball! - 1;
+
+        /// update current inning
+        currentInning!.totalRun = totalRun;
+        currentInning!.totalBall = totalBall;
+        currentInning!.currentStriker = striker;
+        currentInning!.currentNonStriker = nonStriker;
+        currentInning!.currentBowler = bowler;
+        currentInning!.currentOver = currentOver;
+        currentInning!.currentPartnerShip = currentPartnerShip;
+
+        // save data
+        if (overLength == 6) {
+          int runOfOver = 0;
+          for (var element in currentOver) {
+            final runOfBall = element.split("-")[0];
+            runOfOver += int.parse(runOfBall);
+          }
+          if (runOfOver == 0) {
+            bowler!.maidan = bowler!.maidan! + 1;
+          }
+
+          lastSave();
+          lastSavePartnership();
+          saveData();
+        }
+
+        /// strike rotation
+        if ((run % 2 != 0 && overLength != 6) ||
+            (overLength == 6 && run % 2 == 0)) {
+          /// change striker and non striker
+          final change = striker;
+          striker = nonStriker;
+          nonStriker = change;
+
+          /// change partner striker and non striker in partner ship
+          final partnershipChange = currentPartnerShip!.currentStiker;
+          currentPartnerShip!.currentStiker =
+              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentNotStiker = partnershipChange;
+        }
+        break;
+      case "wideBall":
+        break;
+
+      case "noBall":
+        break;
+      case "byes":
+        break;
+
+      case "legByes":
+        break;
+
+      case "noBallWithByes":
+        break;
+
+      case "noBallWithLegByes":
+        break;
+
+      case "wideBallWithWicket":
+        break;
+
+      case "noBallWithWicket":
+        break;
+
+      case "byesWithWicket":
+        break;
+
+      case "legByesWithWicket":
+        break;
+
+      case "noBallWithByesWithWicket":
+        break;
+
+      case "noBallWithLegByesWithWicket":
+        break;
+
+      case "normalWicket":
+        break;
+      default:
         break;
     }
   }

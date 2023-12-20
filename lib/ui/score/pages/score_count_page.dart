@@ -344,128 +344,212 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
                           )),
                       // 4 : extra
                       CricCard(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                           child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            padding: EdgeInsets.all(8),
+                            child: Column(
                               children: [
-                                scoreStore.matchData!.isWideBall!
-                                    ? checkBoxWidget(
-                                        childText: "Wide",
-                                        value: scoreStore.wide)
-                                    : SizedBox.shrink(),
-                                scoreStore.matchData!.isNoball!
-                                    ? checkBoxWidget(
-                                        childText: "No Ball",
-                                        value: scoreStore.noBall)
-                                    : SizedBox.shrink(),
-                                checkBoxWidget(
-                                    childText: "Byes", value: scoreStore.byes),
-                                checkBoxWidget(
-                                    childText: "Leg Byes",
-                                    value: scoreStore.legByes),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                checkBoxWidget(
-                                    childText: "Wicket",
-                                    value: scoreStore.wicket),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    cricFilledButton(
-                                        childText: "Retire", width: 120),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    cricFilledButton(
-                                        childText: "Swap Batsman", width: 120),
+                                    scoreStore.matchData!.isWideBall!
+                                        ? checkBoxWidget(
+                                            childText: "Wide",
+                                            value: scoreStore.wide)
+                                        : SizedBox.shrink(),
+                                    scoreStore.matchData!.isNoball!
+                                        ? checkBoxWidget(
+                                            childText: "No Ball",
+                                            value: scoreStore.noBall)
+                                        : SizedBox.shrink(),
+                                    checkBoxWidget(
+                                        childText: "Byes",
+                                        value: scoreStore.byes),
+                                    checkBoxWidget(
+                                        childText: "Leg Byes",
+                                        value: scoreStore.legByes),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    checkBoxWidget(
+                                        childText: "Wicket",
+                                        value: scoreStore.wicket),
+                                    Row(
+                                      children: [
+                                        cricFilledButton(
+                                            childText: "Retire", width: 120),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        cricFilledButton(
+                                            childText: "Swap Batsman",
+                                            width: 120),
+                                      ],
+                                    )
                                   ],
                                 )
                               ],
-                            )
-                          ],
-                        ),
-                      )),
+                            ),
+                          )),
                       // 5 : run count
                       Row(
                         children: [
                           SizedBox(
                             width: MediaQuery.of(context).size.width / 3,
                             child: CricCard(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
                                 child: Container(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                children: [
-                                  cricFilledButton(childText: "Undo"),
-                                  const SizedBox(
-                                    height: 4,
+                                  padding: EdgeInsets.all(8),
+                                  child: Column(
+                                    children: [
+                                      cricFilledButton(
+                                          childText: "Undo",
+                                          onTap: () {
+                                            final runsDetail = scoreStore
+                                                .currentOver.last
+                                                .split('-');
+                                            cricAlertDialog(context,
+                                                child: Text("You want to undo"),
+                                                title: Text("Are you sure?"),
+                                                confirmationButton: TextButton(
+                                                    onPressed: () {
+                                                      scoreStore.undoRun(
+                                                          runsDetail[1],
+                                                          int.parse(
+                                                              runsDetail[0]));
+                                                      GoRouter.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text("Undo")));
+                                          }),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      cricFilledButton(
+                                        childText: "Partnerships",
+                                        onTap: () {
+                                          scoreStore.lastSavePartnership();
+                                          cricBottomSheet(
+                                              context,
+                                              Container(
+                                                padding: EdgeInsets.all(16),
+                                                width: double.infinity,
+                                                child: ListView(
+                                                  shrinkWrap: true,
+                                                  children: [
+                                                    ...scoreStore.currentInning!
+                                                        .partnerShips!.reversed
+                                                        .map((part) {
+                                                      return playerPartnershipWidget(
+                                                          context, part);
+                                                    }).toList(),
+                                                  ],
+                                                ),
+                                              ));
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 4,
+                                      ),
+                                      cricFilledButton(
+                                        childText: "Extra",
+                                        onTap: () {
+                                          cricBottomSheet(
+                                              context,
+                                              Container(
+                                                padding: EdgeInsets.all(16),
+                                                width: double.infinity,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                        scoreStore
+                                                            .extraRun!.total
+                                                            .toString(),
+                                                        style: context
+                                                            .headlineLarge
+                                                            ?.copyWith(
+                                                                color: context
+                                                                    .onPrimaryContainer)),
+                                                    Text(
+                                                        "${scoreStore.extraRun!.by} B, ${scoreStore.extraRun!.legBy} LB, ${scoreStore.extraRun!.wide} WD, ${scoreStore.extraRun!.noBall} NB, ${scoreStore.extraRun!.penlaty} P",
+                                                        style: context
+                                                            .headlineSmall
+                                                            ?.copyWith(
+                                                                color: context
+                                                                    .onSurfaceVariant)),
+                                                  ],
+                                                ),
+                                              ));
+                                        },
+                                      )
+                                    ],
                                   ),
-                                  cricFilledButton(childText: "Partnerships"),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-                                  cricFilledButton(childText: "Extra")
-                                ],
-                              ),
-                            )),
+                                )),
                           ),
                           Expanded(
                             child: CricCard(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
                                 child: Container(
-                              padding: EdgeInsets.all(4),
-                              child: Column(
-                                children: [
-                                  Row(
+                                  padding: EdgeInsets.all(4),
+                                  child: Column(
                                     children: [
-                                      countRunCard(
-                                          child: "0",
-                                          onTap: () {
-                                            runCount(0);
-                                          }),
-                                      countRunCard(
-                                          child: "1",
-                                          onTap: () {
-                                            runCount(1);
-                                          }),
-                                      countRunCard(
-                                          child: "2",
-                                          onTap: () {
-                                            runCount(2);
-                                          }),
-                                      countRunCard(
-                                          child: "3",
-                                          onTap: () {
-                                            runCount(3);
-                                          }),
+                                      Row(
+                                        children: [
+                                          countRunCard(
+                                              child: "0",
+                                              onTap: () {
+                                                runCount(0);
+                                              }),
+                                          countRunCard(
+                                              child: "1",
+                                              onTap: () {
+                                                runCount(1);
+                                              }),
+                                          countRunCard(
+                                              child: "2",
+                                              onTap: () {
+                                                runCount(2);
+                                              }),
+                                          countRunCard(
+                                              child: "3",
+                                              onTap: () {
+                                                runCount(3);
+                                              }),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          countRunCard(
+                                              child: "4",
+                                              onTap: () {
+                                                runCount(4);
+                                              }),
+                                          countRunCard(
+                                              child: "5",
+                                              onTap: () {
+                                                runCount(5);
+                                              }),
+                                          countRunCard(
+                                              child: "6",
+                                              onTap: () {
+                                                runCount(6);
+                                              }),
+                                          countRunCard(
+                                              child: "...", onTap: () {}),
+                                        ],
+                                      )
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      countRunCard(
-                                          child: "4",
-                                          onTap: () {
-                                            runCount(4);
-                                          }),
-                                      countRunCard(
-                                          child: "5",
-                                          onTap: () {
-                                            runCount(5);
-                                          }),
-                                      countRunCard(
-                                          child: "6",
-                                          onTap: () {
-                                            runCount(6);
-                                          }),
-                                      countRunCard(child: "...", onTap: () {}),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            )),
+                                )),
                           )
                         ],
                       ),
