@@ -104,6 +104,12 @@ mixin _$InningModel {
   bool? get isFirstInning => throw _privateConstructorUsedError;
   @HiveField(17)
   set isFirstInning(bool? value) => throw _privateConstructorUsedError;
+  @HiveField(18)
+  List<Map<String, String>>? get fallOfWicket =>
+      throw _privateConstructorUsedError;
+  @HiveField(18)
+  set fallOfWicket(List<Map<String, String>>? value) =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -135,7 +141,8 @@ abstract class $InningModelCopyWith<$Res> {
       @HiveField(14) List<String>? currentOver,
       @HiveField(15) List<PartnerShipModel>? partnerShips,
       @HiveField(16) PartnerShipModel? currentPartnerShip,
-      @HiveField(17) bool? isFirstInning});
+      @HiveField(17) bool? isFirstInning,
+      @HiveField(18) List<Map<String, String>>? fallOfWicket});
 
   $ExtraRunModelCopyWith<$Res>? get extraRun;
   $BowlingLineUpModelCopyWith<$Res>? get currentBowler;
@@ -175,6 +182,7 @@ class _$InningModelCopyWithImpl<$Res, $Val extends InningModel>
     Object? partnerShips = freezed,
     Object? currentPartnerShip = freezed,
     Object? isFirstInning = freezed,
+    Object? fallOfWicket = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -249,6 +257,10 @@ class _$InningModelCopyWithImpl<$Res, $Val extends InningModel>
           ? _value.isFirstInning
           : isFirstInning // ignore: cast_nullable_to_non_nullable
               as bool?,
+      fallOfWicket: freezed == fallOfWicket
+          ? _value.fallOfWicket
+          : fallOfWicket // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, String>>?,
     ) as $Val);
   }
 
@@ -340,7 +352,8 @@ abstract class _$$InningModelImplCopyWith<$Res>
       @HiveField(14) List<String>? currentOver,
       @HiveField(15) List<PartnerShipModel>? partnerShips,
       @HiveField(16) PartnerShipModel? currentPartnerShip,
-      @HiveField(17) bool? isFirstInning});
+      @HiveField(17) bool? isFirstInning,
+      @HiveField(18) List<Map<String, String>>? fallOfWicket});
 
   @override
   $ExtraRunModelCopyWith<$Res>? get extraRun;
@@ -383,6 +396,7 @@ class __$$InningModelImplCopyWithImpl<$Res>
     Object? partnerShips = freezed,
     Object? currentPartnerShip = freezed,
     Object? isFirstInning = freezed,
+    Object? fallOfWicket = freezed,
   }) {
     return _then(_$InningModelImpl(
       id: freezed == id
@@ -457,6 +471,10 @@ class __$$InningModelImplCopyWithImpl<$Res>
           ? _value.isFirstInning
           : isFirstInning // ignore: cast_nullable_to_non_nullable
               as bool?,
+      fallOfWicket: freezed == fallOfWicket
+          ? _value.fallOfWicket
+          : fallOfWicket // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, String>>?,
     ));
   }
 }
@@ -483,7 +501,8 @@ class _$InningModelImpl extends _InningModel {
       @HiveField(14) this.currentOver,
       @HiveField(15) this.partnerShips,
       @HiveField(16) this.currentPartnerShip,
-      @HiveField(17) this.isFirstInning})
+      @HiveField(17) this.isFirstInning,
+      @HiveField(18) this.fallOfWicket})
       : super._();
 
   factory _$InningModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -543,10 +562,13 @@ class _$InningModelImpl extends _InningModel {
   @override
   @HiveField(17)
   bool? isFirstInning;
+  @override
+  @HiveField(18)
+  List<Map<String, String>>? fallOfWicket;
 
   @override
   String toString() {
-    return 'InningModel(id: $id, matchId: $matchId, batTeamName: $batTeamName, bowlTeamName: $bowlTeamName, totalRun: $totalRun, totalWicket: $totalWicket, totalBall: $totalBall, battingLineup: $battingLineup, bowlingLineup: $bowlingLineup, extraRun: $extraRun, currentBowler: $currentBowler, currentStriker: $currentStriker, currentNonStriker: $currentNonStriker, overs: $overs, currentOver: $currentOver, partnerShips: $partnerShips, currentPartnerShip: $currentPartnerShip, isFirstInning: $isFirstInning)';
+    return 'InningModel(id: $id, matchId: $matchId, batTeamName: $batTeamName, bowlTeamName: $bowlTeamName, totalRun: $totalRun, totalWicket: $totalWicket, totalBall: $totalBall, battingLineup: $battingLineup, bowlingLineup: $bowlingLineup, extraRun: $extraRun, currentBowler: $currentBowler, currentStriker: $currentStriker, currentNonStriker: $currentNonStriker, overs: $overs, currentOver: $currentOver, partnerShips: $partnerShips, currentPartnerShip: $currentPartnerShip, isFirstInning: $isFirstInning, fallOfWicket: $fallOfWicket)';
   }
 
   @JsonKey(ignore: true)
@@ -565,24 +587,26 @@ class _$InningModelImpl extends _InningModel {
 
 abstract class _InningModel extends InningModel {
   factory _InningModel(
-      {@HiveField(0) String? id,
-      @HiveField(1) String? matchId,
-      @HiveField(2) String? batTeamName,
-      @HiveField(3) String? bowlTeamName,
-      @HiveField(4) int? totalRun,
-      @HiveField(5) int? totalWicket,
-      @HiveField(6) int? totalBall,
-      @HiveField(7) List<BattingLineUpModel>? battingLineup,
-      @HiveField(8) List<BowlingLineUpModel>? bowlingLineup,
-      @HiveField(9) ExtraRunModel? extraRun,
-      @HiveField(10) BowlingLineUpModel? currentBowler,
-      @HiveField(11) BattingLineUpModel? currentStriker,
-      @HiveField(12) BattingLineUpModel? currentNonStriker,
-      @HiveField(13) List<List<String>>? overs,
-      @HiveField(14) List<String>? currentOver,
-      @HiveField(15) List<PartnerShipModel>? partnerShips,
-      @HiveField(16) PartnerShipModel? currentPartnerShip,
-      @HiveField(17) bool? isFirstInning}) = _$InningModelImpl;
+          {@HiveField(0) String? id,
+          @HiveField(1) String? matchId,
+          @HiveField(2) String? batTeamName,
+          @HiveField(3) String? bowlTeamName,
+          @HiveField(4) int? totalRun,
+          @HiveField(5) int? totalWicket,
+          @HiveField(6) int? totalBall,
+          @HiveField(7) List<BattingLineUpModel>? battingLineup,
+          @HiveField(8) List<BowlingLineUpModel>? bowlingLineup,
+          @HiveField(9) ExtraRunModel? extraRun,
+          @HiveField(10) BowlingLineUpModel? currentBowler,
+          @HiveField(11) BattingLineUpModel? currentStriker,
+          @HiveField(12) BattingLineUpModel? currentNonStriker,
+          @HiveField(13) List<List<String>>? overs,
+          @HiveField(14) List<String>? currentOver,
+          @HiveField(15) List<PartnerShipModel>? partnerShips,
+          @HiveField(16) PartnerShipModel? currentPartnerShip,
+          @HiveField(17) bool? isFirstInning,
+          @HiveField(18) List<Map<String, String>>? fallOfWicket}) =
+      _$InningModelImpl;
   _InningModel._() : super._();
 
   factory _InningModel.fromJson(Map<String, dynamic> json) =
@@ -678,6 +702,11 @@ abstract class _InningModel extends InningModel {
   bool? get isFirstInning;
   @HiveField(17)
   set isFirstInning(bool? value);
+  @override
+  @HiveField(18)
+  List<Map<String, String>>? get fallOfWicket;
+  @HiveField(18)
+  set fallOfWicket(List<Map<String, String>>? value);
   @override
   @JsonKey(ignore: true)
   _$$InningModelImplCopyWith<_$InningModelImpl> get copyWith =>

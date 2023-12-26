@@ -37,13 +37,16 @@ class InningModelAdapter extends TypeAdapter<_$InningModelImpl> {
       partnerShips: (fields[15] as List?)?.cast<PartnerShipModel>(),
       currentPartnerShip: fields[16] as PartnerShipModel?,
       isFirstInning: fields[17] as bool?,
+      fallOfWicket: (fields[18] as List?)
+          ?.map((dynamic e) => (e as Map).cast<String, String>())
+          ?.toList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, _$InningModelImpl obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -79,7 +82,9 @@ class InningModelAdapter extends TypeAdapter<_$InningModelImpl> {
       ..writeByte(16)
       ..write(obj.currentPartnerShip)
       ..writeByte(17)
-      ..write(obj.isFirstInning);
+      ..write(obj.isFirstInning)
+      ..writeByte(18)
+      ..write(obj.fallOfWicket);
   }
 
   @override
@@ -141,6 +146,9 @@ _$InningModelImpl _$$InningModelImplFromJson(Map<String, dynamic> json) =>
           : PartnerShipModel.fromJson(
               json['currentPartnerShip'] as Map<String, dynamic>),
       isFirstInning: json['isFirstInning'] as bool?,
+      fallOfWicket: (json['fallOfWicket'] as List<dynamic>?)
+          ?.map((e) => Map<String, String>.from(e as Map))
+          .toList(),
     );
 
 Map<String, dynamic> _$$InningModelImplToJson(_$InningModelImpl instance) =>
@@ -163,4 +171,5 @@ Map<String, dynamic> _$$InningModelImplToJson(_$InningModelImpl instance) =>
       'partnerShips': instance.partnerShips,
       'currentPartnerShip': instance.currentPartnerShip,
       'isFirstInning': instance.isFirstInning,
+      'fallOfWicket': instance.fallOfWicket,
     };

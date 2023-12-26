@@ -30,6 +30,7 @@ class InningModel extends HiveObject with _$InningModel {
     @HiveField(15) List<PartnerShipModel>? partnerShips,
     @HiveField(16) PartnerShipModel? currentPartnerShip,
     @HiveField(17) bool? isFirstInning,
+    @HiveField(18) List<Map<String, String>>? fallOfWicket,
   }) = _InningModel;
   InningModel._();
 

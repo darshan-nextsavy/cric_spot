@@ -386,7 +386,8 @@ abstract class _HomeStore with Store {
                 four: 0,
                 six: 0,
                 isNotOut: true)),
-        isFirstInning: true);
+        isFirstInning: true,
+        fallOfWicket: []);
 
     InningModel inningtwo = InningModel(
         matchId: matchId.toString(),
@@ -406,7 +407,8 @@ abstract class _HomeStore with Store {
         currentOver: [],
         partnerShips: [],
         currentPartnerShip: null,
-        isFirstInning: false);
+        isFirstInning: false,
+        fallOfWicket: []);
 
     final inningOneId = await inningBox.add(inningOne);
     inningOne.id = inningOneId.toString();
