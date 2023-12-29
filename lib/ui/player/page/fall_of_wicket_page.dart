@@ -33,7 +33,7 @@ class FallOfWicketPage extends StatelessWidget {
                   fontWeight: FontWeight.w600, color: context.onBackground),
             ),
             const SizedBox(
-              height: 16,
+              height: 8,
             ),
             Container(
               padding: const EdgeInsets.all(6),
@@ -61,6 +61,68 @@ class FallOfWicketPage extends StatelessWidget {
                 }),
               ),
             ),
+
+            Observer(builder: (_) {
+              return (scoreStore.wicketType == WicketType.runoutStriker ||
+                      scoreStore.wicketType == WicketType.runoutNonStriker)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        Text(
+                          "Who got out?",
+                          style: context.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: context.onBackground),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: context.onSecondaryContainer),
+                            color: context.surfaceVariant,
+                          ),
+                          width: double.infinity,
+                          child: DropdownButtonHideUnderline(
+                            child: Observer(builder: (_) {
+                              return DropdownButton(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  onChanged: (val) {
+                                    scoreStore.whoGotOut = val!;
+                                  },
+                                  value: scoreStore.whoGotOut,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: scoreStore.striker!.playerId,
+                                      child: Text(scoreStore.striker!.name!),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: scoreStore.nonStriker!.playerId,
+                                      child: Text(scoreStore.nonStriker!.name!),
+                                    )
+                                  ]
+
+                                  // WicketType.values.map((e) {
+                                  //   return DropdownMenuItem<WicketType>(
+                                  //     value: e,
+                                  //     child: Text(e.name),
+                                  //   );
+                                  // }).toList(),
+                                  );
+                            }),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink();
+            }),
+
             // SizedBox(
             //   width: double.infinity,
             //   child: Row(
@@ -92,7 +154,7 @@ class FallOfWicketPage extends StatelessWidget {
                   fontWeight: FontWeight.w600, color: context.onBackground),
             ),
             const SizedBox(
-              height: 16,
+              height: 8,
             ),
             scoreStore.totalWicket ==
                     (int.parse(scoreStore.matchData!.playerPerMatch!) - 2)

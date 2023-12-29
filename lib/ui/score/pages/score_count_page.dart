@@ -645,6 +645,9 @@ class _ScoreCountPageState extends State<ScoreCountPage> {
             (int.parse(scoreStore.matchData!.playerPerMatch ?? "11") - 1)) {
       if (scoreStore.overLength < 6) {
         scoreStore.wicket
+            ? scoreStore.whoGotOut = scoreStore.striker!.playerId!
+            : null;
+        scoreStore.wicket
             ? GoRouter.of(context).pushNamed(RoutesName.fallOfWicket.name,
                 pathParameters: {"run": "$run"})
             : scoreStore.countRun(run: run);
