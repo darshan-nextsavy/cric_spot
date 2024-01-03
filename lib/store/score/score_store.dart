@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cric_spot/core/enum/run_count_type.dart';
 import 'package:cric_spot/core/enum/wicket_type.dart';
 import 'package:cric_spot/model/batting/batting_lineup_model.dart';
@@ -159,9 +161,7 @@ abstract class _ScoreStore with Store {
       matchData = matchBox.get(int.parse(matchId));
       inningOne = inningBox.get(int.parse(matchData!.inningOneId!));
       inningTwo = inningBox.get(int.parse(matchData!.inningTwoId!));
-      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6) ||
-          inningOne!.totalWicket ==
-              (int.parse(matchData!.playerPerMatch!) - 1)) {
+      if (inningOne!.totalBall! == (int.parse(matchData!.over!) * 6) || inningOne!.totalWicket == (int.parse(matchData!.playerPerMatch!) - 1)) {
         currentInning = inningTwo;
         target = inningOne!.totalRun! + 1;
       } else {
@@ -190,8 +190,7 @@ abstract class _ScoreStore with Store {
   Future<void> selectNewBowler() async {
     // save bowler player
 
-    BowlingLineUpModel newBowlerModel =
-        currentInning!.bowlingLineup!.firstWhere(
+    BowlingLineUpModel newBowlerModel = currentInning!.bowlingLineup!.firstWhere(
       (element) => element.name == newBowler,
       orElse: () => BowlingLineUpModel(run: 0, ball: 0, wicket: 0, maidan: 0),
     );
@@ -202,20 +201,8 @@ abstract class _ScoreStore with Store {
       newBowlerData.id = bowlerId.toString();
       newBowlerData.save();
 
-      currentInning!.bowlingLineup!.add(BowlingLineUpModel(
-          playerId: bowlerId.toString(),
-          name: newBowler,
-          run: 0,
-          ball: 0,
-          wicket: 0,
-          maidan: 0));
-      currentInning!.currentBowler = BowlingLineUpModel(
-          playerId: bowlerId.toString(),
-          name: newBowler,
-          run: 0,
-          ball: 0,
-          wicket: 0,
-          maidan: 0);
+      currentInning!.bowlingLineup!.add(BowlingLineUpModel(playerId: bowlerId.toString(), name: newBowler, run: 0, ball: 0, wicket: 0, maidan: 0));
+      currentInning!.currentBowler = BowlingLineUpModel(playerId: bowlerId.toString(), name: newBowler, run: 0, ball: 0, wicket: 0, maidan: 0);
     } else {
       currentInning!.currentBowler = newBowlerModel;
     }
@@ -257,8 +244,7 @@ abstract class _ScoreStore with Store {
   }
 
   @action
-  Future<void> changeInning(
-      {String? strikerName, String? nonStrikerName, String? bowlerName}) async {
+  Future<void> changeInning({String? strikerName, String? nonStrikerName, String? bowlerName}) async {
     saveData();
     // striker
     PlayerModel strikerPlayer = PlayerModel(name: strikerName);
@@ -286,104 +272,38 @@ abstract class _ScoreStore with Store {
 
     // add batting line up to second inning
     inningTwo!.battingLineup = [
-      BattingLineUpModel(
-          playerId: strikerId.toString(),
-          name: strikerName,
-          run: 0,
-          ball: 0,
-          four: 0,
-          six: 0,
-          isNotOut: true),
-      BattingLineUpModel(
-          playerId: nonStrikerId.toString(),
-          name: nonStrikerName,
-          run: 0,
-          ball: 0,
-          four: 0,
-          six: 0,
-          isNotOut: true),
+      BattingLineUpModel(playerId: strikerId.toString(), name: strikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+      BattingLineUpModel(playerId: nonStrikerId.toString(), name: nonStrikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
     ];
 
     // add bowling line up to second inning
-    inningTwo!.bowlingLineup = [
-      BowlingLineUpModel(
-          playerId: bowlerId.toString(),
-          name: bowlerName,
-          run: 0,
-          ball: 0,
-          maidan: 0,
-          wicket: 0)
-    ];
+    inningTwo!.bowlingLineup = [BowlingLineUpModel(playerId: bowlerId.toString(), name: bowlerName, run: 0, ball: 0, maidan: 0, wicket: 0)];
 
-    inningTwo!.currentStriker = BattingLineUpModel(
-        playerId: strikerId.toString(),
-        name: strikerName,
-        run: 0,
-        ball: 0,
-        four: 0,
-        six: 0,
-        isNotOut: true);
+    inningTwo!.currentStriker =
+        BattingLineUpModel(playerId: strikerId.toString(), name: strikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
-    inningTwo!.currentNonStriker = BattingLineUpModel(
-        playerId: nonStrikerId.toString(),
-        name: nonStrikerName,
-        run: 0,
-        ball: 0,
-        four: 0,
-        six: 0,
-        isNotOut: true);
+    inningTwo!.currentNonStriker =
+        BattingLineUpModel(playerId: nonStrikerId.toString(), name: nonStrikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
-    inningTwo!.currentBowler = BowlingLineUpModel(
-        playerId: bowlerId.toString(),
-        name: bowlerName,
-        run: 0,
-        ball: 0,
-        maidan: 0,
-        wicket: 0);
+    inningTwo!.currentBowler = BowlingLineUpModel(playerId: bowlerId.toString(), name: bowlerName, run: 0, ball: 0, maidan: 0, wicket: 0);
 
     inningTwo!.partnerShips = [
       PartnerShipModel(
           id: strikerId.toString(),
           run: 0,
           ball: 0,
-          currentStiker: BattingLineUpModel(
-              playerId: strikerId.toString(),
-              name: strikerName,
-              run: 0,
-              ball: 0,
-              four: 0,
-              six: 0,
-              isNotOut: true),
-          currentNotStiker: BattingLineUpModel(
-              playerId: nonStrikerId.toString(),
-              name: nonStrikerName,
-              run: 0,
-              ball: 0,
-              four: 0,
-              six: 0,
-              isNotOut: true))
+          currentStiker: BattingLineUpModel(playerId: strikerId.toString(), name: strikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+          currentNotStiker:
+              BattingLineUpModel(playerId: nonStrikerId.toString(), name: nonStrikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true))
     ];
 
     inningTwo!.currentPartnerShip = PartnerShipModel(
         id: strikerId.toString(),
         run: 0,
         ball: 0,
-        currentStiker: BattingLineUpModel(
-            playerId: strikerId.toString(),
-            name: strikerName,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true),
-        currentNotStiker: BattingLineUpModel(
-            playerId: nonStrikerId.toString(),
-            name: nonStrikerName,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true));
+        currentStiker: BattingLineUpModel(playerId: strikerId.toString(), name: strikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+        currentNotStiker:
+            BattingLineUpModel(playerId: nonStrikerId.toString(), name: nonStrikerName, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
     target = totalRun + 1;
     currentInning = inningTwo;
     totalRun = currentInning!.totalRun!;
@@ -413,16 +333,14 @@ abstract class _ScoreStore with Store {
     saveData();
 
     final TeamModel hostTeam = teamBox.get(int.parse(matchData!.hostTeamId!))!;
-    final TeamModel visitorTeam =
-        teamBox.get(int.parse(matchData!.visitorTeamId!))!;
+    final TeamModel visitorTeam = teamBox.get(int.parse(matchData!.visitorTeamId!))!;
     hostTeam.match = hostTeam.match! + 1;
     visitorTeam.match = visitorTeam.match! + 1;
 
     if (currentInning!.totalRun! > inningOne!.totalRun!) {
       matchData!.wonId = currentInning!.id;
       matchData!.wonName = currentInning!.batTeamName;
-      matchData!.wonBy =
-          "${int.parse(matchData!.playerPerMatch!) - 1 - totalWicket} Wickets";
+      matchData!.wonBy = "${int.parse(matchData!.playerPerMatch!) - 1 - totalWicket} Wickets";
       if (currentInning!.batTeamName == hostTeam.name) {
         hostTeam.win = hostTeam.win! + 1;
         visitorTeam.loss = visitorTeam.loss! + 1;
@@ -522,10 +440,8 @@ abstract class _ScoreStore with Store {
 
         /// add run and ball to partnership player
 
-        currentPartnerShip!.currentStiker!.run =
-            currentPartnerShip!.currentStiker!.run! + run;
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! + run;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -554,8 +470,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -563,8 +478,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -597,8 +511,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + reBallNum;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + reBallNum;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + reBallNum;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -626,8 +539,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -635,8 +547,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeWide();
@@ -677,10 +588,8 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.run =
-            currentPartnerShip!.currentStiker!.run! + run;
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! + run;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -709,8 +618,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -718,8 +626,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeNoball();
@@ -751,8 +658,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -780,8 +686,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -789,8 +694,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeByes();
@@ -822,8 +726,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -851,8 +754,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -860,8 +762,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeLegbyes();
@@ -877,8 +778,7 @@ abstract class _ScoreStore with Store {
         extraRun!.noBall = extraRun!.noBall! + run + noBallRun;
 
         /// add run to current over
-        currentOver
-            .add("${run + noBallRun}-${RunCountType.noBallWithByes.name}");
+        currentOver.add("${run + noBallRun}-${RunCountType.noBallWithByes.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + noBallRun;
@@ -896,8 +796,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -925,8 +824,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -934,8 +832,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeNoball();
@@ -952,8 +849,7 @@ abstract class _ScoreStore with Store {
         extraRun!.noBall = extraRun!.noBall! + run + noBallRun;
 
         /// add run to current over
-        currentOver
-            .add("${run + noBallRun}-${RunCountType.noBallWithLegByes.name}");
+        currentOver.add("${run + noBallRun}-${RunCountType.noBallWithLegByes.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + noBallRun;
@@ -971,8 +867,7 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
 
         /// update current inning
         currentInning!.extraRun = extraRun;
@@ -1000,8 +895,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1009,16 +903,24 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeNoball();
         changeLegbyes();
         break;
       case RunCountType.wideBallWithWicket:
+        bool isRunOutStrikeChange = true;
+
         int reBallNum = matchData!.isWideReball! ? 0 : 1;
         int wideBallRun = matchData!.wideRun!;
+
+        if ((wicketType == WicketType.runoutStriker && whoGotOut == striker!.playerId) ||
+            (wicketType == WicketType.runoutNonStriker && whoGotOut == nonStriker!.playerId)) {
+          isRunOutStrikeChange = false;
+        } else {
+          isRunOutStrikeChange = true;
+        }
 
         overLength = overLength + reBallNum;
 
@@ -1027,8 +929,7 @@ abstract class _ScoreStore with Store {
         extraRun!.wide = extraRun!.wide! + wideBallRun;
 
         /// add run to current over
-        currentOver.add(
-            "${run + wideBallRun}-${RunCountType.wideBallWithWicket.name}");
+        currentOver.add("${run + wideBallRun}-${RunCountType.wideBallWithWicket.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + wideBallRun;
@@ -1036,22 +937,42 @@ abstract class _ScoreStore with Store {
         totalWicket = totalWicket + 1;
 
         /// add run and ball to bowler
-        bowler!.run = bowler!.run! + run + wideBallRun;
-        bowler!.ball = bowler!.ball! + reBallNum;
-        bowler!.wicket = bowler!.wicket! + 1;
+        if (wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) {
+          bowler!.ball = bowler!.ball! + reBallNum;
+          bowler!.run = bowler!.run! + run + wideBallRun;
+        } else {
+          bowler!.ball = bowler!.ball! + reBallNum;
+          bowler!.run = bowler!.run! + run + wideBallRun;
+          bowler!.wicket = bowler!.wicket! + 1;
+        }
 
         /// add run and ball to batsman
         striker!.ball = striker!.ball! + reBallNum;
-        striker!.outBy = bowler!.name;
-        striker!.outType = wicketType.name;
-        striker!.isNotOut = false;
-        currentInning!.fallOfWicket!.add({
-          "batsmanId": striker!.playerId!,
-          "batsmanName": striker!.name!,
-          "runWicket": "$totalRun - $totalWicket",
-          "over": "${totalBall / 6}.${totalBall % 6}",
-          "wicketType": wicketType.name
-        });
+
+        if ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) && whoGotOut == nonStriker!.playerId) {
+          nonStriker!.outBy = bowler!.name;
+          nonStriker!.outType = wicketType.name;
+          nonStriker!.isNotOut = false;
+
+          currentInning!.fallOfWicket!.add({
+            "batsmanId": nonStriker!.playerId!,
+            "batsmanName": nonStriker!.name!,
+            "runWicket": "$totalRun - $totalWicket",
+            "over": "${totalBall / 6}.${totalBall % 6}",
+            "wicketType": wicketType.name
+          });
+        } else {
+          striker!.outBy = bowler!.name;
+          striker!.outType = wicketType.name;
+          striker!.isNotOut = false;
+          currentInning!.fallOfWicket!.add({
+            "batsmanId": striker!.playerId!,
+            "batsmanName": striker!.name!,
+            "runWicket": "$totalRun - $totalWicket",
+            "over": "${totalBall / 6}.${totalBall % 6}",
+            "wicketType": wicketType.name
+          });
+        }
         lastSave();
 
         /// add total run and ball to partnership
@@ -1059,41 +980,38 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + reBallNum;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + reBallNum;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + reBallNum;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        final PartnerShipModel newPartnership;
 
-        /// create new partnership
-        final newPartnership = PartnerShipModel(
-            id: newPlayer.id.toString(),
-            run: 0,
-            ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
-            currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+        if ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) && whoGotOut == nonStriker!.playerId) {
+          nonStriker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+
+          newPartnership = PartnerShipModel(
+              id: newPlayer.id!.toString(),
+              run: 0,
+              ball: 0,
+              currentStiker:
+                  BattingLineUpModel(playerId: striker!.playerId.toString(), name: striker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+              currentNotStiker:
+                  BattingLineUpModel(playerId: newPlayer.id.toString(), name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+          currentInning!.battingLineup!.add(nonStriker!);
+        } else {
+          striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+
+          /// create new partnership
+          newPartnership = PartnerShipModel(
+              id: newPlayer.id!.toString(),
+              run: 0,
+              ball: 0,
+              currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+              currentNotStiker: BattingLineUpModel(
+                  playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+
+          currentInning!.battingLineup!.add(striker!);
+        }
 
         currentInning!.totalRun = totalRun;
         currentInning!.totalBall = totalBall;
@@ -1103,7 +1021,6 @@ abstract class _ScoreStore with Store {
         currentInning!.currentNonStriker = nonStriker;
         currentInning!.currentBowler = bowler;
         currentInning!.currentOver = currentOver;
-        currentInning!.battingLineup!.add(striker!);
         currentPartnerShip = newPartnership;
         currentInning!.partnerShips!.add(newPartnership);
         currentInning!.currentPartnerShip = newPartnership;
@@ -1125,8 +1042,11 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6 && isRunOutStrikeChange) ||
+            ((overLength == 6 && run % 2 == 0) ||
+                ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) &&
+                    !isRunOutStrikeChange &&
+                    overLength == 6))) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1134,8 +1054,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeWide();
@@ -1153,8 +1072,7 @@ abstract class _ScoreStore with Store {
         extraRun!.noBall = extraRun!.noBall! + noBallRun;
 
         /// add run to current over
-        currentOver
-            .add("${run + noBallRun}-${RunCountType.noBallWithWicket.name}");
+        currentOver.add("${run + noBallRun}-${RunCountType.noBallWithWicket.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + noBallRun;
@@ -1192,43 +1110,21 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.run =
-            currentPartnerShip!.currentStiker!.run! + run;
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! + run;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
             id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
+            currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
             currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+                playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -1261,8 +1157,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1270,8 +1165,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeNoball();
@@ -1317,41 +1211,20 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
             id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
+            currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
             currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+                playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -1384,8 +1257,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1393,8 +1265,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeByes();
@@ -1440,41 +1311,20 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
             id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
+            currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
             currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+                playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -1507,8 +1357,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1516,8 +1365,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeLegbyes();
@@ -1535,8 +1383,7 @@ abstract class _ScoreStore with Store {
         extraRun!.noBall = extraRun!.noBall! + noBallRun + run;
 
         /// add run to current over
-        currentOver.add(
-            "${run + noBallRun}-${RunCountType.noBallWithByesWithWicket.name}");
+        currentOver.add("${run + noBallRun}-${RunCountType.noBallWithByesWithWicket.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + noBallRun;
@@ -1567,41 +1414,20 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
             id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
+            currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
             currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+                playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -1634,8 +1460,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1643,8 +1468,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeByes();
@@ -1663,8 +1487,7 @@ abstract class _ScoreStore with Store {
         extraRun!.noBall = extraRun!.noBall! + noBallRun + run;
 
         /// add run to current over
-        currentOver.add(
-            "${run + noBallRun}-${RunCountType.noBallWithLegByesWithWicket.name}");
+        currentOver.add("${run + noBallRun}-${RunCountType.noBallWithLegByesWithWicket.name}");
 
         /// add total run and ball
         totalRun = totalRun + run + noBallRun;
@@ -1696,41 +1519,20 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        striker = BattingLineUpModel(
-            playerId: newPlayer!.id,
-            name: newPlayer.name,
-            run: 0,
-            ball: 0,
-            four: 0,
-            six: 0,
-            isNotOut: true);
+        striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
 
         /// create new partnership
         final newPartnership = PartnerShipModel(
             id: newPlayer.id.toString(),
             run: 0,
             ball: 0,
-            currentStiker: BattingLineUpModel(
-                playerId: newPlayer.id,
-                name: newPlayer.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true),
+            currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
             currentNotStiker: BattingLineUpModel(
-                playerId: nonStriker!.playerId.toString(),
-                name: nonStriker!.name,
-                run: 0,
-                ball: 0,
-                four: 0,
-                six: 0,
-                isNotOut: true));
+                playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
 
         /// update current inning
         currentInning!.totalRun = totalRun;
@@ -1763,8 +1565,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -1772,8 +1573,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeLegbyes();
@@ -1782,6 +1582,13 @@ abstract class _ScoreStore with Store {
         break;
       case RunCountType.normalWicket:
         bool isRunOutStrikeChange = true;
+
+        if ((wicketType == WicketType.runoutStriker && whoGotOut == striker!.playerId) ||
+            (wicketType == WicketType.runoutNonStriker && whoGotOut == nonStriker!.playerId)) {
+          isRunOutStrikeChange = false;
+        } else {
+          isRunOutStrikeChange = true;
+        }
 
         /// increse over length
         overLength = overLength + 1;
@@ -1795,8 +1602,7 @@ abstract class _ScoreStore with Store {
         totalWicket = totalWicket + 1;
 
         /// add run and ball to bowler
-        if (wicketType == WicketType.runoutNonStriker ||
-            wicketType == WicketType.runoutStriker) {
+        if (wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) {
           bowler!.ball = bowler!.ball! + 1;
           bowler!.run = bowler!.run! + run;
         } else {
@@ -1809,18 +1615,8 @@ abstract class _ScoreStore with Store {
         striker!.ball = striker!.ball! + 1;
         striker!.run = striker!.run! + run;
 
-        if ((wicketType == WicketType.runoutStriker &&
-                whoGotOut == striker!.playerId) ||
-            (wicketType == WicketType.runoutNonStriker &&
-                whoGotOut == nonStriker!.playerId)) {
-          isRunOutStrikeChange = false;
-        } else {
-          isRunOutStrikeChange = true;
-        }
-
-        if ((wicketType == WicketType.runoutNonStriker ||
-                wicketType == WicketType.runoutStriker) &&
-            whoGotOut == nonStriker!.playerId) {
+        if ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) && whoGotOut == nonStriker!.playerId) {
+          // if (( wicketType == WicketType.runoutNonStriker && whoGotOut== nonStriker!.playerId ) || (( wicketType == WicketType.runoutStriker && whoGotOut== nonStriker!.playerId ))) {
           nonStriker!.outBy = bowler!.name;
           nonStriker!.outType = wicketType.name;
           nonStriker!.isNotOut = false;
@@ -1853,80 +1649,81 @@ abstract class _ScoreStore with Store {
         currentPartnerShip!.ball = currentPartnerShip!.ball! + 1;
 
         /// add run and ball to partnership player
-        currentPartnerShip!.currentStiker!.run =
-            currentPartnerShip!.currentStiker!.run! + run;
-        currentPartnerShip!.currentStiker!.ball =
-            currentPartnerShip!.currentStiker!.ball! + 1;
+        currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! + run;
+        currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! + 1;
         lastSavePartnership();
 
         /// add stiker and not stiker data to current inning
-        final newPartnership;
-        if ((wicketType == WicketType.runoutNonStriker ||
-                wicketType == WicketType.runoutStriker) &&
-            whoGotOut == nonStriker!.playerId) {
-          nonStriker = BattingLineUpModel(
-              playerId: newPlayer!.id,
-              name: newPlayer.name,
-              run: 0,
-              ball: 0,
-              four: 0,
-              six: 0,
-              isNotOut: true);
+        final PartnerShipModel newPartnership;
+        if ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) && whoGotOut == nonStriker!.playerId) {
+          whoGotOut = striker!.playerId!;
+          if (wicketType == WicketType.runoutNonStriker) {
+            nonStriker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+            currentInning!.battingLineup!.add(nonStriker!);
+            newPartnership = PartnerShipModel(
+                id: newPlayer.id!.toString(),
+                run: 0,
+                ball: 0,
+                currentStiker:
+                    BattingLineUpModel(playerId: striker!.playerId.toString(), name: striker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+                currentNotStiker:
+                    BattingLineUpModel(playerId: newPlayer.id.toString(), name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+          } else {
+            nonStriker = striker;
 
-          newPartnership = PartnerShipModel(
-              id: newPlayer.id!.toString(),
-              run: 0,
-              ball: 0,
-              currentStiker: BattingLineUpModel(
-                  playerId: striker!.playerId.toString(),
-                  name: striker!.name,
-                  run: 0,
-                  ball: 0,
-                  four: 0,
-                  six: 0,
-                  isNotOut: true),
-              currentNotStiker: BattingLineUpModel(
-                  playerId: newPlayer.id.toString(),
-                  name: newPlayer.name,
-                  run: 0,
-                  ball: 0,
-                  four: 0,
-                  six: 0,
-                  isNotOut: true));
-          currentInning!.battingLineup!.add(nonStriker!);
+            striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+            currentInning!.battingLineup!.add(striker!);
+
+            newPartnership = PartnerShipModel(
+                id: newPlayer.id!.toString(),
+                run: 0,
+                ball: 0,
+                currentStiker:
+                    BattingLineUpModel(playerId: newPlayer.id.toString(), name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+                currentNotStiker: BattingLineUpModel(
+                    playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+          }
         } else {
-          striker = BattingLineUpModel(
-              playerId: newPlayer!.id,
-              name: newPlayer.name,
-              run: 0,
-              ball: 0,
-              four: 0,
-              six: 0,
-              isNotOut: true);
+          whoGotOut = nonStriker!.playerId!;
 
-          /// create new partnership
-          newPartnership = PartnerShipModel(
-              id: newPlayer.id!.toString(),
-              run: 0,
-              ball: 0,
-              currentStiker: BattingLineUpModel(
-                  playerId: newPlayer.id,
-                  name: newPlayer.name,
-                  run: 0,
-                  ball: 0,
-                  four: 0,
-                  six: 0,
-                  isNotOut: true),
-              currentNotStiker: BattingLineUpModel(
-                  playerId: nonStriker!.playerId.toString(),
-                  name: nonStriker!.name,
-                  run: 0,
-                  ball: 0,
-                  four: 0,
-                  six: 0,
-                  isNotOut: true));
+          if (wicketType == WicketType.runoutNonStriker) {
+            striker = nonStriker;
+            nonStriker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+            currentInning!.battingLineup!.add(nonStriker!);
+            newPartnership = PartnerShipModel(
+                id: newPlayer.id!.toString(),
+                run: 0,
+                ball: 0,
+                currentStiker:
+                    BattingLineUpModel(playerId: striker!.playerId.toString(), name: striker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+                currentNotStiker:
+                    BattingLineUpModel(playerId: newPlayer.id.toString(), name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+          } else {
+            striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+            currentInning!.battingLineup!.add(striker!);
 
-          currentInning!.battingLineup!.add(striker!);
+            newPartnership = PartnerShipModel(
+                id: newPlayer.id!.toString(),
+                run: 0,
+                ball: 0,
+                currentStiker:
+                    BattingLineUpModel(playerId: newPlayer.id.toString(), name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+                currentNotStiker: BattingLineUpModel(
+                    playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+          }
+
+          // striker = BattingLineUpModel(playerId: newPlayer!.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true);
+
+          // /// create new partnership
+          // newPartnership = PartnerShipModel(
+          //     id: newPlayer.id!.toString(),
+          //     run: 0,
+          //     ball: 0,
+          //     currentStiker: BattingLineUpModel(playerId: newPlayer.id, name: newPlayer.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true),
+          //     currentNotStiker: BattingLineUpModel(
+          //         playerId: nonStriker!.playerId.toString(), name: nonStriker!.name, run: 0, ball: 0, four: 0, six: 0, isNotOut: true));
+
+          // currentInning!.battingLineup!.add(striker!);
         }
 
         currentInning!.totalRun = totalRun;
@@ -1957,22 +1754,31 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6 && isRunOutStrikeChange) ||
-            ((overLength == 6 && run % 2 == 0) ||
-                ((wicketType == WicketType.runoutNonStriker ||
-                        wicketType == WicketType.runoutStriker) &&
-                    !isRunOutStrikeChange &&
-                    overLength == 6))) {
-          /// change striker and non striker
+        /// 1
+        // if ((run % 2 != 0 && overLength != 6 && isRunOutStrikeChange) ||
+        //     ((overLength == 6 && run % 2 == 0) ||
+        //         ((wicketType == WicketType.runoutNonStriker || wicketType == WicketType.runoutStriker) &&
+        //             !isRunOutStrikeChange &&
+        //             overLength == 6))) {
 
+        //2
+        // if ((run % 2 != 0 && overLength != 6 && (wicketType != WicketType.runoutNonStriker && wicketType != WicketType.runoutStriker)) ||
+        //     (overLength == 6 && run % 2 == 0)) {
+
+        if ((run % 2 != 0 && overLength != 6 && (wicketType != WicketType.runoutNonStriker && wicketType != WicketType.runoutStriker)) ||
+            ((overLength == 6 && run % 2 == 0) ||
+                (((wicketType == WicketType.runoutNonStriker && whoGotOut == nonStriker!.playerId) ||
+                        (wicketType == WicketType.runoutStriker && whoGotOut == nonStriker!.playerId)) &&
+                    (overLength == 6)))) {
+          /// change striker and non striker
+          log('in');
           final change = striker;
           striker = nonStriker;
           nonStriker = change;
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         changeWicket();
@@ -2004,15 +1810,12 @@ abstract class _ScoreStore with Store {
         bowler = bowler;
 
         /// add run and ball to batsman
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
           nonStriker!.run = nonStriker!.run! - run;
 
-          currentPartnerShip!.currentNotStiker!.run =
-              currentPartnerShip!.currentNotStiker!.run! - run;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - run;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
 
           if (run == 4) {
             nonStriker!.four = nonStriker!.four! - 1;
@@ -2024,10 +1827,8 @@ abstract class _ScoreStore with Store {
           striker!.ball = striker!.ball! - 1;
           striker!.run = striker!.run! - run;
 
-          currentPartnerShip!.currentStiker!.run =
-              currentPartnerShip!.currentStiker!.run! - run;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - run;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
 
           if (run == 4) {
             striker!.four = striker!.four! - 1;
@@ -2058,8 +1859,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2067,8 +1867,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2094,15 +1893,12 @@ abstract class _ScoreStore with Store {
         bowler!.ball = bowler!.ball! - reBallNum;
 
         /// add run and ball to batsman
-        if (((run - wideBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
+        if (((run - wideBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - reBallNum;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
         } else {
           striker!.ball = striker!.ball! - reBallNum;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - reBallNum;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
         }
 
         /// add total run and ball to partnership
@@ -2126,8 +1922,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - wideBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
+        if (((run - wideBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2135,8 +1930,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2163,15 +1957,12 @@ abstract class _ScoreStore with Store {
 
         /// add run and ball to batsman
         /// add run and ball to batsman
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
           nonStriker!.run = nonStriker!.run! - (run - noBallRun);
 
-          currentPartnerShip!.currentNotStiker!.run =
-              currentPartnerShip!.currentNotStiker!.run! - run;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - run;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
 
           if ((run - noBallRun) == 4) {
             nonStriker!.four = nonStriker!.four! - 1;
@@ -2183,10 +1974,8 @@ abstract class _ScoreStore with Store {
           striker!.ball = striker!.ball! - 1;
           striker!.run = striker!.run! - (run - noBallRun);
 
-          currentPartnerShip!.currentStiker!.run =
-              currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
 
           if ((run - noBallRun) == 4) {
             striker!.four = striker!.four! - 1;
@@ -2218,8 +2007,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2227,8 +2015,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2252,15 +2039,12 @@ abstract class _ScoreStore with Store {
         bowler!.ball = bowler!.ball! - 1;
 
         /// add run and ball to batsman
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
           striker!.ball = striker!.ball! - 1;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         /// add total run and ball to partnership
@@ -2284,8 +2068,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2293,8 +2076,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2318,15 +2100,12 @@ abstract class _ScoreStore with Store {
         bowler!.ball = bowler!.ball! - 1;
 
         /// add run and ball to batsman
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
           striker!.ball = striker!.ball! - 1;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         /// add total run and ball to partnership
@@ -2350,8 +2129,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2359,8 +2137,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2386,15 +2163,12 @@ abstract class _ScoreStore with Store {
         bowler!.run = bowler!.run! - run;
 
         /// add run and ball to batsman
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
           striker!.ball = striker!.ball! - 1;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         /// add total run and ball to partnership
@@ -2418,8 +2192,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2427,8 +2200,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2454,15 +2226,12 @@ abstract class _ScoreStore with Store {
         bowler!.run = bowler!.run! - run;
 
         /// add run and ball to batsman
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           nonStriker!.ball = nonStriker!.ball! - 1;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
           striker!.ball = striker!.ball! - 1;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         /// add total run and ball to partnership
@@ -2486,8 +2255,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2495,8 +2263,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2524,37 +2291,29 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if (((run - wideBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if (((run - wideBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - reBallNum;
 
           nonStriker!.outBy = null;
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - reBallNum;
           striker!.outBy = null;
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - reBallNum;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
         }
         lastSave();
 
@@ -2582,8 +2341,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - wideBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
+        if (((run - wideBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2591,8 +2349,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
 
@@ -2621,17 +2378,13 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
           nonStriker!.run = nonStriker!.run! - (run - noBallRun);
 
@@ -2639,10 +2392,8 @@ abstract class _ScoreStore with Store {
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.run =
-              currentPartnerShip!.currentNotStiker!.run! - (run - noBallRun);
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - (run - noBallRun);
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
 
           if ((run - noBallRun) == 4) {
             nonStriker!.four = nonStriker!.four! - 1;
@@ -2651,11 +2402,9 @@ abstract class _ScoreStore with Store {
             nonStriker!.six = nonStriker!.six! - 1;
           }
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
           striker!.run = striker!.run! - (run - noBallRun);
 
@@ -2663,10 +2412,8 @@ abstract class _ScoreStore with Store {
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.run =
-              currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
 
           if ((run - noBallRun) == 4) {
             striker!.four = striker!.four! - 1;
@@ -2703,8 +2450,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2712,8 +2458,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2739,39 +2484,31 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
 
           nonStriker!.outBy = null;
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
 
           striker!.outBy = null;
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
         lastSave();
 
@@ -2800,8 +2537,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2809,8 +2545,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2836,39 +2571,31 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
 
           nonStriker!.outBy = null;
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
 
           striker!.outBy = null;
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
         lastSave();
 
@@ -2897,8 +2624,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -2906,8 +2632,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -2936,39 +2661,31 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
 
           nonStriker!.outBy = null;
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
 
           striker!.outBy = null;
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         lastSave();
@@ -2999,8 +2716,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -3008,8 +2724,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -3038,39 +2753,31 @@ abstract class _ScoreStore with Store {
         bowler!.wicket = bowler!.wicket! - 1;
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
 
           nonStriker!.outBy = null;
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
 
           striker!.outBy = null;
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
 
         lastSave();
@@ -3100,8 +2807,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if (((run - noBallRun) % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && (run - noBallRun) % 2 == 0)) {
+        if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
           /// change striker and non striker
           final change = striker;
           striker = nonStriker;
@@ -3109,8 +2815,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -3134,17 +2839,13 @@ abstract class _ScoreStore with Store {
 
         final lastOutPlayer = currentInning!.fallOfWicket!.last;
 
-        currentInning!.partnerShips!
-            .removeWhere((element) => element.id == currentPartnerShip!.id);
+        currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
 
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
-          currentInning!.battingLineup!.removeWhere(
-              (element) => element.playerId == nonStriker!.playerId);
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
           playerBox.delete(int.parse(nonStriker!.playerId!));
-          nonStriker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           nonStriker!.ball = nonStriker!.ball! - 1;
           nonStriker!.run = nonStriker!.run! - run;
 
@@ -3152,16 +2853,12 @@ abstract class _ScoreStore with Store {
           nonStriker!.outType = null;
           nonStriker!.isNotOut = true;
 
-          currentPartnerShip!.currentNotStiker!.run =
-              currentPartnerShip!.currentNotStiker!.run! - run;
-          currentPartnerShip!.currentNotStiker!.ball =
-              currentPartnerShip!.currentNotStiker!.ball! - 1;
+          currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - run;
+          currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
         } else {
-          currentInning!.battingLineup!
-              .removeWhere((element) => element.playerId == striker!.playerId);
+          currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
           playerBox.delete(int.parse(striker!.playerId!));
-          striker = currentInning!.battingLineup!.firstWhere(
-              (element) => element.playerId == lastOutPlayer['batsmanId']);
+          striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
           striker!.ball = striker!.ball! - 1;
           striker!.run = striker!.run! - run;
 
@@ -3169,10 +2866,8 @@ abstract class _ScoreStore with Store {
           striker!.outType = null;
           striker!.isNotOut = true;
 
-          currentPartnerShip!.currentStiker!.run =
-              currentPartnerShip!.currentStiker!.run! - run;
-          currentPartnerShip!.currentStiker!.ball =
-              currentPartnerShip!.currentStiker!.ball! - 1;
+          currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - run;
+          currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
         }
         lastSave();
 
@@ -3199,8 +2894,7 @@ abstract class _ScoreStore with Store {
         }
 
         /// strike rotation
-        if ((run % 2 != 0 && overLength != 6) ||
-            (overLength == 6 && run % 2 == 0)) {
+        if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
           /// change striker and non striker
 
           final change = striker;
@@ -3209,8 +2903,7 @@ abstract class _ScoreStore with Store {
 
           /// change partner striker and non striker in partner ship
           final partnershipChange = currentPartnerShip!.currentStiker;
-          currentPartnerShip!.currentStiker =
-              currentPartnerShip!.currentNotStiker;
+          currentPartnerShip!.currentStiker = currentPartnerShip!.currentNotStiker;
           currentPartnerShip!.currentNotStiker = partnershipChange;
         }
         break;
@@ -3220,8 +2913,7 @@ abstract class _ScoreStore with Store {
   }
 
   void lastSavePartnership() {
-    final List<PartnerShipModel> updatedPartnerships =
-        currentInning!.partnerShips!.map((e) {
+    final List<PartnerShipModel> updatedPartnerships = currentInning!.partnerShips!.map((e) {
       if (e.id == currentPartnerShip!.id) {
         return currentPartnerShip!;
       }
@@ -3231,8 +2923,7 @@ abstract class _ScoreStore with Store {
   }
 
   void lastSave() {
-    final List<BattingLineUpModel> updateBattingLineUpList =
-        currentInning!.battingLineup!.map((e) {
+    final List<BattingLineUpModel> updateBattingLineUpList = currentInning!.battingLineup!.map((e) {
       if (e.playerId == striker!.playerId!) {
         return striker!;
       }
@@ -3242,8 +2933,7 @@ abstract class _ScoreStore with Store {
       return e;
     }).toList();
 
-    final List<BowlingLineUpModel> updateBowlingLineUpList =
-        currentInning!.bowlingLineup!.map((e) {
+    final List<BowlingLineUpModel> updateBowlingLineUpList = currentInning!.bowlingLineup!.map((e) {
       if (e.playerId == bowler!.playerId!) {
         return bowler!;
       }

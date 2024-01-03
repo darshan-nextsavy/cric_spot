@@ -292,6 +292,38 @@ mixin _$ScoreStore on _ScoreStore, Store {
     });
   }
 
+  late final _$whoGotOutAtom =
+      Atom(name: '_ScoreStore.whoGotOut', context: context);
+
+  @override
+  String get whoGotOut {
+    _$whoGotOutAtom.reportRead();
+    return super.whoGotOut;
+  }
+
+  @override
+  set whoGotOut(String value) {
+    _$whoGotOutAtom.reportWrite(value, super.whoGotOut, () {
+      super.whoGotOut = value;
+    });
+  }
+
+  late final _$whoHelpedAtom =
+      Atom(name: '_ScoreStore.whoHelped', context: context);
+
+  @override
+  String get whoHelped {
+    _$whoHelpedAtom.reportRead();
+    return super.whoHelped;
+  }
+
+  @override
+  set whoHelped(String value) {
+    _$whoHelpedAtom.reportWrite(value, super.whoHelped, () {
+      super.whoHelped = value;
+    });
+  }
+
   late final _$isLoadAtom = Atom(name: '_ScoreStore.isLoad', context: context);
 
   @override
@@ -607,6 +639,8 @@ nonStriker: ${nonStriker},
 bowler: ${bowler},
 currentPartnerShip: ${currentPartnerShip},
 currentOver: ${currentOver},
+whoGotOut: ${whoGotOut},
+whoHelped: ${whoHelped},
 isLoad: ${isLoad},
 target: ${target},
 overLength: ${overLength},
