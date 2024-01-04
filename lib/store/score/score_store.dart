@@ -1976,7 +1976,8 @@ abstract class _ScoreStore with Store {
             "batsmanName": nonStriker!.name!,
             "runWicket": "$totalRun - $totalWicket",
             "over": "${totalBall / 6}.${totalBall % 6}",
-            "wicketType": wicketType.name
+            "wicketType": wicketType.name,
+            "isStriker": "false"
           });
         } else {
           striker!.outBy = bowler!.name;
@@ -1988,9 +1989,11 @@ abstract class _ScoreStore with Store {
             "batsmanName": striker!.name!,
             "runWicket": "$totalRun - $totalWicket",
             "over": "${totalBall / 6}.${totalBall % 6}",
-            "wicketType": wicketType.name
+            "wicketType": wicketType.name,
+            "isStriker": "true"
           });
         }
+        log(currentInning!.fallOfWicket.toString());
 
         lastSave();
 
@@ -2625,7 +2628,10 @@ abstract class _ScoreStore with Store {
 
         /// new code
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -2635,15 +2641,23 @@ abstract class _ScoreStore with Store {
             striker!.isNotOut = true;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - reBallNum;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - reBallNum;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
+
             nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - reBallNum;
 
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           }
         } else {
           if (((run - wideBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - wideBallRun) % 2 == 0)) {
@@ -2742,7 +2756,11 @@ abstract class _ScoreStore with Store {
         currentPartnerShip = currentInning!.partnerShips!.last;
 
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
+
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -2754,17 +2772,28 @@ abstract class _ScoreStore with Store {
             currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              nonStriker!.run = nonStriker!.run! - (run - noBallRun);
+
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              striker!.run = striker!.run! - (run - noBallRun);
+
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
+
             nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
-            nonStriker!.run = nonStriker!.run! - (run - noBallRun);
 
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - (run - noBallRun);
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+            currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - (run - noBallRun);
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           }
         } else {
           if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
@@ -2866,8 +2895,12 @@ abstract class _ScoreStore with Store {
 
         currentInning!.partnerShips!.removeWhere((element) => element.id == currentPartnerShip!.id);
         currentPartnerShip = currentInning!.partnerShips!.last;
+
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -2877,15 +2910,22 @@ abstract class _ScoreStore with Store {
             striker!.isNotOut = true;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
-            nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
 
+            nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           }
         } else {
           if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
@@ -2984,7 +3024,10 @@ abstract class _ScoreStore with Store {
         currentPartnerShip = currentInning!.partnerShips!.last;
 
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -2994,15 +3037,22 @@ abstract class _ScoreStore with Store {
             striker!.isNotOut = true;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
-            nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
 
+            nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           }
         } else {
           if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
@@ -3105,7 +3155,10 @@ abstract class _ScoreStore with Store {
         currentPartnerShip = currentInning!.partnerShips!.last;
 
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -3115,14 +3168,21 @@ abstract class _ScoreStore with Store {
             striker!.isNotOut = true;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
             nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           }
         } else {
           if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
@@ -3227,7 +3287,10 @@ abstract class _ScoreStore with Store {
         currentPartnerShip = currentInning!.partnerShips!.last;
 
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -3237,14 +3300,22 @@ abstract class _ScoreStore with Store {
             striker!.isNotOut = true;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
+
             nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - reBallNum;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - reBallNum;
           }
         } else {
           if (((run - noBallRun) % 2 != 0 && overLength != 6) || (overLength == 6 && (run - noBallRun) % 2 == 0)) {
@@ -3342,7 +3413,11 @@ abstract class _ScoreStore with Store {
         currentPartnerShip = currentInning!.partnerShips!.last;
 
         if (lastOutPlayer['wicketType'] == 'Runout Striker' || lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
-          if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+          if (lastOutPlayer['isStriker'] == "true") {
+            log(striker.toString());
+            if (lastOutPlayer['wicketType'] == 'Runout Non-Striker') {
+              nonStriker = striker;
+            }
             currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
             playerBox.delete(int.parse(striker!.playerId!));
             striker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
@@ -3355,17 +3430,25 @@ abstract class _ScoreStore with Store {
             currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - run;
             currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           } else {
-            currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
-            playerBox.delete(int.parse(nonStriker!.playerId!));
+            if (lastOutPlayer['wicketType'] == 'Runout Striker') {
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == striker!.playerId);
+              playerBox.delete(int.parse(striker!.playerId!));
+              nonStriker!.ball = nonStriker!.ball! - 1;
+              nonStriker!.run = nonStriker!.run! - run;
+              striker = nonStriker;
+            } else {
+              striker!.ball = striker!.ball! - 1;
+              striker!.run = striker!.run! - run;
+              currentInning!.battingLineup!.removeWhere((element) => element.playerId == nonStriker!.playerId);
+              playerBox.delete(int.parse(nonStriker!.playerId!));
+            }
             nonStriker = currentInning!.battingLineup!.firstWhere((element) => element.playerId == lastOutPlayer['batsmanId']);
-            nonStriker!.ball = nonStriker!.ball! - 1;
-            nonStriker!.run = nonStriker!.run! - run;
 
             nonStriker!.outBy = null;
             nonStriker!.outType = null;
             nonStriker!.isNotOut = true;
-            currentPartnerShip!.currentNotStiker!.run = currentPartnerShip!.currentNotStiker!.run! - run;
-            currentPartnerShip!.currentNotStiker!.ball = currentPartnerShip!.currentNotStiker!.ball! - 1;
+            currentPartnerShip!.currentStiker!.run = currentPartnerShip!.currentStiker!.run! - run;
+            currentPartnerShip!.currentStiker!.ball = currentPartnerShip!.currentStiker!.ball! - 1;
           }
         } else {
           if ((run % 2 != 0 && overLength != 6) || (overLength == 6 && run % 2 == 0)) {
