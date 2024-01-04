@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cric_spot/core/enum/wicket_type.dart';
 import 'package:cric_spot/core/extensions/color_extension.dart';
 import 'package:cric_spot/core/extensions/text_style_extensions.dart';
@@ -29,8 +31,7 @@ class FallOfWicketPage extends StatelessWidget {
             ),
             Text(
               "How Wicket Fall?",
-              style: context.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600, color: context.onBackground),
+              style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: context.onBackground),
             ),
             const SizedBox(
               height: 8,
@@ -44,7 +45,7 @@ class FallOfWicketPage extends StatelessWidget {
               ),
               width: double.infinity,
               child: DropdownButtonHideUnderline(
-                child: Observer(builder: (context) {
+                child: Observer(builder: (_) {
                   return DropdownButton(
                     borderRadius: BorderRadius.circular(12.0),
                     onChanged: (val) {
@@ -61,10 +62,10 @@ class FallOfWicketPage extends StatelessWidget {
                 }),
               ),
             ),
-
             Observer(builder: (_) {
-              return (scoreStore.wicketType == WicketType.runoutStriker ||
-                      scoreStore.wicketType == WicketType.runoutNonStriker)
+              log("${scoreStore.whoGotOut} to");
+
+              return (scoreStore.wicketType == WicketType.runoutStriker || scoreStore.wicketType == WicketType.runoutNonStriker)
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -73,9 +74,7 @@ class FallOfWicketPage extends StatelessWidget {
                         ),
                         Text(
                           "Who got out?",
-                          style: context.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: context.onBackground),
+                          style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: context.onBackground),
                         ),
                         const SizedBox(
                           height: 8,
@@ -84,37 +83,29 @@ class FallOfWicketPage extends StatelessWidget {
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: context.onSecondaryContainer),
+                            border: Border.all(color: context.onSecondaryContainer),
                             color: context.surfaceVariant,
                           ),
                           width: double.infinity,
                           child: DropdownButtonHideUnderline(
                             child: Observer(builder: (_) {
                               return DropdownButton(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  onChanged: (val) {
-                                    scoreStore.whoGotOut = val!;
-                                  },
-                                  value: scoreStore.whoGotOut,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: scoreStore.striker!.playerId,
-                                      child: Text(scoreStore.striker!.name!),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: scoreStore.nonStriker!.playerId,
-                                      child: Text(scoreStore.nonStriker!.name!),
-                                    )
-                                  ]
-
-                                  // WicketType.values.map((e) {
-                                  //   return DropdownMenuItem<WicketType>(
-                                  //     value: e,
-                                  //     child: Text(e.name),
-                                  //   );
-                                  // }).toList(),
-                                  );
+                                borderRadius: BorderRadius.circular(12.0),
+                                onChanged: (val) {
+                                  scoreStore.whoGotOut = val!;
+                                },
+                                value: scoreStore.whoGotOut,
+                                items: [
+                                  DropdownMenuItem<String>(
+                                    value: scoreStore.striker!.playerId,
+                                    child: Text(scoreStore.striker!.name!),
+                                  ),
+                                  DropdownMenuItem<String>(
+                                    value: scoreStore.nonStriker!.playerId,
+                                    child: Text(scoreStore.nonStriker!.name!),
+                                  )
+                                ],
+                              );
                             }),
                           ),
                         ),
@@ -122,42 +113,17 @@ class FallOfWicketPage extends StatelessWidget {
                     )
                   : const SizedBox.shrink();
             }),
-
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: Row(
-            //     mainAxisSize: MainAxisSize.max,
-            //     children: [
-            //       DropdownMenu(
-            //           enableSearch: true,
-            //           initialSelection: WicketType.bowled,
-            //           inputDecorationTheme: InputDecorationTheme(
-            //               isCollapsed: false,
-            //               border: OutlineInputBorder(
-            //                   borderRadius: BorderRadius.circular(12.0)),
-            //               filled: true),
-            //           dropdownMenuEntries: WicketType.values.map((e) {
-            //             return DropdownMenuEntry<WicketType>(
-            //               value: e,
-            //               label: e.name,
-            //             );
-            //           }).toList()),
-            //     ],
-            //   ),
-            // ),
             const SizedBox(
               height: 16,
             ),
             Text(
               "New Batsman",
-              style: context.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600, color: context.onBackground),
+              style: context.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: context.onBackground),
             ),
             const SizedBox(
               height: 8,
             ),
-            scoreStore.totalWicket ==
-                    (int.parse(scoreStore.matchData!.playerPerMatch!) - 2)
+            scoreStore.totalWicket == (int.parse(scoreStore.matchData!.playerPerMatch!) - 2)
                 ? const SizedBox.shrink()
                 : CricTextFormField(
                     // controller: strikerController,
@@ -180,8 +146,7 @@ class FallOfWicketPage extends StatelessWidget {
                         : () async {
                             final newPlayer = await scoreStore.fallOfWicket();
 
-                            scoreStore.countRun(
-                                run: int.parse(run), newPlayer: newPlayer);
+                            scoreStore.countRun(run: int.parse(run), newPlayer: newPlayer);
                             if (!context.mounted) return;
                             GoRouter.of(context).pop();
                           },
